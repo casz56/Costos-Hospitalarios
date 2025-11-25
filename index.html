@@ -999,8 +999,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
+        
         function filtrarCUPS(termino) {
-            var t = (termino || '').toLowerCase();
+            var t = (termino || '').trim().toLowerCase();
 
             if (!t) {
                 results.classList.add('hidden');
@@ -1008,10 +1009,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            var filtrados = cupsArray.filter(function (item) {
-                var txt = item && item.description ? item.description : '';
-                return txt.toLowerCase().indexOf(t) !== -1;
-            }).slice(0, 50);
+            var exactMatches = [];
+            var partialMatches = [];
+
+            var tSinPuntos = t.replace(/\./g, '');
+
+            cupsArray.forEach(function (item) {
+                var code = (item && item.code ? item.code : '').toLowerCase();
+                var desc = (item && item.description ? item.description : '').toLowerCase();
+
+                if (!code && !desc) return;
+
+                var codeSinPuntos = code.replace(/\./g, '');
+
+                // Coincidencia exacta por código (con o sin puntos)
+                if (code === t || codeSinPuntos === tSinPuntos) {
+                    exactMatches.push(item);
+                } else if (code.indexOf(t) !== -1 || desc.indexOf(t) !== -1) {
+                    partialMatches.push(item);
+                }
+            });
+
+            var filtrados = exactMatches.concat(partialMatches).slice(0, 50);
 
             if (!filtrados.length) {
                 results.classList.add('hidden');
@@ -1052,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             results.classList.remove('hidden');
         }
+
 
         input.addEventListener('input', function () {
             filtrarCUPS(input.value);
