@@ -84,8 +84,7 @@
   <div class="max-w-7xl mx-auto">
    <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative">
     <!-- LOGO HOSPITAL - AJUSTE FINO -->
-    <img src="logo-web-hun.PNG" alt="Logo HUHMP"
-         style="position:absolute; top:14px; left:22px; height:80px; width:auto;">
+    <img src="logo-web-hun.PNG" alt="Logo HUHMP" style="position:absolute; top:16px; left:24px; height:85px; width:auto; object-fit:contain;">
 
     <div class="absolute top-6 right-6">
      <div class="bg-secondary px-4 py-2 rounded-lg shadow-lg border-2 border-white flex items-center gap-3">
@@ -999,9 +998,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
-        
         function filtrarCUPS(termino) {
-            var t = (termino || '').trim().toLowerCase();
+            var t = (termino || '').toLowerCase();
 
             if (!t) {
                 results.classList.add('hidden');
@@ -1009,28 +1007,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            var exactMatches = [];
-            var partialMatches = [];
-
-            var tSinPuntos = t.replace(/\./g, '');
-
-            cupsArray.forEach(function (item) {
-                var code = (item && item.code ? item.code : '').toLowerCase();
-                var desc = (item && item.description ? item.description : '').toLowerCase();
-
-                if (!code && !desc) return;
-
-                var codeSinPuntos = code.replace(/\./g, '');
-
-                // Coincidencia exacta por código (con o sin puntos)
-                if (code === t || codeSinPuntos === tSinPuntos) {
-                    exactMatches.push(item);
-                } else if (code.indexOf(t) !== -1 || desc.indexOf(t) !== -1) {
-                    partialMatches.push(item);
-                }
-            });
-
-            var filtrados = exactMatches.concat(partialMatches).slice(0, 50);
+            var filtrados = cupsArray.filter(function (item) {
+                var txt = item && item.description ? item.description : '';
+                return txt.toLowerCase().indexOf(t) !== -1;
+            }).slice(0, 50);
 
             if (!filtrados.length) {
                 results.classList.add('hidden');
@@ -1071,7 +1051,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             results.classList.remove('hidden');
         }
-
 
         input.addEventListener('input', function () {
             filtrarCUPS(input.value);
