@@ -448,7 +448,7 @@
     };
 
         // --- LOGIN MANUAL (Contra DB 'registered_users') ---
-    document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
+    document.getElementById('appLoginForm').addEventListener('submit'), async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
