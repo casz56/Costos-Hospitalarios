@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Costeo Unitario - ESE H.U. Hernando Moncaleano</title>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- LIBRERÍAS -->
@@ -57,7 +56,6 @@
         .login-card { width: 100%; max-width: 400px; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-top: 6px solid var(--color-primary); }
     </style>
   <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="p-2 md:p-6 lg:p-8">
 
@@ -391,18 +389,18 @@
     import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, orderBy, Timestamp, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = { 
-    apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
-    authDomain: "costos-hospitalarios.firebaseapp.com",
-    projectId: "costos-hospitalarios",
-    storageBucket: "costos-hospitalarios.firebasestorage.app",
-    messagingSenderId: "404619927928",
-    appId: "1:404619927928:web:2c9a3f83ba58504dba288d",
-    measurementId: "G-446CF9TS9H"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = "costos-hospitalarios-v1";
+        apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
+        authDomain: "costos-hospitalarios.firebaseapp.com",
+        projectId: "costos-hospitalarios",
+        storageBucket: "costos-hospitalarios.firebasestorage.app",
+        messagingSenderId: "404619927928",
+        appId: "1:404619927928:web:2c9a3f83ba58504dba288d",
+        measurementId: "G-446CF9TS9H"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = "costos-hospitalarios-v1";
 
     // --- SISTEMA DE AUTENTICACIÓN ROBUSTO (Patrón Rule #3) ---
     let authPromise = null;
@@ -449,7 +447,7 @@ const appId = "costos-hospitalarios-v1";
         }
     };
 
-    // --- LOGIN MANUAL (Contra DB 'registered_users') ---
+        // --- LOGIN MANUAL (Contra DB 'registered_users') ---
     document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
@@ -467,23 +465,22 @@ const appId = "costos-hospitalarios-v1";
         try {
             await ensureAuth(); // Permiso de lectura anónimo
             
-            // CAMBIO: Descargar TODOS los usuarios y filtrar en JS para evitar problemas de mayúsculas/minúsculas
             const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
             const snapshot = await getDocs(usersRef);
 
             let validUser = null;
 
             if (snapshot.empty) {
-                throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados. \nPor favor use el archivo 'admin.html' para crear el primer usuario.");
+                throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados.\nPor favor use el archivo 'admin.html' para crear el primer usuario.");
             }
 
             console.log("Intentando login para:", email);
             
             snapshot.forEach(doc => {
                 const data = doc.data();
-                // Comparación flexible (lowercase) para el correo
+                if (!data || !data.email) return;
+                const storedPass = String(data.password || "").trim();
                 if (data.email.toLowerCase() === email.toLowerCase()) {
-                    const storedPass = String(data.password || "").trim();
                     if (storedPass === normalizedPass) {
                         if (data.active !== false) {
                             validUser = data;
@@ -491,8 +488,7 @@ const appId = "costos-hospitalarios-v1";
                             throw new Error("Este usuario ha sido desactivado.");
                         }
                     } else {
-                         // Correo coincide pero contraseña no
-                         console.warn("Correo encontrado, contraseña incorrecta");
+                        console.warn("Correo encontrado, contraseña incorrecta");
                     }
                 }
             });
@@ -502,26 +498,20 @@ const appId = "costos-hospitalarios-v1";
                 localStorage.setItem('operarioSession', JSON.stringify(validUser));
                 checkSession();
             } else {
-                // Si llegamos aquí y no hay validUser, es credencial incorrecta
                 throw new Error("Usuario no encontrado o contraseña incorrecta.");
             }
 
         } catch (error) {
             console.error(error);
-            err.innerText = error.message; // Usar innerText para saltos de línea
+            err.innerText = error.message;
             err.classList.remove('hidden');
         } finally {
             btn.textContent = originalText;
             btn.disabled = false;
         }
-    });
-
-    window.logoutApp = () => {
-        localStorage.removeItem('operarioSession');
-        location.reload();
     };
 
-    // --- GUARDAR COSTEO ---
+// --- GUARDAR COSTEO ---
     window.guardarCosteo = async function() {
         if (!currentUserSession) return;
         
