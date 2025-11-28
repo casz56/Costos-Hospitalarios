@@ -181,20 +181,19 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN ---
-        // ⚠ CONFIGURACIÓN LOCAL / GITHUB PAGES
+        // --- CONFIGURACIÓN (GitHub / Localhost) ---
         // Reemplaza estos valores por los de tu proyecto de Firebase.
-        const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "tu-proyecto.firebaseapp.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
+            authDomain: "costos-hospitalarios.firebaseapp.com",
+            projectId: "costos-hospitalarios",
+            storageBucket: "costos-hospitalarios.firebasestorage.app",
+            messagingSenderId: "404619927928",
+            appId: "1:404619927928:web:2c9a3f83ba58504dba288d",
+            measurementId: "G-446CF9TS9H"
         };
-
         // Identificador lógico de la app para construir las rutas de Firestore
-        const appId = "costeo-huhmp-v1";
+        const appId = "costos-hospitalarios-v1";
 
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
