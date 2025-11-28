@@ -23,6 +23,7 @@
             --color-primary: #312782;
             --color-secondary: #008041;
             --color-accent: #ec268f; /* Fucsia Institucional */
+            --color-institutional-light: #7084C1; /* Nuevo color institucional para botones */
             --color-text: #1f2937;
             --color-bg-light: #f4f7f9;
         }
@@ -39,6 +40,10 @@
         .bg-accent { background-color: var(--color-accent); }
         .text-accent { color: var(--color-accent); }
         
+        /* Clase para el nuevo color de botones */
+        .bg-btn-institutional { background-color: var(--color-institutional-light); }
+        .bg-btn-institutional:hover { background-color: #5a6da3; } /* Un poco más oscuro para hover */
+
         .section-header {
             background-color: var(--color-primary);
             color: white;
@@ -105,6 +110,15 @@
             top: 0;
             opacity: 0;
             cursor: pointer;
+        }
+        
+        /* Animación para el estado de resultados */
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -242,7 +256,7 @@
      II. COSTOS DIRECTOS - 2. Talento Humano (Mano de Obra)
     </div>
     <div id="talentoHumanoContainer" class="space-y-4 mb-4"></div>
-    <button type="button" onclick="addManoDeObra()" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md"> + Añadir Mano de Obra </button>
+    <button type="button" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md"> + Añadir Mano de Obra </button>
     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md"><label class="block text-sm font-bold text-gray-700">SUBTOTAL MANO DE OBRA DIRECTA:</label>
      <p id="subtotalManoObra" class="text-lg font-bold text-primary">$ 0.00</p>
     </div>
@@ -268,7 +282,7 @@
          <!-- Las filas se generan dinámicamente -->
       </tbody>
      </table>
-     <button type="button" onclick="addMedicamentoRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Material/Medicamento Adicional</button>
+     <button type="button" onclick="addMedicamentoRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Material/Medicamento Adicional</button>
     </div>
 
     <!-- IV. INSUMOS (NO FACTURABLES) - REORDENADO AHORA ES EL IV -->
@@ -292,10 +306,10 @@
         <!-- Las filas se generan dinámicamente -->
       </tbody>
      </table>
-     <button type="button" onclick="addInsumoRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Insumo No Facturable</button>
+     <button type="button" onclick="addInsumoRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Insumo No Facturable</button>
     </div>
 
-    <!-- V. ALQUILER DE EQUIPOS (NUEVA SECCIÓN MODIFICADA - AHORA VERDE) -->
+    <!-- V. ALQUILER DE EQUIPOS -->
     <div class="section-header rounded-md mb-4 mt-8">
         V. ALQUILER DE EQUIPOS
     </div>
@@ -315,8 +329,8 @@
                 <!-- Filas dinámicas -->
             </tbody>
         </table>
-        <!-- Botón cambiado a Verde Institucional (bg-secondary) -->
-        <button type="button" onclick="addAlquilerRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Alquiler Equipo</button>
+        <!-- Botón actualizado a color institucional -->
+        <button type="button" onclick="addAlquilerRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Alquiler Equipo</button>
         <!-- Caja de subtotal cambiada a tonos verdes -->
         <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
             <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
@@ -369,9 +383,52 @@
      </div>
     </div>
     
-    <!-- VII. RESUMEN (RENUMERADO) -->
+    <!-- VII. GRÁFICAS (SE MANTIENE) -->
     <div class="section-header rounded-md mb-4 mt-8">
-     VII. RESUMEN DE COSTOS DEL PROCEDIMIENTO
+        VII. GRÁFICAS
+    </div>
+    <!-- Gráficos Integrados dentro del Formulario -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Gráfico de Torta -->
+        <div class="border border-gray-200 rounded-lg p-4 bg-white">
+            <h3 class="text-lg font-bold text-primary mb-4 text-center">Distribución de Costos (%)</h3>
+            <div style="position: relative; height: 350px;">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+        <!-- Gráfico de Barras -->
+        <div class="border border-gray-200 rounded-lg p-4 bg-white">
+            <h3 class="text-lg font-bold text-primary mb-4 text-center">Mano de Obra en Función del Costo Total</h3>
+            <canvas id="barChart" style="max-height: 300px;"></canvas>
+            <div class="mt-6 overflow-x-auto">
+                <table class="min-w-full border border-gray-300">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-sm font-semibold">Concepto</th>
+                            <th class="px-4 py-2 text-right text-sm font-semibold">Valor (COP)</th>
+                            <th class="px-4 py-2 text-right text-sm font-semibold">% Participación</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="bg-white hover:bg-gray-50">
+                            <td class="px-4 py-2 text-sm font-medium text-gray-700">Mano de Obra</td>
+                            <td id="tablaBarManoObra" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">$ 0.00</td>
+                            <td id="tablaBarManoObraPorcentaje" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">0.0%</td>
+                        </tr>
+                        <tr class="bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-2 text-sm font-bold text-primary">Costo Total Procedimiento</td>
+                            <td id="tablaBarTotal" class="px-4 py-2 text-sm font-bold text-right text-primary">$ 0.00</td>
+                            <td id="tablaBarTotalPorcentaje" class="px-4 py-2 text-sm font-bold text-right text-primary">100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIII. RESUMEN (RENUMERADO) -->
+    <div class="section-header rounded-md mb-4 mt-8">
+     VIII. RESUMEN DE COSTOS DEL PROCEDIMIENTO
     </div>
     <div class="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-md">
      <div class="flex justify-between text-base"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold">$ 0.00</span>
@@ -387,48 +444,84 @@
      <div class="flex justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal">$ 50,000.00</span>
      </div>
     </div>
+
+    <!-- IX. PRECIO DE VENTA (NUEVA SECCIÓN) -->
+    <div class="section-header rounded-md mb-4 mt-8">
+        IX. PRECIO DE VENTA (ESTUDIO DE MERCADO)
+    </div>
+    <div class="form-card p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Cargar Estudio de Mercado (.xlsx / .csv)</label>
+                <div class="file-upload-wrapper w-full">
+                    <!-- Botón actualizado a color institucional -->
+                    <button type="button" class="bg-btn-institutional text-white px-4 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Cargar Estudio (Simulado)
+                    </button>
+                    <!-- Funcionalidad simulada para demostración -->
+                    <input type="file" id="archivoMercadeo" onchange="alert('Funcionalidad de carga simulada: Por favor ingrese el valor manualmente en la casilla contigua.')">
+                </div>
+                <p class="text-xs text-gray-500 mt-1 italic">Adjunte el archivo soporte del estudio de mercado.</p>
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Precio de Venta Propuesto (Tarifa)</label>
+                <div class="relative rounded-md shadow-sm">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span class="text-gray-500 sm:text-sm">$</span>
+                    </div>
+                    <input type="number" id="precioVentaInput" class="block w-full rounded-md border-gray-300 pl-7 py-3 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border" placeholder="0.00" oninput="calculateResults()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- X. ESTADO DE RESULTADOS (NUEVA SECCIÓN) -->
+    <div class="section-header rounded-md mb-4 mt-8">
+        X. ESTADO DE RESULTADOS DEL COSTEO
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Tarjetas de Indicadores -->
+        <div class="space-y-4">
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-primary">
+                <p class="text-sm font-medium text-gray-500">Costo Total Unitario</p>
+                <p id="resCostoTotal" class="text-2xl font-bold text-primary">$ 0.00</p>
+            </div>
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500">Tarifa de Venta (Estudio Mercadeo)</p>
+                <p id="resPrecioVenta" class="text-2xl font-bold text-blue-600">$ 0.00</p>
+            </div>
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-green-600">
+                <p class="text-sm font-medium text-gray-500">Excedente (Tarifa - Costo)</p>
+                <p id="resExcedente" class="text-2xl font-bold text-green-700">$ 0.00</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="result-card bg-gray-50 p-3 rounded-lg border border-gray-200 text-center">
+                    <p class="text-xs font-bold text-gray-500 uppercase">% Sostenibilidad</p>
+                    <p id="resSostenibilidad" class="text-xl font-extrabold text-gray-800">0.0%</p>
+                    <p class="text-[10px] text-gray-400">(Excedente / Tarifa Venta)</p>
+                </div>
+                <div class="result-card bg-gray-50 p-3 rounded-lg border border-gray-200 text-center">
+                    <p class="text-xs font-bold text-gray-500 uppercase">% Margen</p>
+                    <p id="resMargen" class="text-xl font-extrabold text-gray-800">0.0%</p>
+                    <p class="text-[10px] text-gray-400">(Excedente / Costo Total)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico Financiero -->
+        <div class="form-card p-4 flex flex-col justify-center">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">Comparativo Financiero</h3>
+            <div style="position: relative; height: 300px;">
+                <canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
    </form>
    
-   <!-- GRÁFICOS INTERACTIVOS MEJORADOS -->
-   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"><!-- Gráfico de Torta -->
-    <div class="form-card p-6">
-     <h3 class="text-xl font-bold text-primary mb-4 text-center">Distribución de Costos (%)</h3>
-     <div style="position: relative; height: 350px;">
-      <canvas id="pieChart"></canvas>
-     </div>
-    </div><!-- Gráfico de Barras -->
-    <div class="form-card p-6">
-     <h3 class="text-xl font-bold text-primary mb-4 text-center">Mano de Obra en Función del Costo Total</h3>
-     <canvas id="barChart" style="max-height: 300px;"></canvas>
-     <div class="mt-6 overflow-x-auto">
-      <table class="min-w-full border border-gray-300">
-       <thead class="bg-primary text-white">
-        <tr>
-         <th class="px-4 py-2 text-left text-sm font-semibold">Concepto</th>
-         <th class="px-4 py-2 text-right text-sm font-semibold">Valor (COP)</th>
-         <th class="px-4 py-2 text-right text-sm font-semibold">% Participación</th>
-        </tr>
-       </thead>
-       <tbody class="divide-y divide-gray-200">
-        <tr class="bg-white hover:bg-gray-50">
-         <td class="px-4 py-2 text-sm font-medium text-gray-700">Mano de Obra</td>
-         <td id="tablaBarManoObra" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">$ 0.00</td>
-         <td id="tablaBarManoObraPorcentaje" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">0.0%</td>
-        </tr>
-        <tr class="bg-gray-50 hover:bg-gray-100">
-         <td class="px-4 py-2 text-sm font-bold text-primary">Costo Total Procedimiento</td>
-         <td id="tablaBarTotal" class="px-4 py-2 text-sm font-bold text-right text-primary">$ 0.00</td>
-         <td id="tablaBarTotalPorcentaje" class="px-4 py-2 text-sm font-bold text-right text-primary">100.0%</td>
-        </tr>
-       </tbody>
-      </table>
-     </div>
-    </div>
-   </div>
-   
-   <!-- Botones de Acción (ELIMINADOS) -->
-   <!-- Se eliminó el div que contenía los botones "Guardar", "Borrar Todo" y "Descargar PDF" de abajo -->
-
   </div><!-- Botón Flotante de Sugerencias --> <button id="botonSugerencias" onclick="toggleSugerencias()" class="fixed bottom-8 right-8 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 z-50 flex items-center justify-center group" style="background-color: #ec268f;">
    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
    </svg><span class="absolute right-full mr-3 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"> 💡 Sugerencias </span> </button> <!-- Panel de Sugerencias -->
@@ -467,6 +560,7 @@
         let thCount = 0;
         let pieChart = null;
         let barChart = null;
+        let resultsChart = null; // Nuevo gráfico para Estado de Resultados
 
         // --- MANEJO DE ARCHIVOS ---
         function handleCupsUpload(input) {
@@ -692,15 +786,9 @@
             document.getElementById('subtotalAlquiler').textContent = formatCOP(totalAlquiler);
             document.getElementById('resumenAlquiler').textContent = formatCOP(totalAlquiler);
 
-            // Costos Directos para cálculo de Indirectos (Usualmente MO + Insumos No Facturables)
-            // IMPORTANTE: Definir qué base se usa para Indirectos. Usualmente es MO + Insumos Costo.
-            // Si Alquiler es costo directo, debería sumarse. Lo sumaré a la base.
+            // Costos Directos
             const totalDirectosParaBase = totalManoObra + totalInsumosNoFact + totalAlquiler;
-            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalInsumosNoFact + totalManoObra); // En resumen mantenemos la etiqueta vieja o sumamos todo?
-            // Ajuste etiqueta resumen para ser precisos:
-            // La etiqueta dice "Total Costos Directos (Mano de Obra + Insumos No Facturables)". 
-            // Dejaré esa suma ahí por coherencia con el texto, pero usaremos la base completa para % si se requiere.
-            // Por simplicidad y lógica estándar: Base Indirectos = MO + Insumos NF + Alquiler (Todo costo directo operativo).
+            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalInsumosNoFact + totalManoObra); 
             
             // 5. Indirectos (VI)
             const pDep = parseFloat(document.getElementById('porcentajeDepreciacion')?.value || 0) / 100;
@@ -732,15 +820,65 @@
             document.getElementById('costoProcedimientoSinAdicionales').textContent = formatCOP(costoSinAd);
             document.getElementById('costoUnitarioFinal').textContent = formatCOP(costoFinal);
 
+            // Actualizar Gráficos de Costos
             updateCharts(totalManoObra, totalMedFacturables, totalInsumosNoFact, totalAlquiler, totalIndirectos, costoFinal);
+            
+            // Trigger cálculo Estado Resultados
+            calculateResults(); 
+        }
+
+        // --- CALCULO ESTADO DE RESULTADOS (SECCIÓN X) ---
+        function calculateResults() {
+            // Obtener Costo Total (limpiando formato moneda)
+            const costoTotalStr = document.getElementById('costoUnitarioFinal').textContent;
+            // Haremos parsing cuidadoso del string formatCOP que usa es-CO (mil = .)
+            // formatCOP(1000) -> "$ 1.000,00"
+            // replace(/[^0-9,-]+/g,"") -> "1.000,00" -> replace . por nada, replace , por .
+            let costoLim = costoTotalStr.replace('$','').trim().replace(/\./g, '').replace(',', '.');
+            let finalCosto = parseFloat(costoLim) || 0;
+
+            const precioVentaInput = document.getElementById('precioVentaInput');
+            const precioVenta = parseFloat(precioVentaInput.value) || 0;
+
+            const excedente = precioVenta - finalCosto;
+            
+            // % Sostenibilidad = Excedente / Precio Venta
+            let sostenibilidad = 0;
+            if (precioVenta > 0) {
+                sostenibilidad = (excedente / precioVenta) * 100;
+            }
+
+            // % Margen = Excedente / Costo Total
+            let margen = 0;
+            if (finalCosto > 0) {
+                margen = (excedente / finalCosto) * 100;
+            }
+
+            // Renderizar Textos
+            document.getElementById('resCostoTotal').textContent = formatCOP(finalCosto);
+            document.getElementById('resPrecioVenta').textContent = formatCOP(precioVenta);
+            document.getElementById('resExcedente').textContent = formatCOP(excedente);
+            
+            // Estilos dinámicos para excedente negativo
+            const elExcedente = document.getElementById('resExcedente');
+            if(excedente < 0) { elExcedente.classList.remove('text-green-700'); elExcedente.classList.add('text-red-600'); }
+            else { elExcedente.classList.remove('text-red-600'); elExcedente.classList.add('text-green-700'); }
+
+            document.getElementById('resSostenibilidad').textContent = sostenibilidad.toFixed(2) + '%';
+            document.getElementById('resMargen').textContent = margen.toFixed(2) + '%';
+
+            // Actualizar Gráfico Resultados
+            updateResultsChart(precioVenta, finalCosto, excedente);
         }
 
         function initCharts() {
             if (pieChart) pieChart.destroy();
             if (barChart) barChart.destroy();
+            if (resultsChart) resultsChart.destroy();
             
             Chart.register(ChartDataLabels);
             
+            // 1. Pie Chart
             const ctxPie = document.getElementById('pieChart').getContext('2d');
             pieChart = new Chart(ctxPie, {
                 type: 'pie',
@@ -762,6 +900,7 @@
                 }
             });
 
+            // 2. Bar Chart Costos
             const ctxBar = document.getElementById('barChart').getContext('2d');
             barChart = new Chart(ctxBar, {
                 type: 'bar',
@@ -770,6 +909,38 @@
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(context.parsed.y); } } }, datalabels: { anchor: 'end', align: 'top', formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value), font: { weight: 'bold' }, color: '#333' } },
                     scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return '$' + value / 1000 + 'k'; } } } }
+                }
+            });
+
+            // 3. Results Chart (NUEVO)
+            const ctxRes = document.getElementById('resultsChart').getContext('2d');
+            resultsChart = new Chart(ctxRes, {
+                type: 'bar',
+                data: { 
+                    labels: ['Precio Venta', 'Costo Total', 'Excedente'], 
+                    datasets: [{ 
+                        label: 'Valor COP', 
+                        data: [0, 0, 0], 
+                        backgroundColor: [
+                            '#312782', // Azul (Precio)
+                            '#ec268f', // Fucsia (Costo)
+                            '#008041'  // Verde (Excedente)
+                        ], 
+                        borderRadius: 6,
+                        borderWidth: 1
+                    }] 
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false }, 
+                        datalabels: { 
+                            anchor: 'end', align: 'top', 
+                            formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value), 
+                            font: { weight: 'bold' }, color: '#4b5563' 
+                        } 
+                    },
+                    scales: { y: { beginAtZero: true } }
                 }
             });
         }
@@ -785,6 +956,19 @@
                 document.getElementById('tablaBarManoObra').textContent = formatCOP(mo);
                 document.getElementById('tablaBarTotal').textContent = formatCOP(total);
                 document.getElementById('tablaBarManoObraPorcentaje').textContent = total > 0 ? ((mo/total)*100).toFixed(1)+'%' : '0%';
+            }
+        }
+
+        function updateResultsChart(precio, costo, excedente) {
+            if (resultsChart) {
+                resultsChart.data.datasets[0].data = [precio, costo, excedente];
+                // Color dinámico para excedente negativo
+                if (excedente < 0) {
+                    resultsChart.data.datasets[0].backgroundColor[2] = '#dc2626'; // Rojo si pierde
+                } else {
+                    resultsChart.data.datasets[0].backgroundColor[2] = '#008041'; // Verde si gana
+                }
+                resultsChart.update();
             }
         }
         
@@ -884,7 +1068,7 @@
             doc.autoTable({ startY: currentY, head: [['VI. COSTOS INDIRECTOS', 'Valor']], body: indirectosData, theme: 'grid', headStyles: { fillColor: [49, 39, 130] }, styles: { fontSize: 8 } });
             currentY = doc.lastAutoTable.finalY + 5;
 
-            // VII. RESUMEN
+            // VIII. RESUMEN (Actualizado)
             const resumenData = [
                 ['Costos Directos (Operativos)', document.getElementById('totalCostosDirectos').textContent],
                 ['Alquiler Equipos', document.getElementById('resumenAlquiler').textContent],
@@ -892,7 +1076,19 @@
                 ['Facturables Adicionales', document.getElementById('totalAdicionales').textContent],
                 ['COSTO TOTAL', document.getElementById('costoUnitarioFinal').textContent]
             ];
-            doc.autoTable({ startY: currentY, head: [['VII. RESUMEN FINAL', 'Valor']], body: resumenData, theme: 'grid', headStyles: { fillColor: [0, 128, 65] }, styles: { fontSize: 10, fontStyle: 'bold' } });
+            doc.autoTable({ startY: currentY, head: [['VIII. RESUMEN FINAL', 'Valor']], body: resumenData, theme: 'grid', headStyles: { fillColor: [0, 128, 65] }, styles: { fontSize: 10, fontStyle: 'bold' } });
+            currentY = doc.lastAutoTable.finalY + 5;
+
+            // X. ESTADO RESULTADOS (Para el PDF)
+            if (currentY > 230) { doc.addPage(); currentY = 20; }
+            const resultadosData = [
+                ['Precio Venta Propuesto', document.getElementById('resPrecioVenta').textContent],
+                ['Costo Total Unitario', document.getElementById('resCostoTotal').textContent],
+                ['Excedente', document.getElementById('resExcedente').textContent],
+                ['% Sostenibilidad', document.getElementById('resSostenibilidad').textContent],
+                ['% Margen', document.getElementById('resMargen').textContent]
+            ];
+            doc.autoTable({ startY: currentY, head: [['X. ESTADO DE RESULTADOS', 'Valor']], body: resultadosData, theme: 'grid', headStyles: { fillColor: [49, 39, 130] }, styles: { fontSize: 9 } });
 
             const pageCount = doc.internal.getNumberOfPages();
             for(let i = 1; i <= pageCount; i++) {
