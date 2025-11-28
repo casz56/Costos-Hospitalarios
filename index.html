@@ -6,7 +6,11 @@
   <title>Costeo Unitario - ESE H.U. Hernando Moncaleano</title>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- LIBRERÍAS DE GRÁFICOS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+  
   <!-- PapaParse para leer CSVs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <!-- jsPDF y AutoTable para generar PDF -->
@@ -160,7 +164,7 @@
                <span id="inventoryStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
            </div>
            
-           <!-- Botón Descargar PDF (REUBICADO Y COLOREADO) -->
+           <!-- Botón Descargar PDF -->
            <div class="flex flex-col gap-1">
                <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-5 py-2 rounded text-sm font-bold hover:bg-opacity-90 transition flex items-center gap-2 shadow-sm">
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -211,7 +215,6 @@
             <div><label class="block text-sm font-medium text-gray-700">Tarifario</label> <select class="input-field" id="tarifario"> <option value="">Seleccione tarifario</option> <option value="SOAT">SOAT</option> <option value="ISS 2001">ISS 2001</option> <option value="Propias">Propias</option> <option value="Otro">Otro</option> </select>
             </div>
             
-            <!-- CAMPO HOMÓLOGO CON BÚSQUEDA -->
             <div class="relative">
                 <label class="block text-sm font-medium text-gray-700">Homólogo (Buscar)</label> 
                 <div class="relative">
@@ -244,33 +247,9 @@
      <p id="subtotalManoObra" class="text-lg font-bold text-primary">$ 0.00</p>
     </div>
 
-    <!-- III. INSUMOS (CON BÚSQUEDA DE INVENTARIO) -->
+    <!-- III. MEDICAMENTOS (FACTURABLES ADICIONALES) - REORDENADO AHORA ES EL III -->
     <div class="section-header rounded-md mb-4 mt-8">
-     III. COSTOS DIRECTOS - 3. Insumos, Materiales y Medicamentos (No Facturables)
-    </div>
-    <div class="overflow-visible mb-6"> <!-- Overflow visible para que los dropdowns se salgan de la tabla -->
-     <table class="min-w-full divide-y divide-gray-200 border rounded-md">
-      <thead class="bg-gray-50">
-       <tr>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-64">Cód. Producto (Buscar)</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre del Producto</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Presentación</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
-        <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
-       </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables">
-        <!-- Las filas se generan dinámicamente -->
-      </tbody>
-     </table>
-     <button type="button" onclick="addInsumoRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Insumo No Facturable</button>
-    </div>
-
-    <!-- IV. MEDICAMENTOS (CON BÚSQUEDA DE INVENTARIO) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-     IV. COSTOS DIRECTOS - 4. Materiales y Medicamentos (Facturables Adicionales)
+     III. COSTOS DIRECTOS - 3. Materiales y Medicamentos (Facturables Adicionales)
     </div>
     <div class="overflow-visible mb-6">
      <table class="min-w-full divide-y divide-gray-200 border rounded-md">
@@ -292,9 +271,62 @@
      <button type="button" onclick="addMedicamentoRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Material/Medicamento Adicional</button>
     </div>
 
-    <!-- Resto de secciones (Costos Indirectos, Totales, etc) igual que antes -->
+    <!-- IV. INSUMOS (NO FACTURABLES) - REORDENADO AHORA ES EL IV -->
     <div class="section-header rounded-md mb-4 mt-8">
-     V. GASTOS OPERACIONALES - COSTOS INDIRECTOS
+     IV. COSTOS DIRECTOS - 4. Insumos, Materiales y Medicamentos (No Facturables)
+    </div>
+    <div class="overflow-visible mb-6"> 
+     <table class="min-w-full divide-y divide-gray-200 border rounded-md">
+      <thead class="bg-gray-50">
+       <tr>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-64">Cód. Producto (Buscar)</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre del Producto</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Presentación</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+        <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
+       </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables">
+        <!-- Las filas se generan dinámicamente -->
+      </tbody>
+     </table>
+     <button type="button" onclick="addInsumoRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Insumo No Facturable</button>
+    </div>
+
+    <!-- V. ALQUILER DE EQUIPOS (NUEVA SECCIÓN MODIFICADA - AHORA VERDE) -->
+    <div class="section-header rounded-md mb-4 mt-8">
+        V. ALQUILER DE EQUIPOS
+    </div>
+    <div class="overflow-visible mb-6">
+        <table class="min-w-full divide-y divide-gray-200 border rounded-md">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción Equipo / Detalle</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unidad (Hora/Día)</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
+                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
+                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                    <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="alquilerEquipos">
+                <!-- Filas dinámicas -->
+            </tbody>
+        </table>
+        <!-- Botón cambiado a Verde Institucional (bg-secondary) -->
+        <button type="button" onclick="addAlquilerRow()" class="mt-4 bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition shadow-md">+ Añadir Alquiler Equipo</button>
+        <!-- Caja de subtotal cambiada a tonos verdes -->
+        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
+            <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
+            <p id="subtotalAlquiler" class="text-lg font-bold text-secondary">$ 0.00</p>
+        </div>
+    </div>
+
+    <!-- VI. COSTOS INDIRECTOS (RENUMERADO) -->
+    <div class="section-header rounded-md mb-4 mt-8">
+     VI. GASTOS OPERACIONALES - COSTOS INDIRECTOS
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
      <div>
@@ -336,11 +368,15 @@
       </div>
      </div>
     </div>
+    
+    <!-- VII. RESUMEN (RENUMERADO) -->
     <div class="section-header rounded-md mb-4 mt-8">
-     VI. RESUMEN DE COSTOS DEL PROCEDIMIENTO
+     VII. RESUMEN DE COSTOS DEL PROCEDIMIENTO
     </div>
     <div class="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-md">
      <div class="flex justify-between text-base"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold">$ 0.00</span>
+     </div>
+     <div class="flex justify-between text-base"><span class="font-medium">Total Alquiler de Equipos</span> <span id="resumenAlquiler" class="font-semibold">$ 0.00</span>
      </div>
      <div class="flex justify-between text-base"><span class="font-medium">Subtotal Costos Indirectos (34%)</span> <span id="totalCostosIndirectosResumen" class="font-semibold">$ 0.00</span>
      </div>
@@ -351,7 +387,9 @@
      <div class="flex justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal">$ 50,000.00</span>
      </div>
     </div>
-   </form><!-- GRÁFICOS INTERACTIVOS -->
+   </form>
+   
+   <!-- GRÁFICOS INTERACTIVOS MEJORADOS -->
    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"><!-- Gráfico de Torta -->
     <div class="form-card p-6">
      <h3 class="text-xl font-bold text-primary mb-4 text-center">Distribución de Costos (%)</h3>
@@ -386,15 +424,11 @@
       </table>
      </div>
     </div>
-   </div><!-- Botones de Acción -->
-   <div class="mt-8 flex justify-center gap-4"><button type="button" onclick="guardarFormulario()" class="bg-secondary hover:bg-opacity-80 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
-     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-     </svg> Guardar </button> <button type="button" onclick="borrarTodo()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
-     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-     </svg> Borrar Todo </button> <button type="button" onclick="descargarPDF()" class="bg-accent hover:bg-opacity-90 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
-     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
-     </svg> Descargar PDF </button>
    </div>
+   
+   <!-- Botones de Acción (ELIMINADOS) -->
+   <!-- Se eliminó el div que contenía los botones "Guardar", "Borrar Todo" y "Descargar PDF" de abajo -->
+
   </div><!-- Botón Flotante de Sugerencias --> <button id="botonSugerencias" onclick="toggleSugerencias()" class="fixed bottom-8 right-8 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 z-50 flex items-center justify-center group" style="background-color: #ec268f;">
    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
    </svg><span class="absolute right-full mr-3 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"> 💡 Sugerencias </span> </button> <!-- Panel de Sugerencias -->
@@ -428,206 +462,110 @@
         // VARIABLES GLOBALES
         let CUPS_DB = [];
         let HOMOLOGO_DB = [];
-        let INVENTORY_DB = []; // Nueva base de datos de inventario
+        let INVENTORY_DB = []; 
         
-        // Datos de ejemplo iniciales (se reemplazarán al cargar el CSV)
-        const INITIAL_DATA = [
-            { colA: "10101 PUNCIÓN CISTERNAL, VÍA LATERAL", code: "10101", desc: "PUNCIÓN CISTERNAL, VÍA LATERAL" }
-        ];
-
         let thCount = 0;
         let pieChart = null;
         let barChart = null;
 
         // --- MANEJO DE ARCHIVOS ---
-
         function handleCupsUpload(input) {
             const file = input.files[0];
             if (!file) return;
-            
             document.getElementById('cupsStatus').textContent = "⌛ Procesando...";
-
             Papa.parse(file, {
-                complete: function(results) {
-                    processCupsCSV(results.data);
-                },
-                error: function(err) {
-                    alert("Error al leer CUPS CSV");
-                },
-                header: true,
-                skipEmptyLines: true,
-                delimiter: ";",
-                encoding: "UTF-8"
+                complete: function(results) { processCupsCSV(results.data); },
+                error: function(err) { alert("Error al leer CUPS CSV"); },
+                header: true, skipEmptyLines: true, delimiter: ";", encoding: "UTF-8"
             });
         }
 
         function handleInventoryUpload(input) {
             const file = input.files[0];
             if (!file) return;
-
             document.getElementById('inventoryStatus').textContent = "⌛ Procesando...";
-
             Papa.parse(file, {
-                complete: function(results) {
-                    processInventoryCSV(results.data);
-                },
-                error: function(err) {
-                    alert("Error al leer Inventario CSV");
-                },
-                header: true, 
-                skipEmptyLines: true,
-                delimiter: ";",
-                encoding: "UTF-8"
+                complete: function(results) { processInventoryCSV(results.data); },
+                error: function(err) { alert("Error al leer Inventario CSV"); },
+                header: true, skipEmptyLines: true, delimiter: ";", encoding: "UTF-8"
             });
         }
 
         function processCupsCSV(data) {
-            CUPS_DB = []; 
-            HOMOLOGO_DB = [];
-            let count = 0;
-            const homologoSet = new Set(); 
-
+            CUPS_DB = []; HOMOLOGO_DB = []; let count = 0; const homologoSet = new Set(); 
             data.forEach(row => {
                 let colAVal = row["CUPS_DESCRIPCION"] || row[Object.keys(row)[0]]; 
                 let codeVal = row["CUPS "] || row["CUPS"] || row[Object.keys(row)[1]]; 
                 let descVal = row["DESCRIPCION_RES_2461/2024"] || row[Object.keys(row)[2]]; 
-
                 if (colAVal) {
-                    CUPS_DB.push({
-                        fullText: normalizeText(colAVal), 
-                        display: colAVal, 
-                        code: codeVal,
-                        desc: descVal
-                    });
+                    CUPS_DB.push({ fullText: normalizeText(colAVal), display: colAVal, code: codeVal, desc: descVal });
                     count++;
                 }
-                
                 let hCode = row["HOMOLOGO"] || row[Object.keys(row)[6]];
                 let hDesc = row["DESCRIPCION_HOMOLOGO"] || row[Object.keys(row)[7]];
                 let colIVal = Object.values(row)[8] || ""; 
-                
                 if (hCode || hDesc) {
                     const uniqueKey = `${hCode}-${hDesc}`;
                     if (!homologoSet.has(uniqueKey)) {
                         homologoSet.add(uniqueKey);
                         const searchString = `${hCode} ${hDesc} ${colIVal}`;
-                        HOMOLOGO_DB.push({
-                            searchStr: normalizeText(searchString), 
-                            code: hCode || "S/C",
-                            desc: hDesc || "Sin descripción",
-                            colI: colIVal 
-                        });
+                        HOMOLOGO_DB.push({ searchStr: normalizeText(searchString), code: hCode || "S/C", desc: hDesc || "Sin descripción", colI: colIVal });
                     }
                 }
             });
-
             document.getElementById('cupsSearch').disabled = false;
             document.getElementById('cupsSearch').placeholder = `Buscar en ${count} CUPS...`;
             document.getElementById('homologo').disabled = false;
             document.getElementById('homologo').placeholder = "Buscar Homólogo...";
-            
             document.getElementById('cupsStatus').textContent = `✅ ${count} Registros`;
             document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic";
             alert(`CUPS: ${count} registros cargados.`);
         }
 
         function processInventoryCSV(data) {
-            INVENTORY_DB = [];
-            let count = 0;
-
+            INVENTORY_DB = []; let count = 0;
             data.forEach(row => {
-                // Mapeo basado en INVENTARIO_VALORIZADO.csv
-                // Columna 0: Texto de búsqueda (Código + Nombre)
-                // Columna 1: Codproducto
-                // Columna 2: Nombreproducto
-                // Columna 4: Unidad (Presentación)
-                // Columna 12: CostoPromedio
-                
-                // Obtenemos valores por índice para ser más robustos ante nombres de cabecera
                 const values = Object.values(row);
-                
-                let searchKey = values[0] || ""; // Columna A
+                let searchKey = values[0] || ""; 
                 let code = values[1] || "";
                 let name = values[2] || "";
                 let presentation = values[4] || "UNIDAD";
                 let priceRaw = values[12] || "0";
-                
-                // Parsear precio: 101580,36 -> 101580.36
                 let priceStr = priceRaw.replace(/\./g, '').replace(',', '.');
                 let price = parseFloat(priceStr);
                 if (isNaN(price)) price = 0;
-
                 if (searchKey) {
-                    INVENTORY_DB.push({
-                        searchStr: normalizeText(searchKey),
-                        display: searchKey,
-                        code: code,
-                        name: name,
-                        presentation: presentation,
-                        price: price
-                    });
+                    INVENTORY_DB.push({ searchStr: normalizeText(searchKey), display: searchKey, code: code, name: name, presentation: presentation, price: price });
                     count++;
                 }
             });
-
             document.getElementById('inventoryStatus').textContent = `✅ ${count} Artículos`;
             document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic";
-            alert(`Inventario: ${count} artículos cargados. Tablas actualizadas.`);
+            alert(`Inventario: ${count} artículos cargados.`);
         }
 
-        // --- FUNCIONES AUXILIARES ---
+        const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
+        function normalizeText(text) { if(!text) return ""; return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
 
-        const formatCOP = (number) => {
-            return new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 2,
-            }).format(number);
-        };
-
-        function normalizeText(text) {
-            if(!text) return "";
-            return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        }
-
-        // --- BÚSQUEDA GENERAL (CUPS / HOMÓLOGO) ---
-
+        // --- FILTROS ---
         function filterCUPS() {
             const input = document.getElementById('cupsSearch');
             const filter = normalizeText(input.value);
             const resultsDiv = document.getElementById('cupsResults');
-            
-            if (CUPS_DB.length === 0 && input.value.length > 0) return;
-            if (input.value.length < 3) { resultsDiv.classList.add('hidden'); return; }
-
+            if (CUPS_DB.length === 0 || input.value.length < 3) { resultsDiv.classList.add('hidden'); return; }
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
             const filteredData = CUPS_DB.filter(item => searchTerms.every(term => item.fullText.includes(term))).slice(0, 50);
-
-            renderDropdown(resultsDiv, filteredData, (item) => {
-                selectCUPS(item.code, item.desc);
-            }, (item) => `<span class="font-bold text-primary">${item.display}</span>`);
+            renderDropdown(resultsDiv, filteredData, (item) => selectCUPS(item.code, item.desc), (item) => `<span class="font-bold text-primary">${item.display}</span>`);
         }
-
         function filterHomologo() {
             const input = document.getElementById('homologo');
             const filter = normalizeText(input.value);
             const resultsDiv = document.getElementById('homologoResults');
-            
-            if (HOMOLOGO_DB.length === 0 && input.value.length > 0) return;
-            if (input.value.length < 2) { resultsDiv.classList.add('hidden'); return; }
-
+            if (HOMOLOGO_DB.length === 0 || input.value.length < 2) { resultsDiv.classList.add('hidden'); return; }
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
             const filteredData = HOMOLOGO_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 50);
-
-            renderDropdown(resultsDiv, filteredData, (item) => {
-                document.getElementById('homologo').value = `${item.code} - ${item.desc}`;
-                resultsDiv.classList.add('hidden');
-            }, (item) => `
-                <div class="flex justify-between w-full"><span class="font-bold text-primary">${item.code}</span><span class="text-xs bg-gray-100 px-2 rounded">${item.colI}</span></div>
-                <div class="text-xs text-gray-600">${item.desc}</div>
-            `);
+            renderDropdown(resultsDiv, filteredData, (item) => { document.getElementById('homologo').value = `${item.code} - ${item.desc}`; resultsDiv.classList.add('hidden'); }, (item) => `<div class="flex justify-between w-full"><span class="font-bold text-primary">${item.code}</span><span class="text-xs bg-gray-100 px-2 rounded">${item.colI}</span></div><div class="text-xs text-gray-600">${item.desc}</div>`);
         }
-        
         function selectCUPS(code, desc) {
             document.getElementById('cupsCode').value = code || "N/A";
             document.getElementById('cupsDescription').value = desc || "";
@@ -636,21 +574,10 @@
             document.getElementById('selectedCupsDisplay').classList.add('text-primary');
             document.getElementById('cupsResults').classList.add('hidden');
         }
-
         function renderDropdown(container, data, onSelect, templateFn) {
             if (data.length > 0) {
-                container.innerHTML = data.map((item, index) => `
-                    <div class="cups-item text-sm" data-index="${index}">
-                        <div class="flex-1">${templateFn(item)}</div>
-                    </div>
-                `).join('');
-                
-                // Agregar listeners a los elementos creados
-                const items = container.querySelectorAll('.cups-item');
-                items.forEach(el => {
-                    el.addEventListener('click', () => onSelect(data[el.dataset.index]));
-                });
-                
+                container.innerHTML = data.map((item, index) => `<div class="cups-item text-sm" data-index="${index}"><div class="flex-1">${templateFn(item)}</div></div>`).join('');
+                container.querySelectorAll('.cups-item').forEach(el => el.addEventListener('click', () => onSelect(data[el.dataset.index])));
                 container.classList.remove('hidden');
             } else {
                 container.innerHTML = '<div class="p-2 text-sm text-gray-500 italic">No hay resultados</div>';
@@ -658,153 +585,68 @@
             }
         }
 
-        // --- BÚSQUEDA EN TABLAS (INVENTARIO) ---
-
         function searchInventory(input) {
-            // Navegar al contenedor de resultados relativo a este input
-            const wrapper = input.parentElement; // div.relative
+            const wrapper = input.parentElement; 
             const resultsDiv = wrapper.querySelector('.table-dropdown');
-            
-            // Si no existe el div de resultados (por si acaso), no hacemos nada
             if (!resultsDiv) return;
-
             const filter = normalizeText(input.value);
-            
-            if (INVENTORY_DB.length === 0) {
-                if (filter.length > 0) {
-                    resultsDiv.innerHTML = '<div class="p-2 text-xs text-orange-600 italic">Cargue archivo de inventario</div>';
-                    resultsDiv.classList.remove('hidden');
-                } else {
-                    resultsDiv.classList.add('hidden');
-                }
-                return;
-            }
-
-            if (filter.length < 2) {
-                resultsDiv.classList.add('hidden');
-                return;
-            }
-
+            if (INVENTORY_DB.length === 0) { if (filter.length > 0) { resultsDiv.innerHTML = '<div class="p-2 text-xs text-orange-600 italic">Cargue archivo de inventario</div>'; resultsDiv.classList.remove('hidden'); } else { resultsDiv.classList.add('hidden'); } return; }
+            if (filter.length < 2) { resultsDiv.classList.add('hidden'); return; }
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
-            const filteredData = INVENTORY_DB.filter(item => {
-                return searchTerms.every(term => item.searchStr.includes(term));
-            }).slice(0, 20); // Menos resultados para tablas
-
+            const filteredData = INVENTORY_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 20);
             if (filteredData.length > 0) {
-                resultsDiv.innerHTML = filteredData.map((item, index) => `
-                    <div class="p-2 border-b hover:bg-green-50 cursor-pointer text-xs" onclick="selectInventoryItem(this, ${index})">
-                        <div class="font-bold text-green-700">${item.code}</div>
-                        <div class="truncate">${item.name}</div>
-                        <div class="flex justify-between mt-1 text-gray-500">
-                            <span>${item.presentation}</span>
-                            <span class="font-semibold">${formatCOP(item.price)}</span>
-                        </div>
-                    </div>
-                `).join('');
-                
-                // Guardamos los datos filtrados en el elemento para recuperarlos al hacer click
+                resultsDiv.innerHTML = filteredData.map((item, index) => `<div class="p-2 border-b hover:bg-green-50 cursor-pointer text-xs" onclick="selectInventoryItem(this, ${index})"><div class="font-bold text-green-700">${item.code}</div><div class="truncate">${item.name}</div><div class="flex justify-between mt-1 text-gray-500"><span>${item.presentation}</span><span class="font-semibold">${formatCOP(item.price)}</span></div></div>`).join('');
                 resultsDiv.dataset.filteredData = JSON.stringify(filteredData);
                 resultsDiv.classList.remove('hidden');
-            } else {
-                resultsDiv.innerHTML = '<div class="p-2 text-xs text-gray-500">Sin coincidencias</div>';
-                resultsDiv.classList.remove('hidden');
-            }
+            } else { resultsDiv.innerHTML = '<div class="p-2 text-xs text-gray-500">Sin coincidencias</div>'; resultsDiv.classList.remove('hidden'); }
         }
-
-        // Función global para el onclick generado dinámicamente en el HTML string
         window.selectInventoryItem = function(element, index) {
             const resultsDiv = element.closest('.table-dropdown');
             const data = JSON.parse(resultsDiv.dataset.filteredData);
             const item = data[index];
             const row = resultsDiv.closest('tr');
-
-            // Llenar campos de la fila
             const inputs = row.querySelectorAll('input');
-            
-            // inputs[0] es el código (donde escribimos)
             inputs[0].value = item.code;
-            
-            // Buscar inputs por atributo data-* es más seguro que por índice
             row.querySelector('[data-insumo-field="nombre"], [data-medicamento-field="nombre"]').value = item.name;
             row.querySelector('[data-insumo-field="presentacion"], [data-medicamento-field="presentacion"]').value = item.presentation;
             row.querySelector('[data-insumo-field="valorUnitario"], [data-medicamento-field="valorUnitario"]').value = item.price;
-            
-            // Ocultar dropdown
             resultsDiv.classList.add('hidden');
-            
-            // Recalcular
             calculateTotal();
         };
 
         // --- GESTIÓN DE FILAS ---
-
         function createManoDeObraRow(id) {
-            return `
-                <div id="th-row-${id}" class="grid grid-cols-1 md:grid-cols-7 gap-3 p-3 border border-gray-200 rounded-md bg-white items-end">
-                    <div class="col-span-2"><label class="block text-xs font-medium text-gray-700">Cargo</label><input type="text" class="input-field text-sm" data-cost-field="cargo"></div>
-                    <div><label class="block text-xs font-medium text-gray-700">Cant.</label><input type="number" step="1" value="1" class="input-field text-sm text-right" data-cost-field="cantidad"></div>
-                    <div><label class="block text-xs font-medium text-gray-700">Horas</label><input type="number" step="0.1" value="0.5" class="input-field text-sm text-right" data-cost-field="horas"></div>
-                    <div><label class="block text-xs font-medium text-gray-700">Vr. Hora</label><input type="number" step="1000" value="50000" class="input-field text-sm text-right" data-cost-field="valorHora"></div>
-                    <div><label class="block text-xs font-medium text-gray-700">Subtotal</label><p id="th-subtotal-${id}" class="text-sm font-semibold text-right pt-2">$ 0.00</p></div>
-                    <div><button type="button" onclick="removeManoDeObra(${id})" class="w-full bg-red-500 text-white p-2 rounded-md text-sm hover:bg-red-600">X</button></div>
-                </div>`;
+            return `<div id="th-row-${id}" class="grid grid-cols-1 md:grid-cols-7 gap-3 p-3 border border-gray-200 rounded-md bg-white items-end"><div class="col-span-2"><label class="block text-xs font-medium text-gray-700">Cargo</label><input type="text" class="input-field text-sm" data-cost-field="cargo"></div><div><label class="block text-xs font-medium text-gray-700">Cant.</label><input type="number" step="1" value="1" class="input-field text-sm text-right" data-cost-field="cantidad"></div><div><label class="block text-xs font-medium text-gray-700">Horas</label><input type="number" step="0.1" value="0.5" class="input-field text-sm text-right" data-cost-field="horas"></div><div><label class="block text-xs font-medium text-gray-700">Vr. Hora</label><input type="number" step="1000" value="50000" class="input-field text-sm text-right" data-cost-field="valorHora"></div><div><label class="block text-xs font-medium text-gray-700">Subtotal</label><p id="th-subtotal-${id}" class="text-sm font-semibold text-right pt-2">$ 0.00</p></div><div><button type="button" onclick="removeManoDeObra(${id})" class="w-full bg-red-500 text-white p-2 rounded-md text-sm hover:bg-red-600">X</button></div></div>`;
         }
+        function addManoDeObra() { thCount++; document.getElementById('talentoHumanoContainer').insertAdjacentHTML('beforeend', createManoDeObraRow(thCount)); calculateTotal(); }
+        function removeManoDeObra(id) { const row = document.getElementById(`th-row-${id}`); if (row) row.remove(); calculateTotal(); }
 
-        function addManoDeObra() {
-            thCount++;
-            document.getElementById('talentoHumanoContainer').insertAdjacentHTML('beforeend', createManoDeObraRow(thCount));
-            calculateTotal();
-        }
-
-        function removeManoDeObra(id) {
-            const row = document.getElementById(`th-row-${id}`);
-            if (row) row.remove();
-            calculateTotal();
-        }
-
-        // Generador de fila genérico con dropdown de inventario
-        function createProductRowHTML(type) { // type: 'insumo' o 'medicamento'
+        function createProductRowHTML(type) { 
             const dataAttr = type === 'insumo' ? 'data-insumo-field' : 'data-medicamento-field';
             const totalClass = type === 'insumo' ? 'valor-total-insumo' : 'valor-total-medicamento';
-            
-            return `
-                <tr>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 relative">
-                        <input type="text" class="input-field text-xs w-full font-bold text-gray-800" placeholder="Buscar..." ${dataAttr}="codigo" onkeyup="searchInventory(this)" autocomplete="off">
-                        <div class="table-dropdown hidden"></div>
-                    </td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><input type="text" class="input-field text-xs" placeholder="Nombre" ${dataAttr}="nombre"></td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="text" class="input-field text-xs" placeholder="Unid" ${dataAttr}="presentacion"></td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="1" class="input-field text-xs text-right" ${dataAttr}="cantidad"></td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="0" class="input-field text-xs text-right" ${dataAttr}="valorUnitario"></td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right ${totalClass}">$ 0.00</td>
-                    <td class="px-3 py-2 whitespace-nowrap text-center">
-                        <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button>
-                    </td>
-                </tr>
-            `;
+            return `<tr><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 relative"><input type="text" class="input-field text-xs w-full font-bold text-gray-800" placeholder="Buscar..." ${dataAttr}="codigo" onkeyup="searchInventory(this)" autocomplete="off"><div class="table-dropdown hidden"></div></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><input type="text" class="input-field text-xs" placeholder="Nombre" ${dataAttr}="nombre"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="text" class="input-field text-xs" placeholder="Unid" ${dataAttr}="presentacion"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="1" class="input-field text-xs text-right" ${dataAttr}="cantidad"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="0" class="input-field text-xs text-right" ${dataAttr}="valorUnitario"></td><td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right ${totalClass}">$ 0.00</td><td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td></tr>`;
         }
+        function addInsumoRow() { document.getElementById('insumosNoFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('insumo')); calculateTotal(); }
+        function addMedicamentoRow() { document.getElementById('medicamentosFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('medicamento')); calculateTotal(); }
+        
+        // --- NUEVA FUNCIÓN PARA ALQUILER ---
+        function createAlquilerRowHTML() {
+            return `<tr>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><input type="text" class="input-field text-xs" placeholder="Descripción Equipo" data-alquiler-field="nombre"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="text" class="input-field text-xs" placeholder="Hora/Día" data-alquiler-field="unidad"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="1" class="input-field text-xs text-right" data-alquiler-field="cantidad"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="0" class="input-field text-xs text-right" data-alquiler-field="valorUnitario"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right valor-total-alquiler">$ 0.00</td>
+                <td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td>
+            </tr>`;
+        }
+        function addAlquilerRow() { document.getElementById('alquilerEquipos').insertAdjacentHTML('beforeend', createAlquilerRowHTML()); calculateTotal(); }
 
-        function addInsumoRow() {
-            const tbody = document.getElementById('insumosNoFacturables');
-            tbody.insertAdjacentHTML('beforeend', createProductRowHTML('insumo'));
-            calculateTotal();
-        }
-
-        function addMedicamentoRow() {
-            const tbody = document.getElementById('medicamentosFacturables');
-            tbody.insertAdjacentHTML('beforeend', createProductRowHTML('medicamento'));
-            calculateTotal();
-        }
-
-        function removeRow(button) {
-            button.closest('tr').remove();
-            calculateTotal();
-        }
+        function removeRow(button) { button.closest('tr').remove(); calculateTotal(); }
 
         // --- CÁLCULOS Y GRÁFICOS ---
-        
         function calculateTotal() {
+            // 1. Mano de Obra (II)
             let totalManoObra = 0;
             document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
                 const id = row.id.split('-').pop();
@@ -817,40 +659,61 @@
             });
             document.getElementById('subtotalManoObra').textContent = formatCOP(totalManoObra);
 
-            let totalInsumos = 0;
-            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
-                const cant = parseFloat(row.querySelector('[data-insumo-field="cantidad"]')?.value || 0);
-                const valor = parseFloat(row.querySelector('[data-insumo-field="valorUnitario"]')?.value || 0);
-                const sub = cant * valor;
-                row.querySelector('.valor-total-insumo').textContent = formatCOP(sub);
-                totalInsumos += sub;
-            });
-
-            let totalMed = 0;
+            // 2. Materiales y Medicamentos Facturables (Ahora III)
+            let totalMedFacturables = 0;
             document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
                 const cant = parseFloat(row.querySelector('[data-medicamento-field="cantidad"]')?.value || 0);
                 const valor = parseFloat(row.querySelector('[data-medicamento-field="valorUnitario"]')?.value || 0);
                 const sub = cant * valor;
                 row.querySelector('.valor-total-medicamento').textContent = formatCOP(sub);
-                totalMed += sub;
+                totalMedFacturables += sub;
             });
-            document.getElementById('totalAdicionales').textContent = formatCOP(totalMed);
+            document.getElementById('totalAdicionales').textContent = formatCOP(totalMedFacturables); // Etiqueta resumen
 
-            const totalDirectos = totalManoObra + totalInsumos;
-            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalDirectos);
+            // 3. Insumos No Facturables (Ahora IV)
+            let totalInsumosNoFact = 0;
+            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
+                const cant = parseFloat(row.querySelector('[data-insumo-field="cantidad"]')?.value || 0);
+                const valor = parseFloat(row.querySelector('[data-insumo-field="valorUnitario"]')?.value || 0);
+                const sub = cant * valor;
+                row.querySelector('.valor-total-insumo').textContent = formatCOP(sub);
+                totalInsumosNoFact += sub;
+            });
+            
+            // 4. Alquiler Equipos (Nuevo V)
+            let totalAlquiler = 0;
+            document.querySelectorAll('#alquilerEquipos tr').forEach(row => {
+                const cant = parseFloat(row.querySelector('[data-alquiler-field="cantidad"]')?.value || 0);
+                const valor = parseFloat(row.querySelector('[data-alquiler-field="valorUnitario"]')?.value || 0);
+                const sub = cant * valor;
+                row.querySelector('.valor-total-alquiler').textContent = formatCOP(sub);
+                totalAlquiler += sub;
+            });
+            document.getElementById('subtotalAlquiler').textContent = formatCOP(totalAlquiler);
+            document.getElementById('resumenAlquiler').textContent = formatCOP(totalAlquiler);
 
-            // Indirectos
+            // Costos Directos para cálculo de Indirectos (Usualmente MO + Insumos No Facturables)
+            // IMPORTANTE: Definir qué base se usa para Indirectos. Usualmente es MO + Insumos Costo.
+            // Si Alquiler es costo directo, debería sumarse. Lo sumaré a la base.
+            const totalDirectosParaBase = totalManoObra + totalInsumosNoFact + totalAlquiler;
+            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalInsumosNoFact + totalManoObra); // En resumen mantenemos la etiqueta vieja o sumamos todo?
+            // Ajuste etiqueta resumen para ser precisos:
+            // La etiqueta dice "Total Costos Directos (Mano de Obra + Insumos No Facturables)". 
+            // Dejaré esa suma ahí por coherencia con el texto, pero usaremos la base completa para % si se requiere.
+            // Por simplicidad y lógica estándar: Base Indirectos = MO + Insumos NF + Alquiler (Todo costo directo operativo).
+            
+            // 5. Indirectos (VI)
             const pDep = parseFloat(document.getElementById('porcentajeDepreciacion')?.value || 0) / 100;
             const pCon = parseFloat(document.getElementById('porcentajeConsumos')?.value || 0) / 100;
             const pGas = parseFloat(document.getElementById('porcentajeGastosGenerales')?.value || 0) / 100;
             const pLog = parseFloat(document.getElementById('porcentajeLogisticos')?.value || 0) / 100;
             const pAdm = parseFloat(document.getElementById('porcentajeAdministrativos')?.value || 0) / 100;
 
-            const cDep = totalDirectos * pDep;
-            const cCon = totalDirectos * pCon;
-            const cGas = totalDirectos * pGas;
-            const cLog = totalDirectos * pLog;
-            const cAdm = totalDirectos * pAdm;
+            const cDep = totalDirectosParaBase * pDep;
+            const cCon = totalDirectosParaBase * pCon;
+            const cGas = totalDirectosParaBase * pGas;
+            const cLog = totalDirectosParaBase * pLog;
+            const cAdm = totalDirectosParaBase * pAdm;
             
             const totalIndirectos = cDep + cCon + cGas + cLog + cAdm;
 
@@ -862,97 +725,58 @@
             document.getElementById('subtotalCostosIndirectos').textContent = formatCOP(totalIndirectos);
             document.getElementById('totalCostosIndirectosResumen').textContent = formatCOP(totalIndirectos);
 
-            const costoSinAd = totalDirectos + totalIndirectos;
-            const costoFinal = costoSinAd + totalMed;
+            // Totales Finales
+            const costoSinAd = totalDirectosParaBase + totalIndirectos;
+            const costoFinal = costoSinAd + totalMedFacturables;
 
             document.getElementById('costoProcedimientoSinAdicionales').textContent = formatCOP(costoSinAd);
             document.getElementById('costoUnitarioFinal').textContent = formatCOP(costoFinal);
 
-            updateCharts(totalManoObra, totalInsumos, totalMed, totalIndirectos, costoFinal);
-        }
-
-        // --- INICIALIZACIÓN ---
-
-        window.onload = function() {
-            initCharts();
-            addManoDeObra();
-            addInsumoRow(); // Fila inicial
-            addMedicamentoRow(); // Fila inicial
-            actualizarConsecutivo();
-
-            // Event Listeners Globales
-            document.getElementById('cupsSearch').addEventListener('keyup', filterCUPS);
-            document.getElementById('homologo').addEventListener('keyup', filterHomologo);
-            
-            document.getElementById('talentoHumanoContainer').addEventListener('input', calculateTotal);
-            document.getElementById('insumosNoFacturables').addEventListener('input', calculateTotal);
-            document.getElementById('medicamentosFacturables').addEventListener('input', calculateTotal);
-            
-            document.querySelectorAll('input[id^="porcentaje"]').forEach(el => {
-                el.addEventListener('input', calculateTotal);
-            });
-
-            // Cerrar dropdowns al clickear fuera
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.relative') && !e.target.closest('.table-dropdown')) {
-                    document.querySelectorAll('.cups-dropdown, .table-dropdown').forEach(el => el.classList.add('hidden'));
-                }
-            });
-
-            calculateTotal();
-        };
-
-        // --- REDUNDANCIA DE FUNCIONES (Charts, Borrar, PDF, Sugerencias...) ---
-        // (Se mantienen idénticas a la versión anterior para no romper funcionalidades)
-        
-        function borrarTodo() {
-            // Lógica de borrado simplificada
-            if(confirm("¿Borrar todo?")) {
-                document.getElementById('costeoForm').reset();
-                document.getElementById('talentoHumanoContainer').innerHTML = '';
-                document.getElementById('insumosNoFacturables').innerHTML = '';
-                document.getElementById('medicamentosFacturables').innerHTML = '';
-                addManoDeObra();
-                addInsumoRow();
-                addMedicamentoRow();
-                actualizarConsecutivo();
-                calculateTotal();
-            }
-        }
-        
-        function actualizarConsecutivo() {
-            let consecutivo = parseInt(localStorage.getItem('consecutivoCosteo') || '1');
-            const str = `COS-2025-${String(consecutivo).padStart(3, '0')}`;
-            document.getElementById('contadorConsecutivo').textContent = str;
-            document.getElementById('consecutivo').value = str;
-            document.getElementById('consecutivo').disabled = true;
+            updateCharts(totalManoObra, totalMedFacturables, totalInsumosNoFact, totalAlquiler, totalIndirectos, costoFinal);
         }
 
         function initCharts() {
+            if (pieChart) pieChart.destroy();
+            if (barChart) barChart.destroy();
+            
+            Chart.register(ChartDataLabels);
+            
             const ctxPie = document.getElementById('pieChart').getContext('2d');
             pieChart = new Chart(ctxPie, {
                 type: 'pie',
                 data: {
-                    labels: ['Mano de Obra', 'Insumos', 'Medicamentos', 'Indirectos'],
-                    datasets: [{ data: [0,0,0,0], backgroundColor: ['#312782', '#7084c1', '#ec268f', '#008041'] }]
+                    labels: ['Mano de Obra', 'Mat. Facturables', 'Ins. No Facturables', 'Alquiler Equipos', 'Indirectos'],
+                    datasets: [{ 
+                        data: [0,0,0,0,0], 
+                        backgroundColor: ['#312782', '#ec268f', '#7084c1', '#f59e0b', '#008041'],
+                        borderWidth: 2, hoverOffset: 30, hoverBorderColor: '#ffffff'
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: { 
+                    responsive: true, maintainAspectRatio: false, layout: { padding: 20 },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 20, font: { size: 11, family: 'Inter' } } },
+                        tooltip: { callbacks: { label: function(context) { return (context.label || '') + ': ' + new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(context.parsed); } } },
+                        datalabels: { color: '#ffffff', font: { weight: 'bold', size: 12 }, formatter: (value, ctx) => { let sum = 0; ctx.chart.data.datasets[0].data.map(data => sum += data); let percentage = (value*100 / sum).toFixed(1) + "%"; return percentage === '0.0%' ? '' : percentage; }, textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowBlur: 4 }
+                    }
+                }
             });
 
             const ctxBar = document.getElementById('barChart').getContext('2d');
             barChart = new Chart(ctxBar, {
                 type: 'bar',
-                data: {
-                    labels: ['Mano de Obra', 'Total'],
-                    datasets: [{ label: 'COP', data: [0,0], backgroundColor: ['#312782', '#008041'] }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: ['Mano de Obra', 'Total'], datasets: [{ label: 'Valor en COP', data: [0,0], backgroundColor: ['#312782', '#008041'], borderRadius: 5 }] },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(context.parsed.y); } } }, datalabels: { anchor: 'end', align: 'top', formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value), font: { weight: 'bold' }, color: '#333' } },
+                    scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return '$' + value / 1000 + 'k'; } } } }
+                }
             });
         }
 
-        function updateCharts(mo, ins, med, ind, total) {
+        function updateCharts(mo, medFact, insNoFact, alq, ind, total) {
             if (pieChart) {
-                pieChart.data.datasets[0].data = [mo, ins, med, ind];
+                pieChart.data.datasets[0].data = [mo, medFact, insNoFact, alq, ind];
                 pieChart.update();
             }
             if (barChart) {
@@ -964,119 +788,90 @@
             }
         }
         
-        function guardarFormulario() { alert("Guardado"); }
-        
-        // --- FUNCIÓN PDF ACTUALIZADA ---
+        // --- PDF ---
         function descargarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const margin = 15; let currentY = 20; const pageWidth = doc.internal.pageSize.width;
             
-            // Constantes de estilo
-            const margin = 15;
-            let currentY = 20;
-            const pageWidth = doc.internal.pageSize.width;
-            
-            // Función para encabezado repetitivo si fuera necesario, pero lo haremos simple
-            
-            // 1. TÍTULO Y ENCABEZADO
-            doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14); doc.setFont("helvetica", "bold");
             doc.text("FORMULARIO DE COSTEO UNITARIO", pageWidth / 2, currentY, { align: "center" });
-            
-            currentY += 7;
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
+            currentY += 7; doc.setFontSize(12); doc.setFont("helvetica", "normal");
             doc.text("ESE Hospital Universitario Hernando Moncaleano Perdomo", pageWidth / 2, currentY, { align: "center" });
-            
             currentY += 15;
             
-            // 2. INFORMACIÓN GENERAL (Tabla simple)
+            // I. General
             const generalData = [
-                ['Fecha Elaboración', document.getElementById('fechaElaboracion').value, 'Consecutivo', document.getElementById('consecutivo').value],
-                ['Centro de Costos', document.getElementById('centroCostos').value, 'Tarifario', document.getElementById('tarifario').value],
-                ['CUPS', document.getElementById('cupsSearch').value || 'No seleccionado', 'Homólogo', document.getElementById('homologo').value || 'N/A'],
-                ['Valor Homólogo', document.getElementById('valorHomologo').value || '0', 'Tiempo (h)', document.getElementById('tiempoEjecucion').value || '0'],
-                ['Lugar', document.getElementById('lugarRealizacion').value, 'Grupo/UVR', document.getElementById('grupoUVR').value]
+                ['Fecha', document.getElementById('fechaElaboracion').value, 'Consecutivo', document.getElementById('consecutivo').value],
+                ['Centro Costos', document.getElementById('centroCostos').value, 'Tarifario', document.getElementById('tarifario').value],
+                ['CUPS', document.getElementById('cupsSearch').value || '', 'Homólogo', document.getElementById('homologo').value || ''],
+                ['Vr Homólogo', document.getElementById('valorHomologo').value || '0', 'Tiempo', document.getElementById('tiempoEjecucion').value || '0'],
+                ['Lugar', document.getElementById('lugarRealizacion').value, 'Grupo', document.getElementById('grupoUVR').value]
             ];
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['I. INFORMACIÓN GENERAL DEL SERVICIO', '', '', '']],
-                body: generalData,
-                theme: 'grid',
-                headStyles: { fillColor: [49, 39, 130] }, // Color primario
-                styles: { fontSize: 8 }
-            });
-            
+            doc.autoTable({ startY: currentY, head: [['I. INFORMACIÓN GENERAL', '', '', '']], body: generalData, theme: 'grid', headStyles: { fillColor: [49, 39, 130] }, styles: { fontSize: 8 } });
             currentY = doc.lastAutoTable.finalY + 5;
             
-            // 3. MANO DE OBRA
+            // II. MO
             const moRows = [];
             document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
-                const cargo = row.querySelector('[data-cost-field="cargo"]').value;
-                const cant = row.querySelector('[data-cost-field="cantidad"]').value;
-                const horas = row.querySelector('[data-cost-field="horas"]').value;
-                const valor = row.querySelector('[data-cost-field="valorHora"]').value;
-                const subtotal = row.querySelector('[id^="th-subtotal"]').textContent;
-                moRows.push([cargo, cant, horas, formatCOP(valor), subtotal]);
+                moRows.push([
+                    row.querySelector('[data-cost-field="cargo"]').value,
+                    row.querySelector('[data-cost-field="cantidad"]').value,
+                    row.querySelector('[data-cost-field="horas"]').value,
+                    formatCOP(row.querySelector('[data-cost-field="valorHora"]').value),
+                    row.querySelector('[id^="th-subtotal"]').textContent
+                ]);
             });
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['II. MANO DE OBRA', 'Cant', 'Horas', 'Valor Hora', 'Subtotal']],
-                body: moRows,
-                theme: 'grid',
-                headStyles: { fillColor: [49, 39, 130] },
-                styles: { fontSize: 8 },
-                foot: [['', '', '', 'TOTAL MO:', document.getElementById('subtotalManoObra').textContent]]
-            });
-            
+            doc.autoTable({ startY: currentY, head: [['II. MANO DE OBRA', 'Cant', 'Horas', 'Valor', 'Subtotal']], body: moRows, theme: 'grid', headStyles: { fillColor: [49, 39, 130] }, styles: { fontSize: 8 }, foot: [['', '', '', 'TOTAL MO:', document.getElementById('subtotalManoObra').textContent]] });
             currentY = doc.lastAutoTable.finalY + 5;
             
-            // 4. INSUMOS
-            const insRows = [];
-            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
-                const nombre = row.querySelector('[data-insumo-field="nombre"]').value;
-                const cant = row.querySelector('[data-insumo-field="cantidad"]').value;
-                const valor = row.querySelector('[data-insumo-field="valorUnitario"]').value;
-                const total = row.querySelector('.valor-total-insumo').textContent;
-                if(nombre) insRows.push([nombre, cant, formatCOP(valor), total]);
-            });
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['III. INSUMOS (NO FACTURABLES)', 'Cant', 'Valor Unit', 'Total']],
-                body: insRows,
-                theme: 'grid',
-                headStyles: { fillColor: [49, 39, 130] },
-                styles: { fontSize: 8 }
-            });
-            
-            currentY = doc.lastAutoTable.finalY + 5;
-            
-            // 5. MEDICAMENTOS
+            // III. FACTURABLES (Antes IV)
             const medRows = [];
             document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
-                const nombre = row.querySelector('[data-medicamento-field="nombre"]').value;
-                const cant = row.querySelector('[data-medicamento-field="cantidad"]').value;
-                const valor = row.querySelector('[data-medicamento-field="valorUnitario"]').value;
-                const total = row.querySelector('.valor-total-medicamento').textContent;
-                if(nombre) medRows.push([nombre, cant, formatCOP(valor), total]);
+                if(row.querySelector('[data-medicamento-field="nombre"]').value) {
+                    medRows.push([
+                        row.querySelector('[data-medicamento-field="nombre"]').value,
+                        row.querySelector('[data-medicamento-field="cantidad"]').value,
+                        formatCOP(row.querySelector('[data-medicamento-field="valorUnitario"]').value),
+                        row.querySelector('.valor-total-medicamento').textContent
+                    ]);
+                }
             });
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['IV. MEDICAMENTOS (FACTURABLES)', 'Cant', 'Valor Unit', 'Total']],
-                body: medRows,
-                theme: 'grid',
-                headStyles: { fillColor: [49, 39, 130] },
-                styles: { fontSize: 8 },
-                foot: [['', '', 'TOTAL MED:', document.getElementById('totalAdicionales').textContent]]
-            });
-            
+            doc.autoTable({ startY: currentY, head: [['III. MATERIALES Y MEDICAMENTOS (FACTURABLES)', 'Cant', 'Unitario', 'Total']], body: medRows, theme: 'grid', headStyles: { fillColor: [236, 38, 143] }, styles: { fontSize: 8 }, foot: [['', '', 'TOTAL:', document.getElementById('totalAdicionales').textContent]] });
             currentY = doc.lastAutoTable.finalY + 5;
-            
-            // 6. INDIRECTOS Y RESUMEN
+
+            // IV. NO FACTURABLES (Antes III)
+            const insRows = [];
+            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
+                if(row.querySelector('[data-insumo-field="nombre"]').value) {
+                    insRows.push([
+                        row.querySelector('[data-insumo-field="nombre"]').value,
+                        row.querySelector('[data-insumo-field="cantidad"]').value,
+                        formatCOP(row.querySelector('[data-insumo-field="valorUnitario"]').value),
+                        row.querySelector('.valor-total-insumo').textContent
+                    ]);
+                }
+            });
+            doc.autoTable({ startY: currentY, head: [['IV. INSUMOS (NO FACTURABLES)', 'Cant', 'Unitario', 'Total']], body: insRows, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 } });
+            currentY = doc.lastAutoTable.finalY + 5;
+
+            // V. ALQUILER (Nuevo)
+            const alqRows = [];
+            document.querySelectorAll('#alquilerEquipos tr').forEach(row => {
+                if(row.querySelector('[data-alquiler-field="nombre"]').value) {
+                    alqRows.push([
+                        row.querySelector('[data-alquiler-field="nombre"]').value,
+                        row.querySelector('[data-alquiler-field="cantidad"]').value,
+                        formatCOP(row.querySelector('[data-alquiler-field="valorUnitario"]').value),
+                        row.querySelector('.valor-total-alquiler').textContent
+                    ]);
+                }
+            });
+            if (currentY > 250) { doc.addPage(); currentY = 20; }
+            doc.autoTable({ startY: currentY, head: [['V. ALQUILER DE EQUIPOS', 'Cant', 'Unitario', 'Total']], body: alqRows, theme: 'grid', headStyles: { fillColor: [245, 158, 11] }, styles: { fontSize: 8 }, foot: [['', '', 'TOTAL:', document.getElementById('subtotalAlquiler').textContent]] });
+            currentY = doc.lastAutoTable.finalY + 5;
+
+            // VI. INDIRECTOS
             const indirectosData = [
                 ['Depreciación', document.getElementById('costoDepreciacion').textContent],
                 ['Consumos', document.getElementById('costoConsumos').textContent],
@@ -1085,56 +880,47 @@
                 ['Administrativos', document.getElementById('costoAdministrativos').textContent],
                 ['TOTAL INDIRECTOS', document.getElementById('subtotalCostosIndirectos').textContent]
             ];
-            
-            // Para que no se corte, chequeamos espacio
             if (currentY > 250) { doc.addPage(); currentY = 20; }
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['V. COSTOS INDIRECTOS', 'Valor']],
-                body: indirectosData,
-                theme: 'grid',
-                headStyles: { fillColor: [49, 39, 130] },
-                styles: { fontSize: 8 }
-            });
-            
+            doc.autoTable({ startY: currentY, head: [['VI. COSTOS INDIRECTOS', 'Valor']], body: indirectosData, theme: 'grid', headStyles: { fillColor: [49, 39, 130] }, styles: { fontSize: 8 } });
             currentY = doc.lastAutoTable.finalY + 5;
-            
-            // RESUMEN FINAL
-            const resumenData = [
-                ['Costo Directo Total', document.getElementById('totalCostosDirectos').textContent],
-                ['Costo Indirecto Total', document.getElementById('totalCostosIndirectosResumen').textContent],
-                ['COSTO TOTAL PROCEDIMIENTO', document.getElementById('costoUnitarioFinal').textContent]
-            ];
-            
-            doc.autoTable({
-                startY: currentY,
-                head: [['VI. RESUMEN FINAL', 'Valor']],
-                body: resumenData,
-                theme: 'grid',
-                headStyles: { fillColor: [0, 128, 65] }, // Verde secundario
-                styles: { fontSize: 10, fontStyle: 'bold' }
-            });
 
-            // PIE DE PÁGINA (Fecha y Paginación)
+            // VII. RESUMEN
+            const resumenData = [
+                ['Costos Directos (Operativos)', document.getElementById('totalCostosDirectos').textContent],
+                ['Alquiler Equipos', document.getElementById('resumenAlquiler').textContent],
+                ['Indirectos', document.getElementById('totalCostosIndirectosResumen').textContent],
+                ['Facturables Adicionales', document.getElementById('totalAdicionales').textContent],
+                ['COSTO TOTAL', document.getElementById('costoUnitarioFinal').textContent]
+            ];
+            doc.autoTable({ startY: currentY, head: [['VII. RESUMEN FINAL', 'Valor']], body: resumenData, theme: 'grid', headStyles: { fillColor: [0, 128, 65] }, styles: { fontSize: 10, fontStyle: 'bold' } });
+
             const pageCount = doc.internal.getNumberOfPages();
             for(let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.setTextColor(100);
-                
-                // Fecha a la izquierda
-                const dateStr = new Date().toLocaleString();
-                doc.text(`Generado: ${dateStr}`, margin, 290);
-                
-                // Página a la derecha
+                doc.setPage(i); doc.setFontSize(8); doc.setTextColor(100);
+                doc.text(`Generado: ${new Date().toLocaleString()}`, margin, 290);
                 doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin - 20, 290);
             }
-
-            // Descargar
             doc.save(`Costeo_${document.getElementById('consecutivo').value}.pdf`);
         }
         
+        window.onload = function() {
+            initCharts();
+            addManoDeObra(); addInsumoRow(); addMedicamentoRow(); addAlquilerRow();
+            actualizarConsecutivo();
+            document.getElementById('cupsSearch').addEventListener('keyup', filterCUPS);
+            document.getElementById('homologo').addEventListener('keyup', filterHomologo);
+            document.getElementById('talentoHumanoContainer').addEventListener('input', calculateTotal);
+            document.getElementById('insumosNoFacturables').addEventListener('input', calculateTotal);
+            document.getElementById('medicamentosFacturables').addEventListener('input', calculateTotal);
+            document.getElementById('alquilerEquipos').addEventListener('input', calculateTotal);
+            document.querySelectorAll('input[id^="porcentaje"]').forEach(el => el.addEventListener('input', calculateTotal));
+            document.addEventListener('click', function(e) { if (!e.target.closest('.relative') && !e.target.closest('.table-dropdown')) { document.querySelectorAll('.cups-dropdown, .table-dropdown').forEach(el => el.classList.add('hidden')); } });
+            calculateTotal();
+        };
+        
+        function borrarTodo() { if(confirm("¿Borrar todo?")) { document.getElementById('costeoForm').reset(); document.getElementById('talentoHumanoContainer').innerHTML = ''; document.getElementById('insumosNoFacturables').innerHTML = ''; document.getElementById('medicamentosFacturables').innerHTML = ''; document.getElementById('alquilerEquipos').innerHTML = ''; addManoDeObra(); addInsumoRow(); addMedicamentoRow(); addAlquilerRow(); actualizarConsecutivo(); calculateTotal(); } }
+        function actualizarConsecutivo() { let consecutivo = parseInt(localStorage.getItem('consecutivoCosteo') || '1'); const str = `COS-2025-${String(consecutivo).padStart(3, '0')}`; document.getElementById('contadorConsecutivo').textContent = str; document.getElementById('consecutivo').value = str; document.getElementById('consecutivo').disabled = true; }
+        function guardarFormulario() { alert("Guardado"); }
         function toggleSugerencias() { document.getElementById('panelSugerencias').classList.toggle('hidden'); }
         function enviarSugerencia(e) { e.preventDefault(); alert("Enviado"); toggleSugerencias(); }
     </script>
