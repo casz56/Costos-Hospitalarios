@@ -260,7 +260,11 @@
      </div>
      <div><label class="block text-sm font-medium text-gray-700">Consecutivo</label> <input type="text" placeholder="Ej: COS-2025-001" class="input-field" id="consecutivo">
      </div>
-     <div><label class="block text-sm font-medium text-gray-700">Centro de Costos / Código</label> <input type="text" placeholder="Ej: QUIROFANO / 501" class="input-field" id="centroCostos">
+     <!-- CENTRO DE COSTOS (Modificado a Lista Desplegable con Búsqueda) -->
+     <div class="relative">
+        <label class="block text-sm font-medium text-gray-700">Centro de Costos / Código</label> 
+        <input type="text" placeholder="Escriba código o nombre..." class="input-field" id="centroCostos" autocomplete="off" onkeyup="filterCentrosCostos()">
+        <div id="centrosCostosResults" class="cups-dropdown absolute w-full hidden"></div>
      </div>
     </div>
     
@@ -899,6 +903,93 @@
         let HOMOLOGO_DB = [];
         let INVENTORY_DB = []; 
         
+        // --- BASE DE DATOS DE CENTROS DE COSTOS (Actualizada) ---
+        const CENTROS_COSTOS_DB = [
+            // ADMINISTRATIVOS
+            { tipo: "ADMINISTRATIVO", codigo: "108", nombre: "Gerencia" },
+            { tipo: "ADMINISTRATIVO", codigo: "118", nombre: "Revisoría Fiscal" },
+            { tipo: "ADMINISTRATIVO", codigo: "105", nombre: "Control Interno Disciplinario" },
+            { tipo: "ADMINISTRATIVO", codigo: "104", nombre: "Control Interno" },
+            { tipo: "ADMINISTRATIVO", codigo: "111", nombre: "Oficina Asesora Jurídica" },
+            { tipo: "ADMINISTRATIVO", codigo: "142", nombre: "Oficina de Contratación" },
+            { tipo: "ADMINISTRATIVO", codigo: "143", nombre: "Oficina Asesora de Sistemas de Información" },
+            { tipo: "ADMINISTRATIVO", codigo: "113", nombre: "Oficina Asesora de Planeación, Calidad y Desarrollo Inst." },
+            { tipo: "ADMINISTRATIVO", codigo: "130", nombre: "Garantía de la Calidad" },
+            { tipo: "ADMINISTRATIVO", codigo: "110", nombre: "Mercadeo" },
+            { tipo: "ADMINISTRATIVO", codigo: "127", nombre: "Atención al Usuario" },
+            { tipo: "ADMINISTRATIVO", codigo: "138", nombre: "Trabajo Social" },
+            { tipo: "ADMINISTRATIVO", codigo: "112", nombre: "Oficina de Talento Humano" },
+            { tipo: "ADMINISTRATIVO", codigo: "123", nombre: "Salud Ocupacional" },
+            { tipo: "ADMINISTRATIVO", codigo: "115", nombre: "Subgerencia Administrativa" },
+            { tipo: "ADMINISTRATIVO", codigo: "125", nombre: "Gestión Documental" },
+            { tipo: "ADMINISTRATIVO", codigo: "116", nombre: "Subgerencia Financiera" },
+            { tipo: "ADMINISTRATIVO", codigo: "103", nombre: "Contabilidad" },
+            { tipo: "ADMINISTRATIVO", codigo: "106", nombre: "Presupuesto" },
+            { tipo: "ADMINISTRATIVO", codigo: "107", nombre: "Facturación" },
+            { tipo: "ADMINISTRATIVO", codigo: "109", nombre: "Costos" },
+            { tipo: "ADMINISTRATIVO", codigo: "119", nombre: "Tesorería" },
+            { tipo: "ADMINISTRATIVO", codigo: "128", nombre: "Cartera" },
+            { tipo: "ADMINISTRATIVO", codigo: "117", nombre: "Subgerencia Técnico-Científica" },
+            { tipo: "ADMINISTRATIVO", codigo: "101", nombre: "Coordinación Urgencias" },
+            { tipo: "ADMINISTRATIVO", codigo: "120", nombre: "Coordinación Hospitalización" },
+            { tipo: "ADMINISTRATIVO", codigo: "121", nombre: "Coordinacion Servicios Ambulatorios" },
+            { tipo: "ADMINISTRATIVO", codigo: "122", nombre: "Coordinación Enfermería" },
+            { tipo: "ADMINISTRATIVO", codigo: "132", nombre: "IAMI" },
+            { tipo: "ADMINISTRATIVO", codigo: "131", nombre: "Referencia y Contrareferencia" },
+            { tipo: "ADMINISTRATIVO", codigo: "134", nombre: "Epidemiología" },
+
+            // LOGISTICOS
+            { tipo: "LOGISTICO", codigo: "114", nombre: "Recursos Físicos" },
+            { tipo: "LOGISTICO", codigo: "803", nombre: "Servicio de Alimentos" },
+            { tipo: "LOGISTICO", codigo: "802", nombre: "Mantenimiento Servicios Generales" },
+            { tipo: "LOGISTICO", codigo: "801", nombre: "Esterilización" },
+            { tipo: "LOGISTICO", codigo: "805", nombre: "Lavandería" },
+            { tipo: "LOGISTICO", codigo: "807", nombre: "Ropería" },
+            { tipo: "LOGISTICO", codigo: "808", nombre: "Central de Materiales" },
+            { tipo: "LOGISTICO", codigo: "809", nombre: "Vigilancia" },
+            { tipo: "LOGISTICO", codigo: "102", nombre: "Suministros" },
+            { tipo: "LOGISTICO", codigo: "804", nombre: "Almacén" },
+            { tipo: "LOGISTICO", codigo: "810", nombre: "Servicio Farmacéutico" },
+            { tipo: "LOGISTICO", codigo: "811", nombre: "ULAN" },
+            { tipo: "LOGISTICO", codigo: "904", nombre: "Transporte Ambulancia" },
+            { tipo: "LOGISTICO", codigo: "129", nombre: "Oficina de Educacion Medica" },
+
+            // OPERATIVOS
+            { tipo: "OPERATIVO", codigo: "201", nombre: "Urgencias Consulta y procedimientos" },
+            { tipo: "OPERATIVO", codigo: "202", nombre: "Urgencias Observación Adultos" },
+            { tipo: "OPERATIVO", codigo: "203", nombre: "Urgencias Observación Pediatría" },
+            { tipo: "OPERATIVO", codigo: "301", nombre: "Consulta Externa" },
+            { tipo: "OPERATIVO", codigo: "133", nombre: "Técnica Madre Canguro" },
+            { tipo: "OPERATIVO", codigo: "401", nombre: "Hospitalización Cirugía" },
+            { tipo: "OPERATIVO", codigo: "402", nombre: "Hospitalización Ginecobstetricia" },
+            { tipo: "OPERATIVO", codigo: "403", nombre: "Hospitalizacion Medicina Interna" },
+            { tipo: "OPERATIVO", codigo: "404", nombre: "Hospitalización Neurocirugía" },
+            { tipo: "OPERATIVO", codigo: "407", nombre: "Hospitalización Pediatría" },
+            { tipo: "OPERATIVO", codigo: "408", nombre: "Hospitalización Salud Mental" },
+            { tipo: "OPERATIVO", codigo: "409", nombre: "Hospitalización Séptimo Piso - VIP" },
+            { tipo: "OPERATIVO", codigo: "416", nombre: "Hospitalización Oncología" },
+            { tipo: "OPERATIVO", codigo: "406", nombre: "Cuidado Intensivo Neonatal" },
+            { tipo: "OPERATIVO", codigo: "410", nombre: "Cuidado Intensivo Adulto" },
+            { tipo: "OPERATIVO", codigo: "411", nombre: "Cuidado Intensivo Pediátrico" },
+            { tipo: "OPERATIVO", codigo: "415", nombre: "Cuidado Intensivo Obstétrico" },
+            { tipo: "OPERATIVO", codigo: "501", nombre: "Quirófanos" },
+            { tipo: "OPERATIVO", codigo: "502", nombre: "Sala de Partos" },
+            { tipo: "OPERATIVO", codigo: "503", nombre: "Unidad de Trasplante" },
+            { tipo: "OPERATIVO", codigo: "601", nombre: "Cardiología" },
+            { tipo: "OPERATIVO", codigo: "602", nombre: "Imagenología" },
+            { tipo: "OPERATIVO", codigo: "603", nombre: "Laboratorio Clínico" },
+            { tipo: "OPERATIVO", codigo: "604", nombre: "Neumología" },
+            { tipo: "OPERATIVO", codigo: "605", nombre: "Anatomía Patológica" },
+            { tipo: "OPERATIVO", codigo: "606", nombre: "Endoscopias" },
+            { tipo: "OPERATIVO", codigo: "608", nombre: "Resonancia Magnética Nuclear (RMN)" },
+            { tipo: "OPERATIVO", codigo: "703", nombre: "Neurofisiología" },
+            { tipo: "OPERATIVO", codigo: "607", nombre: "Cardiovascular" },
+            { tipo: "OPERATIVO", codigo: "701", nombre: "Banco de Sangre" },
+            { tipo: "OPERATIVO", codigo: "902", nombre: "Unidad Renal" },
+            { tipo: "OPERATIVO", codigo: "903", nombre: "Unidad de Cancerología" },
+            { tipo: "OPERATIVO", codigo: "913", nombre: "Ingresos No Operativos" }
+        ];
+        
         let thCount = 0;
         let pieChart = null;
         let barChart = null;
@@ -1099,7 +1190,43 @@
                 .toLowerCase(); 
         }
 
-        // --- FILTROS ---
+        // --- FILTROS DE CENTROS DE COSTOS (Mejorado) ---
+        function filterCentrosCostos() {
+            const input = document.getElementById('centroCostos');
+            const filter = normalizeText(input.value);
+            const resultsDiv = document.getElementById('centrosCostosResults');
+            
+            if (filter.length === 0) { 
+                resultsDiv.classList.add('hidden'); 
+                return; 
+            }
+            
+            // Buscar por Código, Nombre o Tipo
+            const filteredData = CENTROS_COSTOS_DB.filter(item => {
+                const searchStr = normalizeText(`${item.tipo} ${item.codigo} ${item.nombre}`);
+                return searchStr.includes(filter);
+            });
+            
+            if(filteredData.length > 0) {
+                 renderDropdown(resultsDiv, filteredData, (item) => selectCentroCosto(item), (item) => `
+                    <div class="flex flex-col">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-bold text-gray-800">${item.codigo} - ${item.nombre}</span>
+                            <span class="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">${item.tipo}</span>
+                        </div>
+                    </div>
+                 `);
+            } else {
+                resultsDiv.classList.add('hidden');
+            }
+        }
+        
+        function selectCentroCosto(item) {
+            document.getElementById('centroCostos').value = `${item.codigo} - ${item.nombre}`;
+            document.getElementById('centrosCostosResults').classList.add('hidden');
+        }
+
+        // --- FILTROS CUPS Y HOMOLOGO ---
         function filterCUPS() {
             const input = document.getElementById('cupsSearch');
             // Normalizar input (quita tildes y minusculas)
@@ -1595,8 +1722,11 @@
             // Cargar inicial vacío
             addManoDeObra(); addInsumoRow(); addMedicamentoRow(); addAlquilerRow();
             actualizarConsecutivo();
+            // Listeners
             document.getElementById('cupsSearch').addEventListener('keyup', filterCUPS);
             document.getElementById('homologo').addEventListener('keyup', filterHomologo);
+            document.getElementById('centroCostos').addEventListener('focus', filterCentrosCostos); // Mostrar al hacer click
+            
             document.getElementById('talentoHumanoContainer').addEventListener('input', calculateTotal);
             document.getElementById('insumosNoFacturables').addEventListener('input', calculateTotal);
             document.getElementById('medicamentosFacturables').addEventListener('input', calculateTotal);
