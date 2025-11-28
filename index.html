@@ -454,6 +454,7 @@ const appId = "costos-hospitalarios-v1";
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
+        const normalizedPass = String(pass).trim();
         
         const btn = e.target.querySelector('button');
         const err = document.getElementById('appLoginError');
@@ -482,7 +483,8 @@ const appId = "costos-hospitalarios-v1";
                 const data = doc.data();
                 // Comparación flexible (lowercase) para el correo
                 if (data.email.toLowerCase() === email.toLowerCase()) {
-                    if (data.password === pass) {
+                    const storedPass = String(data.password || "").trim();
+                    if (storedPass === normalizedPass) {
                         if (data.active !== false) {
                             validUser = data;
                         } else {
