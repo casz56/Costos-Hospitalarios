@@ -11,8 +11,11 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
   
-  <!-- PapaParse para leer CSVs -->
+  <!-- LIBRERÍAS DE DATOS (CSV Y EXCEL) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <!-- SheetJS para leer Excel -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  
   <!-- jsPDF y AutoTable para generar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -42,7 +45,7 @@
         
         /* Clase para el nuevo color de botones */
         .bg-btn-institutional { background-color: var(--color-institutional-light); }
-        .bg-btn-institutional:hover { background-color: #5a6da3; } /* Un poco más oscuro para hover */
+        .bg-btn-institutional:hover { background-color: #5a6da3; }
 
         .section-header {
             background-color: var(--color-primary);
@@ -112,7 +115,6 @@
             cursor: pointer;
         }
         
-        /* Animación para el estado de resultados */
         .result-card {
             transition: all 0.3s ease;
         }
@@ -127,7 +129,7 @@
  <body class="p-4 md:p-8">
   <div class="max-w-7xl mx-auto">
    <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative overflow-hidden">
-    <!-- Logo Institucional Corregido para Web y Vista Previa -->
+    <!-- Logo Institucional -->
     <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="absolute top-2 left-6 w-32 md:w-48 h-auto object-contain">
 
     <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">
@@ -160,9 +162,9 @@
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                        </svg>
-                       Cargar CUPS (.csv)
+                       Cargar CUPS (.csv/.xlsx)
                    </button>
-                   <input type="file" id="csvCupsInput" accept=".csv" onchange="handleCupsUpload(this)">
+                   <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')">
                </div>
                <span id="cupsStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
            </div>
@@ -174,9 +176,9 @@
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                        </svg>
-                       Cargar Inventario (.csv)
+                       Cargar Inventario (.csv/.xlsx)
                    </button>
-                   <input type="file" id="csvInventoryInput" accept=".csv" onchange="handleInventoryUpload(this)">
+                   <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')">
                </div>
                <span id="inventoryStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
            </div>
@@ -566,92 +568,217 @@
         let resultsChart = null; // Nuevo gráfico para Estado de Resultados
 
         // --- MANEJO DE ARCHIVOS ---
-        function handleCupsUpload(input) {
+        
+        function handleFileSelect(input, type) {
             const file = input.files[0];
             if (!file) return;
-            document.getElementById('cupsStatus').textContent = "⌛ Procesando...";
-            Papa.parse(file, {
-                complete: function(results) { processCupsCSV(results.data); },
-                error: function(err) { alert("Error al leer CUPS CSV"); },
-                header: true, skipEmptyLines: true, delimiter: ";", encoding: "UTF-8"
-            });
+
+            const statusId = type === 'cups' ? 'cupsStatus' : 'inventoryStatus';
+            document.getElementById(statusId).textContent = "⌛ Procesando...";
+
+            const ext = file.name.split('.').pop().toLowerCase();
+
+            if (ext === 'csv') {
+                Papa.parse(file, {
+                    complete: function(results) { 
+                        const data = results.data.filter(row => Object.values(row).some(val => val)); // Filtra filas vacías
+                        if (type === 'cups') processCupsData(data, true);
+                        else processInventoryData(data, true);
+                    },
+                    error: function(err) { alert("Error al leer CSV: " + err); },
+                    header: false, // Leer como array de arrays para estandarizar con Excel
+                    skipEmptyLines: true, 
+                    encoding: "UTF-8"
+                });
+            } else if (ext === 'xlsx' || ext === 'xls') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        // header: 1 devuelve array de arrays
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                        
+                        if (type === 'cups') processCupsData(jsonData, false);
+                        else processInventoryData(jsonData, false);
+                    } catch (err) {
+                        console.error(err);
+                        alert("Error al leer archivo Excel");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert("Formato no soportado. Use .csv, .xlsx o .xls");
+            }
         }
 
-        function handleInventoryUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-            document.getElementById('inventoryStatus').textContent = "⌛ Procesando...";
-            Papa.parse(file, {
-                complete: function(results) { processInventoryCSV(results.data); },
-                error: function(err) { alert("Error al leer Inventario CSV"); },
-                header: true, skipEmptyLines: true, delimiter: ";", encoding: "UTF-8"
-            });
-        }
+        // Función unificada para procesar datos de CUPS (CSV o Excel)
+        function processCupsData(rows, isCSV) {
+            CUPS_DB = []; HOMOLOGO_DB = []; 
+            let count = 0; 
+            const homologoSet = new Set(); 
 
-        function processCupsCSV(data) {
-            CUPS_DB = []; HOMOLOGO_DB = []; let count = 0; const homologoSet = new Set(); 
-            data.forEach(row => {
-                let colAVal = row["CUPS_DESCRIPCION"] || row[Object.keys(row)[0]]; 
-                let codeVal = row["CUPS "] || row["CUPS"] || row[Object.keys(row)[1]]; 
-                let descVal = row["DESCRIPCION_RES_2461/2024"] || row[Object.keys(row)[2]]; 
-                if (colAVal) {
-                    CUPS_DB.push({ fullText: normalizeText(colAVal), display: colAVal, code: codeVal, desc: descVal });
+            // Determinar inicio de datos (saltar encabezados si es necesario)
+            // Asumimos que si la primera fila tiene "CUPS" o "CODIGO", es encabezado
+            let startIndex = 0;
+            if (rows.length > 0) {
+                const firstRowStr = JSON.stringify(rows[0]).toUpperCase();
+                if (firstRowStr.includes("CUPS") || firstRowStr.includes("CODIGO")) startIndex = 1;
+            }
+
+            for (let i = startIndex; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length < 2) continue;
+
+                // Mapeo flexible basado en índices de columna (0, 1, 2)
+                // Col 0: Posible llave compuesta o Código
+                // Col 1: Código o Nombre
+                // Col 2: Nombre o Descripción
+                // El usuario pidió buscar en las 3 primeras columnas.
+                
+                const col0 = (row[0] || "").toString().trim();
+                const col1 = (row[1] || "").toString().trim();
+                const col2 = (row[2] || "").toString().trim();
+                
+                // Construir texto de búsqueda combinando las 3 primeras columnas
+                const searchStr = normalizeText(`${col0} ${col1} ${col2}`);
+                
+                // Lógica de extracción de Código y Descripción para visualización
+                // Asumimos lógica común: Si col1 parece código, usarlo. Si no, col0.
+                let codeVal = col1.length > 0 && col1.length < 10 ? col1 : col0;
+                let descVal = col2.length > 0 ? col2 : (col1.length > 10 ? col1 : "Sin Descripción");
+                
+                // Validación básica para no guardar basura
+                if (searchStr.length > 3) {
+                    CUPS_DB.push({ 
+                        fullText: searchStr, 
+                        display: `${codeVal} - ${descVal}`, 
+                        code: codeVal, 
+                        desc: descVal 
+                    });
                     count++;
                 }
-                let hCode = row["HOMOLOGO"] || row[Object.keys(row)[6]];
-                let hDesc = row["DESCRIPCION_HOMOLOGO"] || row[Object.keys(row)[7]];
-                let colIVal = Object.values(row)[8] || ""; 
-                if (hCode || hDesc) {
-                    const uniqueKey = `${hCode}-${hDesc}`;
-                    if (!homologoSet.has(uniqueKey)) {
-                        homologoSet.add(uniqueKey);
-                        const searchString = `${hCode} ${hDesc} ${colIVal}`;
-                        HOMOLOGO_DB.push({ searchStr: normalizeText(searchString), code: hCode || "S/C", desc: hDesc || "Sin descripción", colI: colIVal });
+
+                // Lógica Homólogos (intentar extraer si hay más columnas)
+                // En el CSV original eran índices 6, 7. En Excel podrían ser G, H (índices 6, 7)
+                if (row.length > 7) {
+                    let hCode = (row[6] || "").toString().trim();
+                    let hDesc = (row[7] || "").toString().trim();
+                    if (hCode || hDesc) {
+                        const uniqueKey = `${hCode}-${hDesc}`;
+                        if (!homologoSet.has(uniqueKey)) {
+                            homologoSet.add(uniqueKey);
+                            HOMOLOGO_DB.push({ 
+                                searchStr: normalizeText(`${hCode} ${hDesc}`), 
+                                code: hCode || "S/C", 
+                                desc: hDesc || "Sin descripción" 
+                            });
+                        }
                     }
                 }
-            });
-            document.getElementById('cupsSearch').disabled = false;
-            document.getElementById('cupsSearch').placeholder = `Buscar en ${count} CUPS...`;
-            document.getElementById('homologo').disabled = false;
-            document.getElementById('homologo').placeholder = "Buscar Homólogo...";
-            document.getElementById('cupsStatus').textContent = `✅ ${count} Registros`;
-            document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic";
-            alert(`CUPS: ${count} registros cargados.`);
+            }
+
+            finalizeUpload('cups', count);
         }
 
-        function processInventoryCSV(data) {
-            INVENTORY_DB = []; let count = 0;
-            data.forEach(row => {
-                const values = Object.values(row);
-                let searchKey = values[0] || ""; 
-                let code = values[1] || "";
-                let name = values[2] || "";
-                let presentation = values[4] || "UNIDAD";
-                let priceRaw = values[12] || "0";
-                let priceStr = priceRaw.replace(/\./g, '').replace(',', '.');
-                let price = parseFloat(priceStr);
-                if (isNaN(price)) price = 0;
-                if (searchKey) {
-                    INVENTORY_DB.push({ searchStr: normalizeText(searchKey), display: searchKey, code: code, name: name, presentation: presentation, price: price });
+        // Función unificada para procesar datos de INVENTARIO (CSV o Excel)
+        function processInventoryData(rows, isCSV) {
+            INVENTORY_DB = []; 
+            let count = 0;
+
+            let startIndex = 0;
+            if (rows.length > 0) {
+                const firstRowStr = JSON.stringify(rows[0]).toUpperCase();
+                if (firstRowStr.includes("PRODUCTO") || firstRowStr.includes("CODIGO")) startIndex = 1;
+            }
+
+            for (let i = startIndex; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length < 2) continue;
+
+                // Estrategia: Buscar en 3 primeras columnas
+                const col0 = (row[0] || "").toString().trim();
+                const col1 = (row[1] || "").toString().trim();
+                const col2 = (row[2] || "").toString().trim();
+
+                const searchStr = normalizeText(`${col0} ${col1} ${col2}`);
+
+                // Extracción de datos para visualización
+                // Asumiendo estructura típica: Col 1 = Código, Col 2 = Nombre
+                let code = col1 || col0; 
+                let name = col2 || "Sin nombre";
+                
+                // Presentación (Col 4 en CSV original)
+                let presentation = (row[4] || "UNIDAD").toString();
+
+                // Precio (Col 12 en CSV original)
+                let price = 0;
+                if (row[12]) {
+                    // Limpieza de precio (manejo de formatos moneda)
+                    let pStr = row[12].toString().replace(/\./g, '').replace(',', '.').replace('$', '').trim();
+                    price = parseFloat(pStr) || 0;
+                }
+
+                if (searchStr.length > 2) {
+                    INVENTORY_DB.push({ 
+                        searchStr: searchStr, 
+                        display: name, 
+                        code: code, 
+                        name: name, 
+                        presentation: presentation, 
+                        price: price 
+                    });
                     count++;
                 }
-            });
-            document.getElementById('inventoryStatus').textContent = `✅ ${count} Artículos`;
-            document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic";
-            alert(`Inventario: ${count} artículos cargados.`);
+            }
+
+            finalizeUpload('inventory', count);
+        }
+
+        function finalizeUpload(type, count) {
+            if (type === 'cups') {
+                document.getElementById('cupsSearch').disabled = false;
+                document.getElementById('cupsSearch').placeholder = `Buscar en ${count} CUPS...`;
+                document.getElementById('homologo').disabled = false;
+                document.getElementById('homologo').placeholder = "Buscar Homólogo...";
+                document.getElementById('cupsStatus').textContent = `✅ ${count} Registros`;
+                document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic";
+            } else {
+                document.getElementById('inventoryStatus').textContent = `✅ ${count} Artículos`;
+                document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic";
+            }
+            alert(`${type.toUpperCase()}: ${count} registros cargados correctamente.`);
         }
 
         const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
-        function normalizeText(text) { if(!text) return ""; return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+        
+        // Función de normalización mejorada para búsqueda con tildes y proximidad
+        function normalizeText(text) { 
+            if(!text) return ""; 
+            return text.toString()
+                .normalize("NFD") // Descompone caracteres con acento
+                .replace(/[\u0300-\u036f]/g, "") // Elimina los diacríticos (tildes)
+                .toLowerCase(); 
+        }
 
         // --- FILTROS ---
         function filterCUPS() {
             const input = document.getElementById('cupsSearch');
+            // Normalizar input (quita tildes y minusculas)
             const filter = normalizeText(input.value);
             const resultsDiv = document.getElementById('cupsResults');
-            if (CUPS_DB.length === 0 || input.value.length < 3) { resultsDiv.classList.add('hidden'); return; }
+            
+            if (CUPS_DB.length === 0 || filter.length < 3) { resultsDiv.classList.add('hidden'); return; }
+            
+            // Lógica de "proximidad": Divide la búsqueda en palabras y verifica que TODAS estén presentes
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
-            const filteredData = CUPS_DB.filter(item => searchTerms.every(term => item.fullText.includes(term))).slice(0, 50);
+            
+            const filteredData = CUPS_DB.filter(item => {
+                // Busca en el texto completo normalizado del item
+                return searchTerms.every(term => item.fullText.includes(term));
+            }).slice(0, 50);
+
             renderDropdown(resultsDiv, filteredData, (item) => selectCUPS(item.code, item.desc), (item) => `<span class="font-bold text-primary">${item.display}</span>`);
         }
         function filterHomologo() {
@@ -661,7 +788,7 @@
             if (HOMOLOGO_DB.length === 0 || input.value.length < 2) { resultsDiv.classList.add('hidden'); return; }
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
             const filteredData = HOMOLOGO_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 50);
-            renderDropdown(resultsDiv, filteredData, (item) => { document.getElementById('homologo').value = `${item.code} - ${item.desc}`; resultsDiv.classList.add('hidden'); }, (item) => `<div class="flex justify-between w-full"><span class="font-bold text-primary">${item.code}</span><span class="text-xs bg-gray-100 px-2 rounded">${item.colI}</span></div><div class="text-xs text-gray-600">${item.desc}</div>`);
+            renderDropdown(resultsDiv, filteredData, (item) => { document.getElementById('homologo').value = `${item.code} - ${item.desc}`; resultsDiv.classList.add('hidden'); }, (item) => `<div class="flex justify-between w-full"><span class="font-bold text-primary">${item.code}</span><span class="text-xs bg-gray-100 px-2 rounded">${item.colI || ''}</span></div><div class="text-xs text-gray-600">${item.desc}</div>`);
         }
         function selectCUPS(code, desc) {
             document.getElementById('cupsCode').value = code || "N/A";
@@ -689,8 +816,10 @@
             const filter = normalizeText(input.value);
             if (INVENTORY_DB.length === 0) { if (filter.length > 0) { resultsDiv.innerHTML = '<div class="p-2 text-xs text-orange-600 italic">Cargue archivo de inventario</div>'; resultsDiv.classList.remove('hidden'); } else { resultsDiv.classList.add('hidden'); } return; }
             if (filter.length < 2) { resultsDiv.classList.add('hidden'); return; }
+            
             const searchTerms = filter.split(" ").filter(t => t.length > 0);
             const filteredData = INVENTORY_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 20);
+            
             if (filteredData.length > 0) {
                 resultsDiv.innerHTML = filteredData.map((item, index) => `<div class="p-2 border-b hover:bg-green-50 cursor-pointer text-xs" onclick="selectInventoryItem(this, ${index})"><div class="font-bold text-green-700">${item.code}</div><div class="truncate">${item.name}</div><div class="flex justify-between mt-1 text-gray-500"><span>${item.presentation}</span><span class="font-semibold">${formatCOP(item.price)}</span></div></div>`).join('');
                 resultsDiv.dataset.filteredData = JSON.stringify(filteredData);
