@@ -182,7 +182,6 @@
         import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIGURACIÓN (GitHub / Localhost) ---
-        // Reemplaza estos valores por los de tu proyecto de Firebase.
         const firebaseConfig = { 
             apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
             authDomain: "costos-hospitalarios.firebaseapp.com",
@@ -192,7 +191,6 @@
             appId: "1:404619927928:web:2c9a3f83ba58504dba288d",
             measurementId: "G-446CF9TS9H"
         };
-        // Identificador lógico de la app para construir las rutas de Firestore
         const appId = "costos-hospitalarios-v1";
 
         // Inicializar Firebase
@@ -400,7 +398,7 @@
         document.getElementById('createUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('newUserName').value;
-            const email = document.getElementById('newUserEmail').value;
+            const email = document.getElementById('newUserEmail').value.trim().toLowerCase();
             const pass = document.getElementById('newUserPass').value;
             const role = document.getElementById('newUserRole').value;
             
@@ -411,15 +409,12 @@
             try {
                 await ensureAuth();
 
-                // Verificar duplicados (cliente)
+                // ✅ Verificar duplicado SOLO por este correo (más eficiente)
                 const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
-                const snapshot = await getDocs(usersRef);
-                let exists = false;
-                snapshot.forEach(doc => {
-                    if (doc.data().email.toLowerCase() === email.toLowerCase()) exists = true;
-                });
+                const q = query(usersRef, where('email', '==', email));
+                const duplicateSnapshot = await getDocs(q);
 
-                if (exists) {
+                if (!duplicateSnapshot.empty) {
                     throw new Error("El correo ya está registrado.");
                 }
 
