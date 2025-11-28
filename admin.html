@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Gestión de Usuarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #312782;
+            --color-secondary: #008041;
+            --color-accent: #ec268f;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .btn-primary { background-color: var(--color-primary); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        
+        /* Modal Transitions */
+        .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+        .modal-content { animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- VISTA DE LOGIN (Visible si no hay admin logueado) -->
+    <div id="loginView" class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-8 border-primary relative">
+            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded-full shadow-lg">
+                <div class="h-20 w-20 bg-primary rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                    ⚙️
+                </div>
+            </div>
+            <div class="text-center mt-8 mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Panel Administrativo</h1>
+                <p class="text-gray-500 text-sm mt-1">Gestión de Usuarios Costeo Unitario</p>
+                <span class="inline-block mt-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">Modo Demo (Auth Local)</span>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Correo Administrativo</label>
+                    <input type="email" id="adminEmail" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-900 outline-none transition" placeholder="admin@hospital.gov.co" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
+                    <input type="password" id="adminPass" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-900 outline-none transition" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full btn-primary py-3 rounded-lg font-bold shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">INGRESAR</button>
+            </form>
+            <p id="loginError" class="text-red-500 text-center text-sm mt-4 hidden bg-red-50 p-2 rounded border border-red-100"></p>
+        </div>
+    </div>
+
+    <!-- VISTA DE PANEL (Visible solo para Admins) -->
+    <div id="dashboardView" class="hidden min-h-screen flex flex-col md:flex-row">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-primary text-white flex-shrink-0 flex flex-col shadow-2xl z-10">
+            <div class="p-6 font-bold text-xl border-b border-blue-800 flex items-center gap-3">
+                <span>⚙️</span> Admin Panel
+            </div>
+            <div class="p-6 border-b border-blue-800 bg-blue-900 bg-opacity-30">
+                <p class="text-xs text-blue-300 uppercase tracking-wider mb-1">Usuario Actual</p>
+                <p id="currentUserDisplay" class="font-semibold text-sm truncate">Cargando...</p>
+            </div>
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <a href="#" class="flex items-center gap-3 py-3 px-4 rounded bg-white bg-opacity-10 text-white font-medium border-l-4 border-accent">
+                    <span>👥</span> Gestión de Usuarios
+                </a>
+                <a href="index.html" target="_blank" class="flex items-center gap-3 py-3 px-4 rounded hover:bg-white hover:bg-opacity-5 text-gray-300 transition">
+                    <span>🔗</span> Ir al Formulario
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-800">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 py-2 px-4 rounded bg-red-600 hover:bg-red-700 text-white transition font-bold shadow-md">
+                    <span>🚪</span> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 bg-gray-50 flex flex-col h-screen overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm p-6 flex justify-between items-center z-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Directorio de Usuarios</h2>
+                    <p class="text-sm text-gray-500">Administre los accesos al sistema de costeo (Base de Datos Local).</p>
+                </div>
+                <button onclick="openModal('createUserModal')" class="bg-secondary hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 font-bold">
+                    <span class="text-xl leading-none">+</span> Crear Nuevo Usuario
+                </button>
+            </header>
+
+            <!-- Table Container -->
+            <div class="flex-1 p-6 overflow-hidden flex flex-col">
+                <div class="bg-white rounded-xl shadow border border-gray-200 flex-1 overflow-hidden flex flex-col">
+                    <div class="overflow-x-auto overflow-y-auto flex-1">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Usuario / Cargo</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Correo Electrónico</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Contraseña (Demo)</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Rol de Sistema</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Se llena dinámicamente -->
+                                <tr><td colspan="5" class="text-center py-10 text-gray-400">
+                                    <div class="flex flex-col items-center">
+                                        <svg class="animate-spin h-8 w-8 text-primary mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Cargando usuarios...
+                                    </div>
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: CREAR USUARIO -->
+    <div id="createUserModal" class="modal flex items-center justify-center p-4">
+        <div class="modal-content bg-white p-0 rounded-xl w-full max-w-lg shadow-2xl relative overflow-hidden">
+            <div class="bg-primary p-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    👤 Registrar Nuevo Usuario
+                </h3>
+                <button onclick="closeModal('createUserModal')" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <form id="createUserForm" class="p-6 space-y-4">
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4 rounded-r">
+                    <p class="text-xs text-blue-800">
+                        <strong>Modo Simulación:</strong> El usuario se guardará en la base de datos sin validación de correo real.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Nombre Completo</label>
+                        <input type="text" id="newUserName" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Ej: Dr. Juan Pérez" required>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico (Usuario)</label>
+                        <input type="email" id="newUserEmail" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="usuario@ese.gov.co" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
+                        <input type="text" id="newUserPass" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Min. 6 caracteres" required minlength="4">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Rol de Acceso</label>
+                        <select id="newUserRole" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
+                            <option value="user">Operario (Solo Formulario)</option>
+                            <option value="admin">Administrador (Total)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="closeModal('createUserModal')" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-lg font-bold hover:bg-gray-300 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 bg-secondary text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition shadow-md">Crear Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- CONFIGURACIÓN ---
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- SISTEMA DE AUTENTICACIÓN ROBUSTO (Patrón Rule #3) ---
+        // Garantiza conexión antes de leer DB
+        let authPromise = null;
+        const ensureAuth = () => {
+            if (authPromise) return authPromise;
+            authPromise = new Promise((resolve, reject) => {
+                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        unsubscribe();
+                        resolve(user);
+                    }
+                });
+                if (!auth.currentUser) {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth).catch(reject));
+                    } else {
+                        signInAnonymously(auth).catch(reject);
+                    }
+                }
+            });
+            return authPromise;
+        };
+
+        // --- GESTIÓN DE SESIÓN LOCAL ---
+
+        const checkSession = async () => {
+            try {
+                await ensureAuth(); // Conectarse primero
+            } catch (e) {
+                console.error("Critical Auth Error:", e);
+                alert("Error de conexión con el sistema de seguridad.");
+                return;
+            }
+
+            const storedUser = localStorage.getItem('adminUserSession');
+            if (storedUser) {
+                const user = JSON.parse(storedUser);
+                document.getElementById('currentUserDisplay').textContent = user.email;
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        };
+
+        // --- LOGIN PERSONALIZADO (Consulta DB) ---
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "VERIFICANDO...";
+            btn.disabled = true;
+            loginError.classList.add('hidden');
+
+            try {
+                await ensureAuth();
+
+                // RUTA PÚBLICA DE DATOS: artifacts/{appId}/public/data/registered_users
+                const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+                const snapshot = await getDocs(usersRef); // Traer todo para filtrar en cliente (evita indices complejos)
+
+                let validUser = null;
+                let userCount = 0;
+
+                snapshot.forEach(doc => {
+                    userCount++;
+                    const data = doc.data();
+                    if (data.email.toLowerCase() === email.toLowerCase()) {
+                        if (data.password === pass) {
+                            validUser = data;
+                        }
+                    }
+                });
+
+                // Si no hay usuarios en absoluto, permitir crear el primer Admin (Bootstrap)
+                if (userCount === 0) {
+                    if (confirm("⚠️ No hay usuarios registrados en el sistema.\n¿Desea crear este usuario como el Primer Administrador?")) {
+                        const newAdmin = {
+                            uid: 'admin_init_' + Date.now(),
+                            name: 'Admin Inicial',
+                            email: email,
+                            password: pass,
+                            role: 'admin',
+                            active: true,
+                            createdAt: new Date()
+                        };
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', newAdmin.uid), newAdmin);
+                        validUser = newAdmin;
+                        alert("✅ Administrador creado. Ingrese nuevamente.");
+                        location.reload();
+                        return;
+                    }
+                }
+
+                if (validUser) {
+                    if (validUser.role !== 'admin') {
+                        throw new Error("Este usuario no tiene permisos de Administrador.");
+                    }
+                    localStorage.setItem('adminUserSession', JSON.stringify(validUser));
+                    checkSession();
+                } else {
+                    throw new Error("Usuario no encontrado o contraseña incorrecta.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                let msg = error.message;
+                if(msg.includes("Missing or insufficient permissions")) {
+                    msg = "Error de permisos: El sistema no pudo verificar su identidad segura.";
+                }
+                loginError.textContent = msg;
+                loginError.classList.remove('hidden');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        window.logout = () => {
+            localStorage.removeItem('adminUserSession');
+            location.reload();
+        };
+
+        // --- GESTIÓN DE UI ---
+        function showLogin() {
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('dashboardView').classList.add('flex');
+            loadUsers();
+        }
+
+        window.openModal = (id) => document.getElementById(id).style.display = 'flex';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+        // --- CRUD DE USUARIOS ---
+        async function loadUsers() {
+            const tableBody = document.getElementById('usersTableBody');
+            
+            try {
+                await ensureAuth();
+                const q = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+                const querySnapshot = await getDocs(q);
+                
+                let html = '';
+                querySnapshot.forEach((docSnapshot) => {
+                    const u = docSnapshot.data();
+                    const initials = u.name ? u.name.substring(0,2).toUpperCase() : '??';
+                    const roleBadge = u.role === 'admin' 
+                        ? '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Administrador</span>' 
+                        : '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Operario</span>';
+                    
+                    html += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                    ${initials}
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-bold text-gray-900">${u.name || 'Sin nombre'}</div>
+                                    <div class="text-xs text-gray-500">ID: ${docSnapshot.id.substring(0,6)}...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${u.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-mono">
+                            ${u.password ? '••••••' : 'N/A'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">${roleBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="window.deleteUser('${docSnapshot.id}')" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded transition">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+
+                if (html === '') html = '<tr><td colspan="5" class="text-center py-8 text-gray-500 italic">No hay usuarios. Crea el primero.</td></tr>';
+                tableBody.innerHTML = html;
+
+            } catch (error) {
+                console.error(error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error cargando usuarios: ' + error.message + '</td></tr>';
+            }
+        }
+
+        // --- CREAR USUARIO ---
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const pass = document.getElementById('newUserPass').value;
+            const role = document.getElementById('newUserRole').value;
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = "Guardando...";
+            btn.disabled = true;
+
+            try {
+                await ensureAuth();
+
+                // Verificar duplicados (cliente)
+                const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+                const snapshot = await getDocs(usersRef);
+                let exists = false;
+                snapshot.forEach(doc => {
+                    if (doc.data().email.toLowerCase() === email.toLowerCase()) exists = true;
+                });
+
+                if (exists) {
+                    throw new Error("El correo ya está registrado.");
+                }
+
+                const newUid = 'user_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', newUid), {
+                    uid: newUid,
+                    name: name,
+                    email: email,
+                    role: role,
+                    password: pass,
+                    active: true,
+                    createdAt: new Date()
+                });
+                
+                alert(`✅ Usuario "${name}" creado exitosamente.`);
+                closeModal('createUserModal');
+                document.getElementById('createUserForm').reset();
+                loadUsers();
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error: " + error.message);
+            } finally {
+                btn.textContent = "Crear Usuario";
+                btn.disabled = false;
+            }
+        });
+
+        window.deleteUser = async (id) => {
+            if(confirm("¿Seguro que deseas eliminar este usuario?")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', id));
+                    loadUsers();
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        };
+
+        window.onload = checkSession;
+
+    </script>
+</body>
+</html>
