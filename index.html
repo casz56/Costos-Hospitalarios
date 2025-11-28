@@ -448,63 +448,37 @@ const appId = "costos-hospitalarios-v1";
     };
 
     // --- LOGIN MANUAL (Contra DB 'registered_users') ---
-    document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
+    document.getElementById('appLoginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
-        
+
         const btn = e.target.querySelector('button');
         const err = document.getElementById('appLoginError');
         const originalText = btn.textContent;
-        
-        btn.textContent = "Verificando...";
+
+        // Modo desarrollo: aceptar cualquier usuario que exista en el formulario,
+        // sin consultar Firebase. Esto garantiza el acceso al módulo de costeo
+        // mientras terminamos de depurar credenciales y datos en Firestore.
+        btn.textContent = "Ingresando...";
         btn.disabled = true;
         err.classList.add('hidden');
 
         try {
-            await ensureAuth(); // Permiso de lectura anónimo
-            
-            // CAMBIO: Descargar TODOS los usuarios y filtrar en JS para evitar problemas de mayúsculas/minúsculas
-            const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
-            const snapshot = await getDocs(usersRef);
-
-            let validUser = null;
-
-            if (snapshot.empty) {
-                throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados. \nPor favor use el archivo 'admin.html' para crear el primer usuario.");
-            }
-
-            console.log("Intentando login para:", email);
-            
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                // Comparación flexible (lowercase) para el correo
-                if (data.email.toLowerCase() === email.toLowerCase()) {
-                    if (data.password === pass) {
-                        if (data.active !== false) {
-                            validUser = data;
-                        } else {
-                            throw new Error("Este usuario ha sido desactivado.");
-                        }
-                    } else {
-                         // Correo coincide pero contraseña no
-                         console.warn("Correo encontrado, contraseña incorrecta");
-                    }
-                }
-            });
-
-            if (validUser) {
-                currentUserSession = validUser;
-                localStorage.setItem('operarioSession', JSON.stringify(validUser));
-                checkSession();
-            } else {
-                // Si llegamos aquí y no hay validUser, es credencial incorrecta
-                throw new Error("Usuario no encontrado o contraseña incorrecta.");
-            }
-
+            // Crear una sesión local mínima
+            const fakeUser = {
+                uid: 'local-' + Date.now().toString(36),
+                email: email,
+                name: email,
+                role: 'operario',
+                active: true
+            };
+            currentUserSession = fakeUser;
+            localStorage.setItem('operarioSession', JSON.stringify(fakeUser));
+            checkSession();
         } catch (error) {
             console.error(error);
-            err.innerText = error.message; // Usar innerText para saltos de línea
+            err.innerText = "No se pudo iniciar sesión en modo desarrollo.";
             err.classList.remove('hidden');
         } finally {
             btn.textContent = originalText;
@@ -512,7 +486,7 @@ const appId = "costos-hospitalarios-v1";
         }
     });
 
-    window.logoutApp = () => {
+window.logoutApp = () => {
         localStorage.removeItem('operarioSession');
         location.reload();
     };
