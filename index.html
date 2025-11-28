@@ -7,13 +7,18 @@
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- PapaParse para leer CSVs robustamente -->
+  <!-- PapaParse para leer CSVs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <!-- jsPDF y AutoTable para generar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
   <style>
         :root {
             --color-primary: #312782;
             --color-secondary: #008041;
+            --color-accent: #ec268f; /* Fucsia Institucional */
             --color-text: #1f2937;
             --color-bg-light: #f4f7f9;
         }
@@ -27,6 +32,9 @@
         .border-primary { border-color: var(--color-primary); }
         .bg-secondary { background-color: var(--color-secondary); }
         .text-secondary { color: var(--color-secondary); }
+        .bg-accent { background-color: var(--color-accent); }
+        .text-accent { color: var(--color-accent); }
+        
         .section-header {
             background-color: var(--color-primary);
             color: white;
@@ -46,7 +54,7 @@
             border-radius: 0.5rem;
             background-color: white;
         }
-        /* Estilos para dropdowns generales */
+        /* Estilos para dropdowns */
         .cups-dropdown {
             max-height: 300px;
             overflow-y: auto;
@@ -57,12 +65,11 @@
             border-radius: 0 0 0.5rem 0.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        /* Estilos específicos para dropdowns dentro de tablas para evitar cortes */
         .table-dropdown {
             position: absolute;
             top: 100%;
             left: 0;
-            width: 300px; /* Ancho fijo más amplio para ver detalles */
+            width: 300px;
             max-height: 200px;
             overflow-y: auto;
             background: white;
@@ -102,7 +109,8 @@
  <body class="p-4 md:p-8">
   <div class="max-w-7xl mx-auto">
    <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative">
-    <div class="absolute top-6 right-6">
+    <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">
+     <!-- Consecutivo -->
      <div class="bg-secondary px-4 py-2 rounded-lg shadow-lg border-2 border-white flex items-center gap-3">
       <div>
        <p class="text-xs font-semibold text-white opacity-90">Consecutivo</p>
@@ -110,19 +118,20 @@
       </div>
      </div>
     </div>
-    <h1 class="text-3xl font-bold text-center">FORMULARIO DE COSTEO UNITARIO</h1>
-    <h2 class="text-xl font-light text-center mt-1">ESE Hospital Universitario Hernando Moncaleano Perdomo de Neiva</h2>
+    <h1 class="text-3xl font-bold text-center pr-32">FORMULARIO DE COSTEO UNITARIO</h1>
+    <h2 class="text-xl font-light text-center mt-1 pr-32">ESE Hospital Universitario Hernando Moncaleano Perdomo de Neiva</h2>
    </header>
    
-   <!-- SECCIÓN DE CARGA DE ARCHIVOS -->
+   <!-- SECCIÓN DE CARGA DE ARCHIVOS Y HERRAMIENTAS -->
    <div class="bg-white p-4 rounded-lg shadow-md mb-6 mt-6 border-l-4 border-secondary">
        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
            </svg>
-           Configuración de Bases de Datos
+           Configuración y Herramientas
        </h3>
-       <div class="flex flex-wrap gap-4">
+       <div class="flex flex-wrap gap-4 items-start">
            <!-- Cargar CUPS -->
            <div class="flex flex-col gap-1">
                <div class="file-upload-wrapper">
@@ -149,6 +158,17 @@
                    <input type="file" id="csvInventoryInput" accept=".csv" onchange="handleInventoryUpload(this)">
                </div>
                <span id="inventoryStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
+           </div>
+           
+           <!-- Botón Descargar PDF (REUBICADO Y COLOREADO) -->
+           <div class="flex flex-col gap-1">
+               <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-5 py-2 rounded text-sm font-bold hover:bg-opacity-90 transition flex items-center gap-2 shadow-sm">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                   </svg>
+                   Descargar PDF
+               </button>
+               <span class="text-xs text-gray-500 italic">Formato A4</span>
            </div>
        </div>
    </div>
@@ -371,7 +391,7 @@
      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
      </svg> Guardar </button> <button type="button" onclick="borrarTodo()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-     </svg> Borrar Todo </button> <button type="button" onclick="descargarPDF()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
+     </svg> Borrar Todo </button> <button type="button" onclick="descargarPDF()" class="bg-accent hover:bg-opacity-90 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg flex items-center gap-2">
      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
      </svg> Descargar PDF </button>
    </div>
@@ -945,7 +965,176 @@
         }
         
         function guardarFormulario() { alert("Guardado"); }
-        function descargarPDF() { alert("Descargando PDF..."); }
+        
+        // --- FUNCIÓN PDF ACTUALIZADA ---
+        function descargarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Constantes de estilo
+            const margin = 15;
+            let currentY = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            
+            // Función para encabezado repetitivo si fuera necesario, pero lo haremos simple
+            
+            // 1. TÍTULO Y ENCABEZADO
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("FORMULARIO DE COSTEO UNITARIO", pageWidth / 2, currentY, { align: "center" });
+            
+            currentY += 7;
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("ESE Hospital Universitario Hernando Moncaleano Perdomo", pageWidth / 2, currentY, { align: "center" });
+            
+            currentY += 15;
+            
+            // 2. INFORMACIÓN GENERAL (Tabla simple)
+            const generalData = [
+                ['Fecha Elaboración', document.getElementById('fechaElaboracion').value, 'Consecutivo', document.getElementById('consecutivo').value],
+                ['Centro de Costos', document.getElementById('centroCostos').value, 'Tarifario', document.getElementById('tarifario').value],
+                ['CUPS', document.getElementById('cupsSearch').value || 'No seleccionado', 'Homólogo', document.getElementById('homologo').value || 'N/A'],
+                ['Valor Homólogo', document.getElementById('valorHomologo').value || '0', 'Tiempo (h)', document.getElementById('tiempoEjecucion').value || '0'],
+                ['Lugar', document.getElementById('lugarRealizacion').value, 'Grupo/UVR', document.getElementById('grupoUVR').value]
+            ];
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['I. INFORMACIÓN GENERAL DEL SERVICIO', '', '', '']],
+                body: generalData,
+                theme: 'grid',
+                headStyles: { fillColor: [49, 39, 130] }, // Color primario
+                styles: { fontSize: 8 }
+            });
+            
+            currentY = doc.lastAutoTable.finalY + 5;
+            
+            // 3. MANO DE OBRA
+            const moRows = [];
+            document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
+                const cargo = row.querySelector('[data-cost-field="cargo"]').value;
+                const cant = row.querySelector('[data-cost-field="cantidad"]').value;
+                const horas = row.querySelector('[data-cost-field="horas"]').value;
+                const valor = row.querySelector('[data-cost-field="valorHora"]').value;
+                const subtotal = row.querySelector('[id^="th-subtotal"]').textContent;
+                moRows.push([cargo, cant, horas, formatCOP(valor), subtotal]);
+            });
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['II. MANO DE OBRA', 'Cant', 'Horas', 'Valor Hora', 'Subtotal']],
+                body: moRows,
+                theme: 'grid',
+                headStyles: { fillColor: [49, 39, 130] },
+                styles: { fontSize: 8 },
+                foot: [['', '', '', 'TOTAL MO:', document.getElementById('subtotalManoObra').textContent]]
+            });
+            
+            currentY = doc.lastAutoTable.finalY + 5;
+            
+            // 4. INSUMOS
+            const insRows = [];
+            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
+                const nombre = row.querySelector('[data-insumo-field="nombre"]').value;
+                const cant = row.querySelector('[data-insumo-field="cantidad"]').value;
+                const valor = row.querySelector('[data-insumo-field="valorUnitario"]').value;
+                const total = row.querySelector('.valor-total-insumo').textContent;
+                if(nombre) insRows.push([nombre, cant, formatCOP(valor), total]);
+            });
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['III. INSUMOS (NO FACTURABLES)', 'Cant', 'Valor Unit', 'Total']],
+                body: insRows,
+                theme: 'grid',
+                headStyles: { fillColor: [49, 39, 130] },
+                styles: { fontSize: 8 }
+            });
+            
+            currentY = doc.lastAutoTable.finalY + 5;
+            
+            // 5. MEDICAMENTOS
+            const medRows = [];
+            document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
+                const nombre = row.querySelector('[data-medicamento-field="nombre"]').value;
+                const cant = row.querySelector('[data-medicamento-field="cantidad"]').value;
+                const valor = row.querySelector('[data-medicamento-field="valorUnitario"]').value;
+                const total = row.querySelector('.valor-total-medicamento').textContent;
+                if(nombre) medRows.push([nombre, cant, formatCOP(valor), total]);
+            });
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['IV. MEDICAMENTOS (FACTURABLES)', 'Cant', 'Valor Unit', 'Total']],
+                body: medRows,
+                theme: 'grid',
+                headStyles: { fillColor: [49, 39, 130] },
+                styles: { fontSize: 8 },
+                foot: [['', '', 'TOTAL MED:', document.getElementById('totalAdicionales').textContent]]
+            });
+            
+            currentY = doc.lastAutoTable.finalY + 5;
+            
+            // 6. INDIRECTOS Y RESUMEN
+            const indirectosData = [
+                ['Depreciación', document.getElementById('costoDepreciacion').textContent],
+                ['Consumos', document.getElementById('costoConsumos').textContent],
+                ['Gastos Generales', document.getElementById('costoGastosGenerales').textContent],
+                ['Logísticos', document.getElementById('costoLogisticos').textContent],
+                ['Administrativos', document.getElementById('costoAdministrativos').textContent],
+                ['TOTAL INDIRECTOS', document.getElementById('subtotalCostosIndirectos').textContent]
+            ];
+            
+            // Para que no se corte, chequeamos espacio
+            if (currentY > 250) { doc.addPage(); currentY = 20; }
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['V. COSTOS INDIRECTOS', 'Valor']],
+                body: indirectosData,
+                theme: 'grid',
+                headStyles: { fillColor: [49, 39, 130] },
+                styles: { fontSize: 8 }
+            });
+            
+            currentY = doc.lastAutoTable.finalY + 5;
+            
+            // RESUMEN FINAL
+            const resumenData = [
+                ['Costo Directo Total', document.getElementById('totalCostosDirectos').textContent],
+                ['Costo Indirecto Total', document.getElementById('totalCostosIndirectosResumen').textContent],
+                ['COSTO TOTAL PROCEDIMIENTO', document.getElementById('costoUnitarioFinal').textContent]
+            ];
+            
+            doc.autoTable({
+                startY: currentY,
+                head: [['VI. RESUMEN FINAL', 'Valor']],
+                body: resumenData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 128, 65] }, // Verde secundario
+                styles: { fontSize: 10, fontStyle: 'bold' }
+            });
+
+            // PIE DE PÁGINA (Fecha y Paginación)
+            const pageCount = doc.internal.getNumberOfPages();
+            for(let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(100);
+                
+                // Fecha a la izquierda
+                const dateStr = new Date().toLocaleString();
+                doc.text(`Generado: ${dateStr}`, margin, 290);
+                
+                // Página a la derecha
+                doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin - 20, 290);
+            }
+
+            // Descargar
+            doc.save(`Costeo_${document.getElementById('consecutivo').value}.pdf`);
+        }
+        
         function toggleSugerencias() { document.getElementById('panelSugerencias').classList.toggle('hidden'); }
         function enviarSugerencia(e) { e.preventDefault(); alert("Enviado"); toggleSugerencias(); }
     </script>
