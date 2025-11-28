@@ -105,6 +105,7 @@
             position: relative;
             overflow: hidden;
             display: inline-block;
+            width: 100%; /* Asegura que tome el ancho disponible */
         }
         .file-upload-wrapper input[type=file] {
             font-size: 100px;
@@ -113,6 +114,8 @@
             top: 0;
             opacity: 0;
             cursor: pointer;
+            width: 100%;
+            height: 100%;
         }
         
         .result-card {
@@ -126,13 +129,15 @@
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="p-4 md:p-8">
-  <div class="max-w-7xl mx-auto">
-   <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative overflow-hidden">
-    <!-- Logo Institucional -->
-    <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="absolute top-2 left-6 w-32 md:w-48 h-auto object-contain">
+ <body class="p-2 md:p-6 lg:p-8"> <!-- Padding responsive -->
+  <div class="max-w-7xl mx-auto w-full"> <!-- w-full asegura uso del ancho disponible -->
+   <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative overflow-hidden flex flex-col md:block">
+    <!-- Logo Institucional con Auto Scale -->
+    <div class="mb-4 md:mb-0 md:absolute md:top-2 md:left-6 flex justify-center md:justify-start">
+        <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="w-40 md:w-48 lg:w-56 h-auto object-contain transition-all duration-300">
+    </div>
 
-    <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">
+    <div class="md:absolute md:top-6 md:right-6 flex flex-col gap-2 items-center md:items-end mb-4 md:mb-0">
      <!-- Consecutivo -->
      <div class="bg-secondary px-4 py-2 rounded-lg shadow-lg border-2 border-white flex items-center gap-3">
       <div>
@@ -141,8 +146,12 @@
       </div>
      </div>
     </div>
-    <h1 class="text-3xl font-bold text-center pr-32 pl-24 md:pl-0">FORMULARIO DE COSTEO UNITARIO</h1>
-    <h2 class="text-xl font-light text-center mt-1 pr-32 pl-24 md:pl-0">ESE Hospital Universitario Hernando Moncaleano Perdomo de Neiva</h2>
+    
+    <!-- Títulos con padding responsive para no chocar con el logo en desktop -->
+    <div class="mt-2 md:mt-0 md:pl-56 md:pr-40 text-center md:text-left">
+        <h1 class="text-2xl md:text-3xl font-bold leading-tight">FORMULARIO DE COSTEO UNITARIO</h1>
+        <h2 class="text-lg md:text-xl font-light mt-1 opacity-90">ESE Hospital Universitario Hernando Moncaleano Perdomo de Neiva</h2>
+    </div>
    </header>
    
    <!-- SECCIÓN DE CARGA DE ARCHIVOS Y HERRAMIENTAS -->
@@ -154,11 +163,11 @@
            </svg>
            Configuración y Herramientas
        </h3>
-       <div class="flex flex-wrap gap-4 items-start">
+       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
            <!-- Cargar CUPS -->
-           <div class="flex flex-col gap-1">
-               <div class="file-upload-wrapper">
-                   <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-blue-700 transition flex items-center gap-2 shadow-sm w-full justify-center">
+           <div class="flex flex-col gap-1 w-full">
+               <div class="file-upload-wrapper w-full">
+                   <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-sm w-full">
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                        </svg>
@@ -166,13 +175,13 @@
                    </button>
                    <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')">
                </div>
-               <span id="cupsStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
+               <span id="cupsStatus" class="text-xs text-gray-500 italic text-center sm:text-left">⚠️ Pendiente</span>
            </div>
 
            <!-- Cargar INVENTARIO -->
-           <div class="flex flex-col gap-1">
-               <div class="file-upload-wrapper">
-                   <button type="button" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-green-700 transition flex items-center gap-2 shadow-sm w-full justify-center">
+           <div class="flex flex-col gap-1 w-full">
+               <div class="file-upload-wrapper w-full">
+                   <button type="button" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm w-full">
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                        </svg>
@@ -180,18 +189,18 @@
                    </button>
                    <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')">
                </div>
-               <span id="inventoryStatus" class="text-xs text-gray-500 italic">⚠️ Pendiente</span>
+               <span id="inventoryStatus" class="text-xs text-gray-500 italic text-center sm:text-left">⚠️ Pendiente</span>
            </div>
            
            <!-- Botón Descargar PDF -->
-           <div class="flex flex-col gap-1">
-               <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-5 py-2 rounded text-sm font-bold hover:bg-opacity-90 transition flex items-center gap-2 shadow-sm">
+           <div class="flex flex-col gap-1 w-full">
+               <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-5 py-2 rounded text-sm font-bold hover:bg-opacity-90 transition flex items-center justify-center gap-2 shadow-sm w-full">
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                    </svg>
                    Descargar PDF
                </button>
-               <span class="text-xs text-gray-500 italic">Formato A4</span>
+               <span class="text-xs text-gray-500 italic text-center sm:text-left">Formato A4</span>
            </div>
        </div>
    </div>
@@ -225,7 +234,7 @@
 
         <div class="mt-2 p-3 bg-white border border-blue-100 rounded-md shadow-sm">
             <p class="text-xs text-gray-500 uppercase tracking-wide">CUPS Seleccionado:</p>
-            <p id="selectedCupsDisplay" class="font-bold text-lg text-primary mt-1">-- Ninguno seleccionado --</p>
+            <p id="selectedCupsDisplay" class="font-bold text-lg text-primary mt-1 break-words">-- Ninguno seleccionado --</p>
             <input type="hidden" id="cupsCode"> 
             <input type="hidden" id="cupsDescription">
         </div>
@@ -261,25 +270,25 @@
      II. COSTOS DIRECTOS - 2. Talento Humano (Mano de Obra)
     </div>
     <div id="talentoHumanoContainer" class="space-y-4 mb-4"></div>
-    <button type="button" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md"> + Añadir Mano de Obra </button>
+    <button type="button" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto"> + Añadir Mano de Obra </button>
     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md"><label class="block text-sm font-bold text-gray-700">SUBTOTAL MANO DE OBRA DIRECTA:</label>
      <p id="subtotalManoObra" class="text-lg font-bold text-primary">$ 0.00</p>
     </div>
 
-    <!-- III. MEDICAMENTOS (FACTURABLES ADICIONALES) - REORDENADO AHORA ES EL III -->
+    <!-- III. MEDICAMENTOS (FACTURABLES ADICIONALES) -->
     <div class="section-header rounded-md mb-4 mt-8">
      III. COSTOS DIRECTOS - 3. Materiales y Medicamentos (Facturables Adicionales)
     </div>
-    <div class="overflow-visible mb-6">
-     <table class="min-w-full divide-y divide-gray-200 border rounded-md">
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
        <tr>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-64">Cód. Producto (Buscar)</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre del Producto</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Presentación</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto (Buscar)</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Nombre del Producto</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[100px]">Presentación</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[100px]">Valor Unitario</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[100px]">Total</th>
         <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
        </tr>
       </thead>
@@ -287,23 +296,23 @@
          <!-- Las filas se generan dinámicamente -->
       </tbody>
      </table>
-     <button type="button" onclick="addMedicamentoRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Material/Medicamento Adicional</button>
     </div>
+    <button type="button" onclick="addMedicamentoRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Material/Medicamento Adicional</button>
 
-    <!-- IV. INSUMOS (NO FACTURABLES) - REORDENADO AHORA ES EL IV -->
+    <!-- IV. INSUMOS (NO FACTURABLES) -->
     <div class="section-header rounded-md mb-4 mt-8">
      IV. COSTOS DIRECTOS - 4. Insumos, Materiales y Medicamentos (No Facturables)
     </div>
-    <div class="overflow-visible mb-6"> 
-     <table class="min-w-full divide-y divide-gray-200 border rounded-md">
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
        <tr>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-64">Cód. Producto (Buscar)</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre del Producto</th>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Presentación</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto (Buscar)</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Nombre del Producto</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[100px]">Presentación</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
-        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[100px]">Valor Unitario</th>
+        <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[100px]">Total</th>
         <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
        </tr>
       </thead>
@@ -311,22 +320,22 @@
         <!-- Las filas se generan dinámicamente -->
       </tbody>
      </table>
-     <button type="button" onclick="addInsumoRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Insumo No Facturable</button>
     </div>
+    <button type="button" onclick="addInsumoRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Insumo No Facturable</button>
 
     <!-- V. ALQUILER DE EQUIPOS -->
     <div class="section-header rounded-md mb-4 mt-8">
         V. ALQUILER DE EQUIPOS
     </div>
-    <div class="overflow-visible mb-6">
-        <table class="min-w-full divide-y divide-gray-200 border rounded-md">
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+        <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción Equipo / Detalle</th>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unidad (Hora/Día)</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Descripción Equipo / Detalle</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[120px]">Unidad (Hora/Día)</th>
                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
-                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Unitario</th>
-                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[120px]">Valor Unitario</th>
+                    <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[120px]">Total</th>
                     <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
                 </tr>
             </thead>
@@ -334,13 +343,13 @@
                 <!-- Filas dinámicas -->
             </tbody>
         </table>
-        <!-- Botón actualizado a color institucional -->
-        <button type="button" onclick="addAlquilerRow()" class="mt-4 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md">+ Añadir Alquiler Equipo</button>
-        <!-- Caja de subtotal cambiada a tonos verdes -->
-        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
-            <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
-            <p id="subtotalAlquiler" class="text-lg font-bold text-secondary">$ 0.00</p>
-        </div>
+    </div>
+    <!-- Botón actualizado a color institucional -->
+    <button type="button" onclick="addAlquilerRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Alquiler Equipo</button>
+    <!-- Caja de subtotal cambiada a tonos verdes -->
+    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
+        <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
+        <p id="subtotalAlquiler" class="text-lg font-bold text-secondary">$ 0.00</p>
     </div>
 
     <!-- VI. COSTOS INDIRECTOS (RENUMERADO) -->
@@ -436,17 +445,17 @@
      VIII. RESUMEN DE COSTOS DEL PROCEDIMIENTO
     </div>
     <div class="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-md">
-     <div class="flex justify-between text-base"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold">$ 0.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold text-right">$ 0.00</span>
      </div>
-     <div class="flex justify-between text-base"><span class="font-medium">Total Alquiler de Equipos</span> <span id="resumenAlquiler" class="font-semibold">$ 0.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Alquiler de Equipos</span> <span id="resumenAlquiler" class="font-semibold text-right">$ 0.00</span>
      </div>
-     <div class="flex justify-between text-base"><span class="font-medium">Subtotal Costos Indirectos (34%)</span> <span id="totalCostosIndirectosResumen" class="font-semibold">$ 0.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Subtotal Costos Indirectos (34%)</span> <span id="totalCostosIndirectosResumen" class="font-semibold text-right">$ 0.00</span>
      </div>
-     <div class="flex justify-between text-base pt-2 border-t"><span class="font-bold text-primary">Costo del Procedimiento sin M/M Facturables Adicionales</span> <span id="costoProcedimientoSinAdicionales" class="font-bold text-primary">$ 0.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-base pt-2 border-t gap-2"><span class="font-bold text-primary">Costo del Procedimiento sin M/M Facturables Adicionales</span> <span id="costoProcedimientoSinAdicionales" class="font-bold text-primary text-right">$ 0.00</span>
      </div>
-     <div class="flex justify-between text-base"><span class="font-medium">Materiales y Medicamentos Facturables Adicionales</span> <span id="totalAdicionales" class="font-semibold">$ 50,000.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Materiales y Medicamentos Facturables Adicionales</span> <span id="totalAdicionales" class="font-semibold text-right">$ 50,000.00</span>
      </div>
-     <div class="flex justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal">$ 50,000.00</span>
+     <div class="flex flex-col sm:flex-row justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4 gap-2"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal" class="text-right">$ 50,000.00</span>
      </div>
     </div>
 
@@ -743,10 +752,10 @@
                 document.getElementById('homologo').disabled = false;
                 document.getElementById('homologo').placeholder = "Buscar Homólogo...";
                 document.getElementById('cupsStatus').textContent = `✅ ${count} Registros`;
-                document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic";
+                document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic text-center sm:text-left";
             } else {
                 document.getElementById('inventoryStatus').textContent = `✅ ${count} Artículos`;
-                document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic";
+                document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic text-center sm:text-left";
             }
             alert(`${type.toUpperCase()}: ${count} registros cargados correctamente.`);
         }
@@ -842,7 +851,7 @@
 
         // --- GESTIÓN DE FILAS ---
         function createManoDeObraRow(id) {
-            return `<div id="th-row-${id}" class="grid grid-cols-1 md:grid-cols-7 gap-3 p-3 border border-gray-200 rounded-md bg-white items-end"><div class="col-span-2"><label class="block text-xs font-medium text-gray-700">Cargo</label><input type="text" class="input-field text-sm" data-cost-field="cargo"></div><div><label class="block text-xs font-medium text-gray-700">Cant.</label><input type="number" step="1" value="1" class="input-field text-sm text-right" data-cost-field="cantidad"></div><div><label class="block text-xs font-medium text-gray-700">Horas</label><input type="number" step="0.1" value="0.5" class="input-field text-sm text-right" data-cost-field="horas"></div><div><label class="block text-xs font-medium text-gray-700">Vr. Hora</label><input type="number" step="1000" value="50000" class="input-field text-sm text-right" data-cost-field="valorHora"></div><div><label class="block text-xs font-medium text-gray-700">Subtotal</label><p id="th-subtotal-${id}" class="text-sm font-semibold text-right pt-2">$ 0.00</p></div><div><button type="button" onclick="removeManoDeObra(${id})" class="w-full bg-red-500 text-white p-2 rounded-md text-sm hover:bg-red-600">X</button></div></div>`;
+            return `<div id="th-row-${id}" class="grid grid-cols-1 md:grid-cols-7 gap-3 p-3 border border-gray-200 rounded-md bg-white items-end"><div class="col-span-2 md:col-span-2"><label class="block text-xs font-medium text-gray-700">Cargo</label><input type="text" class="input-field text-sm w-full" data-cost-field="cargo"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Cant.</label><input type="number" step="1" value="1" class="input-field text-sm text-right w-full" data-cost-field="cantidad"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Horas</label><input type="number" step="0.1" value="0.5" class="input-field text-sm text-right w-full" data-cost-field="horas"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Vr. Hora</label><input type="number" step="1000" value="50000" class="input-field text-sm text-right w-full" data-cost-field="valorHora"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Subtotal</label><p id="th-subtotal-${id}" class="text-sm font-semibold text-right pt-2">$ 0.00</p></div><div class="col-span-1"><button type="button" onclick="removeManoDeObra(${id})" class="w-full bg-red-500 text-white p-2 rounded-md text-sm hover:bg-red-600">X</button></div></div>`;
         }
         function addManoDeObra() { thCount++; document.getElementById('talentoHumanoContainer').insertAdjacentHTML('beforeend', createManoDeObraRow(thCount)); calculateTotal(); }
         function removeManoDeObra(id) { const row = document.getElementById(`th-row-${id}`); if (row) row.remove(); calculateTotal(); }
@@ -850,7 +859,7 @@
         function createProductRowHTML(type) { 
             const dataAttr = type === 'insumo' ? 'data-insumo-field' : 'data-medicamento-field';
             const totalClass = type === 'insumo' ? 'valor-total-insumo' : 'valor-total-medicamento';
-            return `<tr><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 relative"><input type="text" class="input-field text-xs w-full font-bold text-gray-800" placeholder="Buscar..." ${dataAttr}="codigo" onkeyup="searchInventory(this)" autocomplete="off"><div class="table-dropdown hidden"></div></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><input type="text" class="input-field text-xs" placeholder="Nombre" ${dataAttr}="nombre"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="text" class="input-field text-xs" placeholder="Unid" ${dataAttr}="presentacion"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="1" class="input-field text-xs text-right" ${dataAttr}="cantidad"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="0" class="input-field text-xs text-right" ${dataAttr}="valorUnitario"></td><td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right ${totalClass}">$ 0.00</td><td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td></tr>`;
+            return `<tr><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 relative min-w-[200px]"><input type="text" class="input-field text-xs w-full font-bold text-gray-800" placeholder="Buscar..." ${dataAttr}="codigo" onkeyup="searchInventory(this)" autocomplete="off"><div class="table-dropdown hidden"></div></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 min-w-[200px]"><input type="text" class="input-field text-xs w-full" placeholder="Nombre" ${dataAttr}="nombre"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[100px]"><input type="text" class="input-field text-xs w-full" placeholder="Unid" ${dataAttr}="presentacion"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 w-20"><input type="number" value="1" class="input-field text-xs text-right w-full" ${dataAttr}="cantidad"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[100px]"><input type="number" value="0" class="input-field text-xs text-right w-full" ${dataAttr}="valorUnitario"></td><td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right ${totalClass} min-w-[100px]">$ 0.00</td><td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td></tr>`;
         }
         function addInsumoRow() { document.getElementById('insumosNoFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('insumo')); calculateTotal(); }
         function addMedicamentoRow() { document.getElementById('medicamentosFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('medicamento')); calculateTotal(); }
@@ -858,11 +867,11 @@
         // --- NUEVA FUNCIÓN PARA ALQUILER ---
         function createAlquilerRowHTML() {
             return `<tr>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><input type="text" class="input-field text-xs" placeholder="Descripción Equipo" data-alquiler-field="nombre"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="text" class="input-field text-xs" placeholder="Hora/Día" data-alquiler-field="unidad"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="1" class="input-field text-xs text-right" data-alquiler-field="cantidad"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500"><input type="number" value="0" class="input-field text-xs text-right" data-alquiler-field="valorUnitario"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right valor-total-alquiler">$ 0.00</td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 min-w-[200px]"><input type="text" class="input-field text-xs w-full" placeholder="Descripción Equipo" data-alquiler-field="nombre"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[120px]"><input type="text" class="input-field text-xs w-full" placeholder="Hora/Día" data-alquiler-field="unidad"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 w-20"><input type="number" value="1" class="input-field text-xs text-right w-full" data-alquiler-field="cantidad"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[120px]"><input type="number" value="0" class="input-field text-xs text-right w-full" data-alquiler-field="valorUnitario"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right valor-total-alquiler min-w-[120px]">$ 0.00</td>
                 <td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td>
             </tr>`;
         }
@@ -880,7 +889,8 @@
                 const horas = parseFloat(row.querySelector('[data-cost-field="horas"]')?.value || 0);
                 const valor = parseFloat(row.querySelector('[data-cost-field="valorHora"]')?.value || 0);
                 const sub = cant * horas * valor;
-                document.getElementById(`th-subtotal-${id}`).textContent = formatCOP(sub);
+                const subElement = document.getElementById(`th-subtotal-${id}`);
+                if(subElement) subElement.textContent = formatCOP(sub);
                 totalManoObra += sub;
             });
             document.getElementById('subtotalManoObra').textContent = formatCOP(totalManoObra);
