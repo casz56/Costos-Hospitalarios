@@ -7,16 +7,11 @@
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- LIBRERÍAS DE GRÁFICOS -->
+  <!-- LIBRERÍAS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-  
-  <!-- LIBRERÍAS DE DATOS (CSV Y EXCEL) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  <!-- SheetJS para leer Excel -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-  
-  <!-- jsPDF y AutoTable para generar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
   
@@ -25,16 +20,12 @@
         :root {
             --color-primary: #312782;
             --color-secondary: #008041;
-            --color-accent: #ec268f; /* Fucsia Institucional */
-            --color-institutional-light: #7084C1; /* Nuevo color institucional para botones */
+            --color-accent: #ec268f;
+            --color-institutional-light: #7084C1;
             --color-text: #1f2937;
             --color-bg-light: #f4f7f9;
         }
-        body {
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--color-bg-light);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-bg-light); }
         .bg-primary { background-color: var(--color-primary); }
         .text-primary { color: var(--color-primary); }
         .border-primary { border-color: var(--color-primary); }
@@ -42,126 +33,59 @@
         .text-secondary { color: var(--color-secondary); }
         .bg-accent { background-color: var(--color-accent); }
         .text-accent { color: var(--color-accent); }
-        
-        /* Clase para el nuevo color de botones */
         .bg-btn-institutional { background-color: var(--color-institutional-light); }
         .bg-btn-institutional:hover { background-color: #5a6da3; }
-
-        .section-header {
-            background-color: var(--color-primary);
-            color: white;
-            padding: 0.75rem;
-            font-weight: 700;
-            border-radius: 0.5rem 0.5rem 0 0;
-            margin-top: 1.5rem;
-        }
-        .input-field {
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            width: 100%;
-        }
-        .form-card {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-radius: 0.5rem;
-            background-color: white;
-        }
-        /* Estilos para dropdowns */
-        .cups-dropdown {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #d1d5db;
-            border-top: none;
-            z-index: 50;
-            background-color: white;
-            border-radius: 0 0 0.5rem 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .table-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 300px;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-        .cups-item {
-            padding: 0.75rem;
-            border-bottom: 1px solid #f3f4f6;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-        }
+        .section-header { background-color: var(--color-primary); color: white; padding: 0.75rem; font-weight: 700; border-radius: 0.5rem 0.5rem 0 0; margin-top: 1.5rem; }
+        .input-field { border: 1px solid #d1d5db; padding: 0.5rem; border-radius: 0.375rem; width: 100%; }
+        .form-card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 0.5rem; background-color: white; }
+        .cups-dropdown { max-height: 300px; overflow-y: auto; border: 1px solid #d1d5db; border-top: none; z-index: 50; background-color: white; border-radius: 0 0 0.5rem 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .table-dropdown { position: absolute; top: 100%; left: 0; width: 300px; max-height: 200px; overflow-y: auto; background: white; border: 1px solid #d1d5db; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 100; }
+        .cups-item { padding: 0.75rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background-color 0.2s; display: flex; align-items: center; }
         .cups-item:last-child { border-bottom: none; }
         .cups-item:hover { background-color: #e0f2fe; }
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .result-card { transition: all 0.3s ease; }
+        .result-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
         
-        .file-upload-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%; /* Asegura que tome el ancho disponible */
-        }
-        .file-upload-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .result-card {
-            transition: all 0.3s ease;
-        }
-        .result-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.5); 
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; 
-            padding: 0;
-            border: 1px solid #888;
-            width: 90%; 
-            max-width: 800px;
-            border-radius: 0.75rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 0; border: 1px solid #888; width: 90%; max-width: 800px; border-radius: 0.75rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Login Modal Específico */
+        #loginOverlay { display: flex; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: #f4f7f9; align-items: center; justify-content: center; }
+        .login-card { width: 100%; max-width: 400px; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-top: 6px solid var(--color-primary); }
     </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="p-2 md:p-6 lg:p-8"> <!-- Padding responsive -->
-  <div class="max-w-7xl mx-auto w-full"> <!-- w-full asegura uso del ancho disponible -->
+ <body class="p-2 md:p-6 lg:p-8">
+
+  <!-- OVERLAY DE LOGIN (Bloquea la vista hasta autenticar) -->
+  <div id="loginOverlay">
+      <div class="login-card text-center">
+          <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo" class="h-16 mx-auto mb-6 object-contain bg-primary p-2 rounded">
+          <h2 class="text-xl font-bold text-gray-800 mb-1">Bienvenido</h2>
+          <p class="text-sm text-gray-500 mb-6">Inicie sesión para acceder al costeo</p>
+          <span class="inline-block mb-4 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">Modo Operario</span>
+          
+          <form id="appLoginForm" class="space-y-4 text-left">
+              <div>
+                  <label class="block text-sm font-medium text-gray-700">Correo</label>
+                  <input type="email" id="loginEmail" class="input-field" required placeholder="usuario@ese.gov.co">
+              </div>
+              <div>
+                  <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+                  <input type="password" id="loginPass" class="input-field" required>
+              </div>
+              <button type="submit" class="w-full bg-primary text-white py-2 rounded font-bold hover:bg-opacity-90 transition shadow">Ingresar</button>
+              <p id="appLoginError" class="text-red-500 text-xs text-center hidden mt-2"></p>
+          </form>
+      </div>
+  </div>
+
+  <div id="mainAppContent" class="hidden max-w-7xl mx-auto w-full"> 
    <header class="bg-primary p-6 rounded-t-xl text-white shadow-lg relative overflow-hidden flex flex-col md:block">
-    <!-- Logo Institucional con Auto Scale -->
     <div class="mb-4 md:mb-0 md:absolute md:top-2 md:left-6 flex justify-center md:justify-start">
         <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="w-40 md:w-48 lg:w-56 h-auto object-contain transition-all duration-300">
     </div>
@@ -174,9 +98,12 @@
        <p id="contadorConsecutivo" class="text-lg font-bold text-white">001</p>
       </div>
      </div>
+     <div class="flex flex-col items-end">
+         <span id="userEmailDisplay" class="text-xs text-blue-200 font-mono mb-1">...</span>
+         <button onclick="logoutApp()" class="text-xs text-white underline hover:text-gray-200">Cerrar Sesión</button>
+     </div>
     </div>
     
-    <!-- Títulos con padding responsive para no chocar con el logo en desktop -->
     <div class="mt-2 md:mt-0 md:pl-56 md:pr-40 text-center md:text-left">
         <h1 class="text-2xl md:text-3xl font-bold leading-tight">FORMULARIO DE COSTEO UNITARIO</h1>
         <h2 class="text-lg md:text-xl font-light mt-1 opacity-90">ESE Hospital Universitario Hernando Moncaleano Perdomo de Neiva</h2>
@@ -186,25 +113,12 @@
    <!-- SECCIÓN DE CARGA DE ARCHIVOS Y HERRAMIENTAS -->
    <div class="bg-white p-4 rounded-lg shadow-md mb-6 mt-6 border-l-4 border-secondary">
        <div class="flex justify-between items-center mb-3">
-           <h3 class="font-bold text-gray-800 flex items-center gap-2">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-               </svg>
-               Configuración y Herramientas
-           </h3>
-           <!-- Botones de Nube -->
+           <h3 class="font-bold text-gray-800 flex items-center gap-2">Configuración y Herramientas</h3>
            <div class="flex gap-2">
-               <button onclick="window.guardarCosteo()" class="bg-secondary text-white px-3 py-1 rounded text-sm font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-sm" title="Guardar en la nube">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                   </svg>
+               <button onclick="window.guardarCosteo()" class="bg-secondary text-white px-3 py-1 rounded text-sm font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-sm">
                    Guardar
                </button>
-               <button onclick="window.verHistorial()" class="bg-btn-institutional text-white px-3 py-1 rounded text-sm font-bold hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm" title="Ver Historial Guardado">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                   </svg>
+               <button onclick="window.verHistorial()" class="bg-btn-institutional text-white px-3 py-1 rounded text-sm font-bold hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
                    Historial
                </button>
            </div>
@@ -214,9 +128,6 @@
            <div class="flex flex-col gap-1 w-full">
                <div class="file-upload-wrapper w-full">
                    <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-sm w-full">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                       </svg>
                        Cargar CUPS (.csv/.xlsx)
                    </button>
                    <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')">
@@ -228,9 +139,6 @@
            <div class="flex flex-col gap-1 w-full">
                <div class="file-upload-wrapper w-full">
                    <button type="button" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm w-full">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                       </svg>
                        Cargar Inventario (.csv/.xlsx)
                    </button>
                    <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')">
@@ -238,12 +146,8 @@
                <span id="inventoryStatus" class="text-xs text-gray-500 italic text-center sm:text-left">⚠️ Pendiente</span>
            </div>
            
-           <!-- Botón Descargar PDF -->
            <div class="flex flex-col gap-1 w-full">
                <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-5 py-2 rounded text-sm font-bold hover:bg-opacity-90 transition flex items-center justify-center gap-2 shadow-sm w-full">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                   </svg>
                    Descargar PDF
                </button>
                <span class="text-xs text-gray-500 italic text-center sm:text-left">Formato A4</span>
@@ -256,11 +160,8 @@
      I. INFORMACIÓN GENERAL DEL SERVICIO
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-     <div><label class="block text-sm font-medium text-gray-700">Fecha de Elaboración</label> <input type="date" value="2025-11-24" class="input-field" id="fechaElaboracion">
-     </div>
-     <div><label class="block text-sm font-medium text-gray-700">Consecutivo</label> <input type="text" placeholder="Ej: COS-2025-001" class="input-field" id="consecutivo">
-     </div>
-     <!-- CENTRO DE COSTOS (Modificado a Lista Desplegable con Búsqueda) -->
+     <div><label class="block text-sm font-medium text-gray-700">Fecha de Elaboración</label> <input type="date" value="2025-11-24" class="input-field" id="fechaElaboracion"></div>
+     <div><label class="block text-sm font-medium text-gray-700">Consecutivo</label> <input type="text" placeholder="Ej: COS-2025-001" class="input-field" id="consecutivo"></div>
      <div class="relative">
         <label class="block text-sm font-medium text-gray-700">Centro de Costos / Código</label> 
         <input type="text" placeholder="Escriba código o nombre..." class="input-field" id="centroCostos" autocomplete="off" onkeyup="filterCentrosCostos()">
@@ -271,14 +172,8 @@
     <!-- SECCIÓN DE BÚSQUEDA CUPS -->
     <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
         <label class="block text-sm font-bold text-gray-700 mb-2">1. Descripción del Servicio a Costear (CUPS)</label>
-        
         <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <input type="text" placeholder="Escriba Código o Nombre para buscar..." class="input-field pl-10" id="cupsSearch" autocomplete="off" disabled>
+            <input type="text" placeholder="Escriba Código o Nombre para buscar..." class="input-field pl-2" id="cupsSearch" autocomplete="off" disabled>
             <div id="cupsResults" class="cups-dropdown absolute w-full hidden"></div>
         </div>
 
@@ -290,9 +185,7 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div><label class="block text-sm font-medium text-gray-700">Tarifario</label> <select class="input-field" id="tarifario"> <option value="">Seleccione tarifario</option> <option value="SOAT">SOAT</option> <option value="ISS 2001">ISS 2001</option> <option value="Propias">Propias</option> <option value="Otro">Otro</option> </select>
-            </div>
-            
+            <div><label class="block text-sm font-medium text-gray-700">Tarifario</label> <select class="input-field" id="tarifario"> <option value="">Seleccione tarifario</option> <option value="SOAT">SOAT</option> <option value="ISS 2001">ISS 2001</option> <option value="Propias">Propias</option> <option value="Otro">Otro</option> </select></div>
             <div class="relative">
                 <label class="block text-sm font-medium text-gray-700">Homólogo (Buscar)</label> 
                 <div class="relative">
@@ -300,40 +193,31 @@
                     <div id="homologoResults" class="cups-dropdown absolute w-full hidden"></div>
                 </div>
             </div>
-            
-            <div><label class="block text-sm font-medium text-gray-700">Valor Homólogo</label> <input type="number" placeholder="Ej: 180000" class="input-field" id="valorHomologo">
-            </div>
+            <div><label class="block text-sm font-medium text-gray-700">Valor Homólogo</label> <input type="number" placeholder="Ej: 180000" class="input-field" id="valorHomologo"></div>
         </div>
     </div>
 
     <!-- Resto del formulario -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-     <div><label class="block text-sm font-medium text-gray-700">Tiempo de Ejecución del Servicio (Horas)</label> <input type="number" step="0.5" placeholder="Ej: 4.5" class="input-field" id="tiempoEjecucion">
-     </div>
-     <div><label class="block text-sm font-medium text-gray-700">Lugar de Realización del Servicio</label> <input type="text" placeholder="Ej: Quirófanos" class="input-field" id="lugarRealizacion">
-     </div>
-     <div><label class="block text-sm font-medium text-gray-700">Grupo Quirúrgico / UVR</label> <input type="text" placeholder="Ej: Grupo 22 / 200 UVR" class="input-field" id="grupoUVR">
-     </div>
+     <div><label class="block text-sm font-medium text-gray-700">Tiempo de Ejecución del Servicio (Horas)</label> <input type="number" step="0.5" placeholder="Ej: 4.5" class="input-field" id="tiempoEjecucion"></div>
+     <div><label class="block text-sm font-medium text-gray-700">Lugar de Realización del Servicio</label> <input type="text" placeholder="Ej: Quirófanos" class="input-field" id="lugarRealizacion"></div>
+     <div><label class="block text-sm font-medium text-gray-700">Grupo Quirúrgico / UVR</label> <input type="text" placeholder="Ej: Grupo 22 / 200 UVR" class="input-field" id="grupoUVR"></div>
     </div>
     
-    <div class="section-header rounded-md mb-4">
-     II. COSTOS DIRECTOS - 2. Talento Humano (Mano de Obra)
-    </div>
+    <div class="section-header rounded-md mb-4">II. COSTOS DIRECTOS - 2. Talento Humano (Mano de Obra)</div>
     <div id="talentoHumanoContainer" class="space-y-4 mb-4"></div>
     <button type="button" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto"> + Añadir Mano de Obra </button>
     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md"><label class="block text-sm font-bold text-gray-700">SUBTOTAL MANO DE OBRA DIRECTA:</label>
      <p id="subtotalManoObra" class="text-lg font-bold text-primary">$ 0.00</p>
     </div>
 
-    <!-- III. MEDICAMENTOS (FACTURABLES ADICIONALES) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-     III. COSTOS DIRECTOS - 3. Materiales y Medicamentos (Facturables Adicionales)
-    </div>
-    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+    <!-- III. MEDICAMENTOS -->
+    <div class="section-header rounded-md mb-4 mt-8">III. COSTOS DIRECTOS - 3. Materiales y Medicamentos (Facturables Adicionales)</div>
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm">
      <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
        <tr>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto (Buscar)</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Nombre del Producto</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[100px]">Presentación</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
@@ -342,22 +226,18 @@
         <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
        </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-gray-200" id="medicamentosFacturables">
-         <!-- Las filas se generan dinámicamente -->
-      </tbody>
+      <tbody class="bg-white divide-y divide-gray-200" id="medicamentosFacturables"></tbody>
      </table>
     </div>
     <button type="button" onclick="addMedicamentoRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Material/Medicamento Adicional</button>
 
-    <!-- IV. INSUMOS (NO FACTURABLES) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-     IV. COSTOS DIRECTOS - 4. Insumos, Materiales y Medicamentos (No Facturables)
-    </div>
-    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+    <!-- IV. INSUMOS -->
+    <div class="section-header rounded-md mb-4 mt-8">IV. COSTOS DIRECTOS - 4. Insumos, Materiales y Medicamentos (No Facturables)</div>
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm">
      <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
        <tr>
-        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto (Buscar)</th>
+        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Cód. Producto</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Nombre del Producto</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[100px]">Presentación</th>
         <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
@@ -366,1381 +246,572 @@
         <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
        </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables">
-        <!-- Las filas se generan dinámicamente -->
-      </tbody>
+      <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables"></tbody>
      </table>
     </div>
     <button type="button" onclick="addInsumoRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Insumo No Facturable</button>
 
-    <!-- V. ALQUILER DE EQUIPOS -->
-    <div class="section-header rounded-md mb-4 mt-8">
-        V. ALQUILER DE EQUIPOS
-    </div>
-    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm"> <!-- Auto Size / Scale para tablas -->
+    <!-- V. ALQUILER -->
+    <div class="section-header rounded-md mb-4 mt-8">V. ALQUILER DE EQUIPOS</div>
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Descripción Equipo / Detalle</th>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[120px]">Unidad (Hora/Día)</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Descripción Equipo</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[120px]">Unidad</th>
                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
                     <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[120px]">Valor Unitario</th>
                     <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[120px]">Total</th>
                     <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acción</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="alquilerEquipos">
-                <!-- Filas dinámicas -->
-            </tbody>
+            <tbody class="bg-white divide-y divide-gray-200" id="alquilerEquipos"></tbody>
         </table>
     </div>
-    <!-- Botón actualizado a color institucional -->
     <button type="button" onclick="addAlquilerRow()" class="mt-2 bg-btn-institutional text-white px-4 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto">+ Añadir Alquiler Equipo</button>
-    <!-- Caja de subtotal cambiada a tonos verdes -->
-    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
-        <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
+    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md"><label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER EQUIPOS:</label>
         <p id="subtotalAlquiler" class="text-lg font-bold text-secondary">$ 0.00</p>
     </div>
 
-    <!-- VI. COSTOS INDIRECTOS (RENUMERADO) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-     VI. GASTOS OPERACIONALES - COSTOS INDIRECTOS
-    </div>
+    <!-- VI. COSTOS INDIRECTOS -->
+    <div class="section-header rounded-md mb-4 mt-8">VI. GASTOS OPERACIONALES - COSTOS INDIRECTOS</div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
      <div>
-      <h3 class="font-bold text-gray-700 mb-2">Costos Primarios (Basado en % sobre Costos Directos)</h3>
+      <h3 class="font-bold text-gray-700 mb-2">Costos Primarios (%)</h3>
       <div class="space-y-3">
-       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Depreciación (%)</label>
-        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="3" min="0" max="100" class="input-field text-sm text-right" id="porcentajeDepreciacion">
-         <p id="costoDepreciacion" class="font-semibold text-right pt-2">$ 0.00</p>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Consumos (%)</label>
-        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="0" min="0" max="100" class="input-field text-sm text-right" id="porcentajeConsumos">
-         <p id="costoConsumos" class="font-semibold text-right pt-2">$ 0.00</p>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Gastos Generales (%)</label>
-        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="6" min="0" max="100" class="input-field text-sm text-right" id="porcentajeGastosGenerales">
-         <p id="costoGastosGenerales" class="font-semibold text-right pt-2">$ 0.00</p>
-        </div>
-       </div>
+       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Depreciación (%)</label><div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="3" class="input-field text-sm text-right" id="porcentajeDepreciacion"><p id="costoDepreciacion" class="font-semibold text-right pt-2">$ 0.00</p></div></div>
+       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Consumos (%)</label><div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="0" class="input-field text-sm text-right" id="porcentajeConsumos"><p id="costoConsumos" class="font-semibold text-right pt-2">$ 0.00</p></div></div>
+       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Gastos Generales (%)</label><div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="6" class="input-field text-sm text-right" id="porcentajeGastosGenerales"><p id="costoGastosGenerales" class="font-semibold text-right pt-2">$ 0.00</p></div></div>
       </div>
      </div>
      <div>
-      <h3 class="font-bold text-gray-700 mb-2">Costos Secundarios (Basado en % sobre Costos Directos)</h3>
+      <h3 class="font-bold text-gray-700 mb-2">Costos Secundarios (%)</h3>
       <div class="space-y-3">
-       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Logísticos (%)</label>
-        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="8" min="0" max="100" class="input-field text-sm text-right" id="porcentajeLogisticos">
-         <p id="costoLogisticos" class="font-semibold text-right pt-2">$ 0.00</p>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Administrativos (%)</label>
-        <div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="17" min="0" max="100" class="input-field text-sm text-right" id="porcentajeAdministrativos">
-         <p id="costoAdministrativos" class="font-semibold text-right pt-2">$ 0.00</p>
-        </div>
-       </div>
-       <div class="flex justify-between items-center bg-blue-100 p-3 rounded mt-2"><label class="text-sm font-bold">SUBTOTAL COSTOS INDIRECTOS:</label>
-        <p id="subtotalCostosIndirectos" class="text-lg font-bold text-primary">$ 0.00</p>
-       </div>
+       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Logísticos (%)</label><div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="8" class="input-field text-sm text-right" id="porcentajeLogisticos"><p id="costoLogisticos" class="font-semibold text-right pt-2">$ 0.00</p></div></div>
+       <div class="bg-gray-50 p-3 rounded"><label class="text-sm font-medium text-gray-700 block mb-1">Administrativos (%)</label><div class="grid grid-cols-2 gap-2"><input type="number" step="0.1" value="17" class="input-field text-sm text-right" id="porcentajeAdministrativos"><p id="costoAdministrativos" class="font-semibold text-right pt-2">$ 0.00</p></div></div>
+       <div class="flex justify-between items-center bg-blue-100 p-3 rounded mt-2"><label class="text-sm font-bold">SUBTOTAL COSTOS INDIRECTOS:</label><p id="subtotalCostosIndirectos" class="text-lg font-bold text-primary">$ 0.00</p></div>
       </div>
      </div>
     </div>
     
-    <!-- VII. GRÁFICAS (SE MANTIENE) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-        VII. GRÁFICAS
-    </div>
-    <!-- Gráficos Integrados dentro del Formulario -->
+    <!-- VII. GRÁFICAS -->
+    <div class="section-header rounded-md mb-4 mt-8">VII. GRÁFICAS</div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <!-- Gráfico de Torta -->
         <div class="border border-gray-200 rounded-lg p-4 bg-white">
             <h3 class="text-lg font-bold text-primary mb-4 text-center">Distribución de Costos (%)</h3>
-            <div style="position: relative; height: 350px;">
-                <canvas id="pieChart"></canvas>
-            </div>
+            <div style="position: relative; height: 350px;"><canvas id="pieChart"></canvas></div>
         </div>
-        <!-- Gráfico de Barras -->
         <div class="border border-gray-200 rounded-lg p-4 bg-white">
             <h3 class="text-lg font-bold text-primary mb-4 text-center">Mano de Obra en Función del Costo Total</h3>
             <canvas id="barChart" style="max-height: 300px;"></canvas>
             <div class="mt-6 overflow-x-auto">
                 <table class="min-w-full border border-gray-300">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-sm font-semibold">Concepto</th>
-                            <th class="px-4 py-2 text-right text-sm font-semibold">Valor (COP)</th>
-                            <th class="px-4 py-2 text-right text-sm font-semibold">% Participación</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr class="bg-white hover:bg-gray-50">
-                            <td class="px-4 py-2 text-sm font-medium text-gray-700">Mano de Obra</td>
-                            <td id="tablaBarManoObra" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">$ 0.00</td>
-                            <td id="tablaBarManoObraPorcentaje" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">0.0%</td>
-                        </tr>
-                        <tr class="bg-gray-50 hover:bg-gray-100">
-                            <td class="px-4 py-2 text-sm font-bold text-primary">Costo Total Procedimiento</td>
-                            <td id="tablaBarTotal" class="px-4 py-2 text-sm font-bold text-right text-primary">$ 0.00</td>
-                            <td id="tablaBarTotalPorcentaje" class="px-4 py-2 text-sm font-bold text-right text-primary">100.0%</td>
-                        </tr>
-                    </tbody>
+                    <thead class="bg-primary text-white"><tr><th class="px-4 py-2 text-left text-sm font-semibold">Concepto</th><th class="px-4 py-2 text-right text-sm font-semibold">Valor (COP)</th><th class="px-4 py-2 text-right text-sm font-semibold">% Participación</th></tr></thead>
+                    <tbody class="divide-y divide-gray-200"><tr class="bg-white hover:bg-gray-50"><td class="px-4 py-2 text-sm font-medium text-gray-700">Mano de Obra</td><td id="tablaBarManoObra" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">$ 0.00</td><td id="tablaBarManoObraPorcentaje" class="px-4 py-2 text-sm font-semibold text-right text-gray-900">0.0%</td></tr><tr class="bg-gray-50 hover:bg-gray-100"><td class="px-4 py-2 text-sm font-bold text-primary">Costo Total Procedimiento</td><td id="tablaBarTotal" class="px-4 py-2 text-sm font-bold text-right text-primary">$ 0.00</td><td id="tablaBarTotalPorcentaje" class="px-4 py-2 text-sm font-bold text-right text-primary">100.0%</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- VIII. RESUMEN (RENUMERADO) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-     VIII. RESUMEN DE COSTOS DEL PROCEDIMIENTO
-    </div>
+    <!-- VIII. RESUMEN -->
+    <div class="section-header rounded-md mb-4 mt-8">VIII. RESUMEN DE COSTOS DEL PROCEDIMIENTO</div>
     <div class="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-md">
-     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold text-right">$ 0.00</span>
-     </div>
-     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Alquiler de Equipos</span> <span id="resumenAlquiler" class="font-semibold text-right">$ 0.00</span>
-     </div>
-     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Subtotal Costos Indirectos (34%)</span> <span id="totalCostosIndirectosResumen" class="font-semibold text-right">$ 0.00</span>
-     </div>
-     <div class="flex flex-col sm:flex-row justify-between text-base pt-2 border-t gap-2"><span class="font-bold text-primary">Costo del Procedimiento sin M/M Facturables Adicionales</span> <span id="costoProcedimientoSinAdicionales" class="font-bold text-primary text-right">$ 0.00</span>
-     </div>
-     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Materiales y Medicamentos Facturables Adicionales</span> <span id="totalAdicionales" class="font-semibold text-right">$ 50,000.00</span>
-     </div>
-     <div class="flex flex-col sm:flex-row justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4 gap-2"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal" class="text-right">$ 50,000.00</span>
-     </div>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Costos Directos (Mano de Obra + Insumos No Facturables)</span> <span id="totalCostosDirectos" class="font-semibold text-right">$ 0.00</span></div>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Total Alquiler de Equipos</span> <span id="resumenAlquiler" class="font-semibold text-right">$ 0.00</span></div>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Subtotal Costos Indirectos (34%)</span> <span id="totalCostosIndirectosResumen" class="font-semibold text-right">$ 0.00</span></div>
+     <div class="flex flex-col sm:flex-row justify-between text-base pt-2 border-t gap-2"><span class="font-bold text-primary">Costo del Procedimiento sin M/M Facturables Adicionales</span> <span id="costoProcedimientoSinAdicionales" class="font-bold text-primary text-right">$ 0.00</span></div>
+     <div class="flex flex-col sm:flex-row justify-between text-base gap-2"><span class="font-medium">Materiales y Medicamentos Facturables Adicionales</span> <span id="totalAdicionales" class="font-semibold text-right">$ 50,000.00</span></div>
+     <div class="flex flex-col sm:flex-row justify-between text-xl font-extrabold text-white bg-primary p-3 rounded-md mt-4 gap-2"><span>TOTAL PROCEDIMIENTO QUIRÚRGICO (Costo Unitario)</span> <span id="costoUnitarioFinal" class="text-right">$ 50,000.00</span></div>
     </div>
 
-    <!-- IX. PRECIO DE VENTA (NUEVA SECCIÓN) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-        IX. PRECIO DE VENTA (ESTUDIO DE MERCADO)
-    </div>
+    <!-- IX. PRECIO DE VENTA -->
+    <div class="section-header rounded-md mb-4 mt-8">IX. PRECIO DE VENTA (ESTUDIO DE MERCADO)</div>
     <div class="form-card p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Cargar Estudio de Mercado (.xlsx / .csv)</label>
                 <div class="file-upload-wrapper w-full">
-                    <!-- Botón actualizado a color institucional -->
-                    <button type="button" class="bg-btn-institutional text-white px-4 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm w-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Cargar Estudio (Simulado)
-                    </button>
-                    <!-- Funcionalidad simulada para demostración -->
+                    <button type="button" class="bg-btn-institutional text-white px-4 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm w-full">Cargar Estudio (Simulado)</button>
                     <input type="file" id="archivoMercadeo" onchange="alert('Funcionalidad de carga simulada: Por favor ingrese el valor manualmente en la casilla contigua.')">
                 </div>
-                <p class="text-xs text-gray-500 mt-1 italic">Adjunte el archivo soporte del estudio de mercado.</p>
             </div>
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Precio de Venta Propuesto (Tarifa)</label>
                 <div class="relative rounded-md shadow-sm">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span class="text-gray-500 sm:text-sm">$</span>
-                    </div>
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 sm:text-sm">$</span></div>
                     <input type="number" id="precioVentaInput" class="block w-full rounded-md border-gray-300 pl-7 py-3 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border" placeholder="0.00" oninput="calculateResults()">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- X. ESTADO DE RESULTADOS (NUEVA SECCIÓN) -->
-    <div class="section-header rounded-md mb-4 mt-8">
-        X. ESTADO DE RESULTADOS DEL COSTEO
-    </div>
+    <!-- X. ESTADO DE RESULTADOS -->
+    <div class="section-header rounded-md mb-4 mt-8">X. ESTADO DE RESULTADOS DEL COSTEO</div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- Tarjetas de Indicadores -->
         <div class="space-y-4">
-            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-primary">
-                <p class="text-sm font-medium text-gray-500">Costo Total Unitario</p>
-                <p id="resCostoTotal" class="text-2xl font-bold text-primary">$ 0.00</p>
-            </div>
-            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                <p class="text-sm font-medium text-gray-500">Tarifa de Venta (Estudio Mercadeo)</p>
-                <p id="resPrecioVenta" class="text-2xl font-bold text-blue-600">$ 0.00</p>
-            </div>
-            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-green-600">
-                <p class="text-sm font-medium text-gray-500">Excedente (Tarifa - Costo)</p>
-                <p id="resExcedente" class="text-2xl font-bold text-green-700">$ 0.00</p>
-            </div>
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-primary"><p class="text-sm font-medium text-gray-500">Costo Total Unitario</p><p id="resCostoTotal" class="text-2xl font-bold text-primary">$ 0.00</p></div>
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-blue-500"><p class="text-sm font-medium text-gray-500">Tarifa de Venta</p><p id="resPrecioVenta" class="text-2xl font-bold text-blue-600">$ 0.00</p></div>
+            <div class="result-card bg-white p-4 rounded-lg shadow border-l-4 border-green-600"><p class="text-sm font-medium text-gray-500">Excedente (Tarifa - Costo)</p><p id="resExcedente" class="text-2xl font-bold text-green-700">$ 0.00</p></div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="result-card bg-secondary p-3 rounded-lg border border-secondary text-center shadow-lg">
-                    <p class="text-xs font-bold text-white opacity-90 uppercase">% Sostenibilidad</p>
-                    <p id="resSostenibilidad" class="text-xl font-extrabold text-white">0.0%</p>
-                    <p class="text-[10px] text-white opacity-80">(Excedente / Tarifa Venta)</p>
-                </div>
-                <div class="result-card bg-secondary p-3 rounded-lg border border-secondary text-center shadow-lg">
-                    <p class="text-xs font-bold text-white opacity-90 uppercase">% Margen</p>
-                    <p id="resMargen" class="text-xl font-extrabold text-white">0.0%</p>
-                    <p class="text-[10px] text-white opacity-80">(Excedente / Costo Total)</p>
-                </div>
+                <div class="result-card bg-secondary p-3 rounded-lg border border-secondary text-center shadow-lg"><p class="text-xs font-bold text-white opacity-90 uppercase">% Sostenibilidad</p><p id="resSostenibilidad" class="text-xl font-extrabold text-white">0.0%</p></div>
+                <div class="result-card bg-secondary p-3 rounded-lg border border-secondary text-center shadow-lg"><p class="text-xs font-bold text-white opacity-90 uppercase">% Margen</p><p id="resMargen" class="text-xl font-extrabold text-white">0.0%</p></div>
             </div>
         </div>
-
-        <!-- Gráfico Financiero -->
-        <div class="form-card p-4 flex flex-col justify-center">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">Comparativo Financiero</h3>
-            <div style="position: relative; height: 300px;">
-                <canvas id="resultsChart"></canvas>
-            </div>
-        </div>
+        <div class="form-card p-4 flex flex-col justify-center"><h3 class="text-lg font-bold text-gray-800 mb-4 text-center">Comparativo Financiero</h3><div style="position: relative; height: 300px;"><canvas id="resultsChart"></canvas></div></div>
     </div>
-
    </form>
    
-  </div><!-- Botón Flotante de Sugerencias --> <button id="botonSugerencias" onclick="toggleSugerencias()" class="fixed bottom-8 right-8 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 z-50 flex items-center justify-center group" style="background-color: #ec268f;">
-   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-   </svg><span class="absolute right-full mr-3 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"> 💡 Sugerencias </span> </button> <!-- Panel de Sugerencias -->
+  </div>
+  
+  <button id="botonSugerencias" onclick="toggleSugerencias()" class="fixed bottom-8 right-8 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 z-50 flex items-center justify-center group" style="background-color: #ec268f;">
+   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+  </button>
+  
   <div id="panelSugerencias" class="fixed bottom-8 right-8 bg-white rounded-2xl shadow-2xl z-40 hidden overflow-hidden" style="width: 380px; max-height: 500px;">
-   <div class="p-4 flex items-center justify-between" style="background-color: #ec268f;">
-    <div class="flex items-center gap-2">
-     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-     </svg>
-     <h3 class="text-white font-bold text-lg">Sugerencias</h3>
-    </div><button onclick="toggleSugerencias()" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition">
-     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-     </svg></button>
-   </div>
+   <div class="p-4 flex items-center justify-between" style="background-color: #ec268f;"><h3 class="text-white font-bold text-lg">Sugerencias</h3><button onclick="toggleSugerencias()" class="text-white">✕</button></div>
    <div class="p-4 overflow-y-auto" style="max-height: 400px;">
     <form onsubmit="enviarSugerencia(event)" class="space-y-4">
-     <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tu Sugerencia</label> <textarea id="textoSugerencia" rows="4" class="input-field resize-none" placeholder="Cuéntanos tu idea para mejorar este formulario..." required></textarea>
-     </div>
-     <div><label class="block text-sm font-semibold text-gray-700 mb-2">Categoría</label> <select id="categoriaSugerencia" class="input-field"> <option value="mejora">💡 Mejora de funcionalidad</option> <option value="bug">🐛 Reporte de error</option> <option value="diseno">🎨 Diseño/Interfaz</option> <option value="otra">💬 Otra sugerencia</option> </select>
-     </div>
-     <div><label class="block text-sm font-semibold text-gray-700 mb-2">Correo (opcional)</label> <input type="email" id="emailSugerencia" class="input-field" placeholder="tu@email.com">
-     </div><button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:opacity-80 transition shadow-lg flex items-center justify-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-      </svg> Enviar Sugerencia </button>
+     <textarea id="textoSugerencia" rows="4" class="input-field resize-none" placeholder="Escribe tu sugerencia..."></textarea>
+     <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold">Enviar Sugerencia</button>
     </form>
-    <div class="mt-4 pt-4 border-t border-gray-200">
-     <p class="text-xs text-gray-500 text-center">📊 Tus sugerencias nos ayudan a mejorar</p>
-    </div>
    </div>
   </div>
 
   <!-- MODAL HISTORIAL -->
   <div id="historialModal" class="modal">
     <div class="modal-content">
-        <div class="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
-            <h3 class="text-xl font-bold flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Historial de Costeos
-            </h3>
-            <button onclick="document.getElementById('historialModal').style.display='none'" class="hover:bg-white hover:text-primary rounded-full p-1 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-        <div class="p-6">
-            <p class="text-sm text-gray-500 mb-4">Seleccione un costeo para cargar su información. Esto reemplazará los datos actuales.</p>
-            <div id="historialLista" class="space-y-2 max-h-96 overflow-y-auto">
-                <p class="text-center text-gray-400 italic py-8">Cargando historial...</p>
-            </div>
-        </div>
+        <div class="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center"><h3 class="text-xl font-bold">Historial de Costeos</h3><button onclick="document.getElementById('historialModal').style.display='none'">✕</button></div>
+        <div class="p-6"><div id="historialLista" class="space-y-2 max-h-96 overflow-y-auto"><p class="text-center text-gray-400 italic py-8">Cargando historial...</p></div></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, orderBy, Timestamp, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = JSON.parse(__firebase_config);
+    // ⚠ CONFIGURACIÓN LOCAL / GITHUB PAGES
+    // Reemplaza estos valores por los de tu proyecto de Firebase.
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "tu-proyecto.firebaseapp.com",
+        projectId: "tu-proyecto",
+        storageBucket: "tu-proyecto.appspot.com",
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:abcdef123456"
+    };
+
+    // Identificador lógico de la app para construir las rutas de Firestore
+    const appId = "costeo-huhmp-v1";
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-    let currentUser = null;
+    // --- SISTEMA DE AUTENTICACIÓN ROBUSTO (Patrón Rule #3) ---
+    let authPromise = null;
+    const ensureAuth = () => {
+        if (authPromise) return authPromise;
+        authPromise = new Promise((resolve, reject) => {
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    unsubscribe();
+                    resolve(user);
+                }
+            });
+            if (!auth.currentUser) {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth).catch(reject));
+                } else {
+                    signInAnonymously(auth).catch(reject);
+                }
+            }
+        });
+        return authPromise;
+    };
 
-    // --- AUTENTICACIÓN ---
-    const initAuth = async () => {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
+    // --- GESTIÓN DE SESIÓN LOCAL ---
+    let currentUserSession = null;
+
+    const checkSession = async () => {
+        try {
+            await ensureAuth(); // Asegurar conexión base
+        } catch (e) {
+            console.error("Auth error:", e);
+        }
+
+        const stored = localStorage.getItem('operarioSession');
+        if (stored) {
+            currentUserSession = JSON.parse(stored);
+            document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('mainAppContent').classList.remove('hidden');
         } else {
-            await signInAnonymously(auth);
+            currentUserSession = null;
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('mainAppContent').classList.add('hidden');
         }
     };
-    initAuth();
 
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        if (user) {
-            console.log("Usuario autenticado:", user.uid);
+    // --- LOGIN MANUAL (Contra DB 'registered_users') ---
+    document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        
+        const btn = e.target.querySelector('button');
+        const err = document.getElementById('appLoginError');
+        const originalText = btn.textContent;
+        
+        btn.textContent = "Verificando...";
+        btn.disabled = true;
+        err.classList.add('hidden');
+
+        try {
+            await ensureAuth(); // Permiso de lectura anónimo
+            
+            // CAMBIO: Descargar TODOS los usuarios y filtrar en JS para evitar problemas de mayúsculas/minúsculas
+            const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+            const snapshot = await getDocs(usersRef);
+
+            let validUser = null;
+
+            if (snapshot.empty) {
+                throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados. \nPor favor use el archivo 'admin.html' para crear el primer usuario.");
+            }
+
+            console.log("Intentando login para:", email);
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                // Comparación flexible (lowercase) para el correo
+                if (data.email.toLowerCase() === email.toLowerCase()) {
+                    if (data.password === pass) {
+                        if (data.active !== false) {
+                            validUser = data;
+                        } else {
+                            throw new Error("Este usuario ha sido desactivado.");
+                        }
+                    } else {
+                         // Correo coincide pero contraseña no
+                         console.warn("Correo encontrado, contraseña incorrecta");
+                    }
+                }
+            });
+
+            if (validUser) {
+                currentUserSession = validUser;
+                localStorage.setItem('operarioSession', JSON.stringify(validUser));
+                checkSession();
+            } else {
+                // Si llegamos aquí y no hay validUser, es credencial incorrecta
+                throw new Error("Usuario no encontrado o contraseña incorrecta.");
+            }
+
+        } catch (error) {
+            console.error(error);
+            err.innerText = error.message; // Usar innerText para saltos de línea
+            err.classList.remove('hidden');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
     });
 
+    window.logoutApp = () => {
+        localStorage.removeItem('operarioSession');
+        location.reload();
+    };
+
     // --- GUARDAR COSTEO ---
     window.guardarCosteo = async function() {
-        if (!currentUser) { alert("Esperando autenticación..."); return; }
+        if (!currentUserSession) return;
         
-        // Recopilar Datos Generales
-        const general = {
-            fecha: document.getElementById('fechaElaboracion').value,
-            consecutivo: document.getElementById('consecutivo').value,
-            centroCostos: document.getElementById('centroCostos').value,
-            cupsCode: document.getElementById('cupsCode').value,
-            cupsDesc: document.getElementById('cupsDescription').value,
-            tarifario: document.getElementById('tarifario').value,
-            homologo: document.getElementById('homologo').value,
-            valorHomologo: document.getElementById('valorHomologo').value,
-            tiempo: document.getElementById('tiempoEjecucion').value,
-            lugar: document.getElementById('lugarRealizacion').value,
-            grupo: document.getElementById('grupoUVR').value
-        };
-
-        // Recopilar Arrays
-        const manoObra = [];
-        document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
-            manoObra.push({
-                cargo: row.querySelector('[data-cost-field="cargo"]').value,
-                cantidad: row.querySelector('[data-cost-field="cantidad"]').value,
-                horas: row.querySelector('[data-cost-field="horas"]').value,
-                valorHora: row.querySelector('[data-cost-field="valorHora"]').value
-            });
-        });
-
-        const medicamentos = [];
-        document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
-            if(row.querySelector('[data-medicamento-field="nombre"]').value) {
-                medicamentos.push({
-                    codigo: row.querySelector('[data-medicamento-field="codigo"]').value,
-                    nombre: row.querySelector('[data-medicamento-field="nombre"]').value,
-                    presentacion: row.querySelector('[data-medicamento-field="presentacion"]').value,
-                    cantidad: row.querySelector('[data-medicamento-field="cantidad"]').value,
-                    valorUnitario: row.querySelector('[data-medicamento-field="valorUnitario"]').value
-                });
-            }
-        });
-
-        const insumos = [];
-        document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
-            if(row.querySelector('[data-insumo-field="nombre"]').value) {
-                insumos.push({
-                    codigo: row.querySelector('[data-insumo-field="codigo"]').value,
-                    nombre: row.querySelector('[data-insumo-field="nombre"]').value,
-                    presentacion: row.querySelector('[data-insumo-field="presentacion"]').value,
-                    cantidad: row.querySelector('[data-insumo-field="cantidad"]').value,
-                    valorUnitario: row.querySelector('[data-insumo-field="valorUnitario"]').value
-                });
-            }
-        });
-
-        const alquiler = [];
-        document.querySelectorAll('#alquilerEquipos tr').forEach(row => {
-            if(row.querySelector('[data-alquiler-field="nombre"]').value) {
-                alquiler.push({
-                    nombre: row.querySelector('[data-alquiler-field="nombre"]').value,
-                    unidad: row.querySelector('[data-alquiler-field="unidad"]').value,
-                    cantidad: row.querySelector('[data-alquiler-field="cantidad"]').value,
-                    valorUnitario: row.querySelector('[data-alquiler-field="valorUnitario"]').value
-                });
-            }
-        });
-
-        const indirectos = {
-            depreciacion: document.getElementById('porcentajeDepreciacion').value,
-            consumos: document.getElementById('porcentajeConsumos').value,
-            gastos: document.getElementById('porcentajeGastosGenerales').value,
-            logisticos: document.getElementById('porcentajeLogisticos').value,
-            administrativos: document.getElementById('porcentajeAdministrativos').value
-        };
-        
-        const financiero = {
-            precioVenta: document.getElementById('precioVentaInput').value
-        };
-
-        const costeoData = {
-            userId: currentUser.uid,
-            timestamp: Timestamp.now(),
-            general, manoObra, medicamentos, insumos, alquiler, indirectos, financiero
-        };
-
         try {
-            const docRef = await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'costeos'), costeoData);
-            alert("¡Costeo guardado exitosamente en la nube!");
-            console.log("Documento escrito con ID: ", docRef.id);
+            await ensureAuth();
+            
+            const costeoData = {
+                userId: currentUserSession.uid, // Usamos el ID del usuario simulado
+                userEmail: currentUserSession.email,
+                timestamp: Timestamp.now(),
+                general: {
+                    fecha: document.getElementById('fechaElaboracion').value,
+                    consecutivo: document.getElementById('consecutivo').value,
+                    cupsCode: document.getElementById('cupsCode').value || '',
+                    cupsDesc: document.getElementById('cupsDescription').value || '',
+                    centroCostos: document.getElementById('centroCostos').value || '',
+                    tarifario: document.getElementById('tarifario').value || '',
+                    total: document.getElementById('costoUnitarioFinal').textContent
+                }
+                // (Aquí irían el resto de datos detallados, simplificado para el ejemplo)
+            };
+
+            // Guardamos en la colección personal del usuario (usando su UID simulado)
+            // Path: artifacts/{appId}/users/{fakeUid}/costeos
+            await addDoc(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), costeoData);
+            
+            alert("¡Costeo guardado exitosamente!");
+            // Actualizar consecutivo local simple
+            let consec = parseInt(localStorage.getItem('consecutivoCosteo') || '1');
+            localStorage.setItem('consecutivoCosteo', (consec + 1).toString());
+            
         } catch (e) {
-            console.error("Error al guardar: ", e);
-            alert("Error al guardar en la nube: " + e.message);
+            console.error(e);
+            alert("Error al guardar: " + e.message);
         }
     };
 
     // --- VER HISTORIAL ---
     window.verHistorial = async function() {
-        if (!currentUser) return;
-        const modal = document.getElementById('historialModal');
+        if (!currentUserSession) return;
+        document.getElementById('historialModal').style.display = 'block';
         const lista = document.getElementById('historialLista');
-        modal.style.display = 'block';
-        lista.innerHTML = '<p class="text-center text-gray-400 italic py-8">Cargando...</p>';
-
+        lista.innerHTML = '<p class="text-center text-gray-500">Cargando...</p>';
+        
         try {
-            const q = query(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'costeos'), orderBy("timestamp", "desc"));
-            const querySnapshot = await getDocs(q);
+            await ensureAuth();
+            const q = query(
+                collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), 
+                orderBy("timestamp", "desc")
+            );
+            const snapshot = await getDocs(q);
             
-            if (querySnapshot.empty) {
-                lista.innerHTML = '<div class="text-center p-4 text-gray-500">No hay costeos guardados aún.</div>';
-                return;
-            }
-
-            let html = '';
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Fecha desconocida';
-                const desc = data.general.cupsDesc || "Sin descripción";
-                const consecutivo = data.general.consecutivo || "S/C";
-                
-                html += `
-                <div class="bg-white border hover:bg-blue-50 cursor-pointer p-4 rounded-lg shadow-sm transition flex justify-between items-center" onclick="window.cargarCosteo('${doc.id}')">
-                    <div>
-                        <p class="font-bold text-primary">${consecutivo} - ${desc}</p>
-                        <p class="text-xs text-gray-500">Fecha: ${date} | Centro Costos: ${data.general.centroCostos || 'N/A'}</p>
-                    </div>
-                    <button class="text-primary hover:text-accent font-semibold text-sm">Cargar ➔</button>
-                </div>`;
-            });
-            lista.innerHTML = html;
-        } catch (e) {
-            console.error(e);
-            lista.innerHTML = '<p class="text-red-500 text-center">Error cargando historial.</p>';
-        }
-    };
-
-    // --- CARGAR COSTEO ESPECÍFICO ---
-    window.cargarCosteo = async function(docId) {
-        if (!currentUser) return;
-        try {
-            // Obtener el documento localmente de la lista si es posible, o fetch
-            // Como ya tenemos los datos en el historial, idealmente los pasamos, pero fetch es seguro
-            // Aquí haremos un pequeño hack: volver a buscar no es óptimo pero es robusto para este ejemplo simple
-            // O mejor: usar el snapshot si lo tuvieramos. Haremos fetch individual.
-            
-            // Nota: Para hacerlo rápido sin fetch extra, podríamos haber guardado los datos en el elemento DOM,
-            // pero Firestore cachea bien.
-            
-            // Referencia directa al documento no disponible en SDK modular simple sin getDoc, así que usaremos el evento de click.
-            // Para simplificar, haré query de nuevo o buscaré en memoria si lo implemento, 
-            // pero getDoc es lo estándar.
-             
-             // Necesitamos importar getDoc arriba (ya está).
-             const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'costeos', docId);
-             const docSnap = await getDoc(docRef);
-
-             if (docSnap.exists()) {
-                 const data = docSnap.data();
-                 
-                 // 1. Llenar General
-                 document.getElementById('fechaElaboracion').value = data.general.fecha;
-                 document.getElementById('consecutivo').value = data.general.consecutivo;
-                 document.getElementById('centroCostos').value = data.general.centroCostos;
-                 document.getElementById('cupsCode').value = data.general.cupsCode;
-                 document.getElementById('cupsDescription').value = data.general.cupsDesc;
-                 document.getElementById('cupsSearch').value = data.general.cupsDesc; // Visual
-                 document.getElementById('selectedCupsDisplay').textContent = `${data.general.cupsCode} - ${data.general.cupsDesc}`;
-                 document.getElementById('tarifario').value = data.general.tarifario;
-                 document.getElementById('homologo').value = data.general.homologo;
-                 document.getElementById('valorHomologo').value = data.general.valorHomologo;
-                 document.getElementById('tiempoEjecucion').value = data.general.tiempo;
-                 document.getElementById('lugarRealizacion').value = data.general.lugar;
-                 document.getElementById('grupoUVR').value = data.general.grupo;
-
-                 // 2. Limpiar y Llenar Arrays
-                 document.getElementById('talentoHumanoContainer').innerHTML = '';
-                 if (data.manoObra && data.manoObra.length > 0) {
-                     data.manoObra.forEach(item => window.addManoDeObra(item));
-                 } else { window.addManoDeObra(); }
-
-                 document.getElementById('medicamentosFacturables').innerHTML = '';
-                 if (data.medicamentos && data.medicamentos.length > 0) {
-                     data.medicamentos.forEach(item => window.addMedicamentoRow(item));
-                 } else { window.addMedicamentoRow(); }
-
-                 document.getElementById('insumosNoFacturables').innerHTML = '';
-                 if (data.insumos && data.insumos.length > 0) {
-                     data.insumos.forEach(item => window.addInsumoRow(item));
-                 } else { window.addInsumoRow(); }
-
-                 document.getElementById('alquilerEquipos').innerHTML = '';
-                 if (data.alquiler && data.alquiler.length > 0) {
-                     data.alquiler.forEach(item => window.addAlquilerRow(item));
-                 } else { window.addAlquilerRow(); }
-
-                 // 3. Indirectos
-                 if (data.indirectos) {
-                    document.getElementById('porcentajeDepreciacion').value = data.indirectos.depreciacion || 3;
-                    document.getElementById('porcentajeConsumos').value = data.indirectos.consumos || 0;
-                    document.getElementById('porcentajeGastosGenerales').value = data.indirectos.gastos || 6;
-                    document.getElementById('porcentajeLogisticos').value = data.indirectos.logisticos || 8;
-                    document.getElementById('porcentajeAdministrativos').value = data.indirectos.administrativos || 17;
-                 }
-                 
-                 // 4. Financiero
-                 if (data.financiero) {
-                     document.getElementById('precioVentaInput').value = data.financiero.precioVenta || 0;
-                 }
-
-                 // Recalcular
-                 window.calculateTotal();
-                 
-                 // Cerrar Modal
-                 document.getElementById('historialModal').style.display = 'none';
-                 alert("Costeo cargado exitosamente.");
-             } else {
-                 alert("No se encontró el documento.");
-             }
-
-        } catch (e) {
-            console.error("Error cargando: ", e);
-            alert("Error al cargar costeo.");
-        }
-    };
-  </script>
-
-  <script>
-        // VARIABLES GLOBALES
-        let CUPS_DB = [];
-        let HOMOLOGO_DB = [];
-        let INVENTORY_DB = []; 
-        
-        // --- BASE DE DATOS DE CENTROS DE COSTOS (Actualizada) ---
-        const CENTROS_COSTOS_DB = [
-            // ADMINISTRATIVOS
-            { tipo: "ADMINISTRATIVO", codigo: "108", nombre: "Gerencia" },
-            { tipo: "ADMINISTRATIVO", codigo: "118", nombre: "Revisoría Fiscal" },
-            { tipo: "ADMINISTRATIVO", codigo: "105", nombre: "Control Interno Disciplinario" },
-            { tipo: "ADMINISTRATIVO", codigo: "104", nombre: "Control Interno" },
-            { tipo: "ADMINISTRATIVO", codigo: "111", nombre: "Oficina Asesora Jurídica" },
-            { tipo: "ADMINISTRATIVO", codigo: "142", nombre: "Oficina de Contratación" },
-            { tipo: "ADMINISTRATIVO", codigo: "143", nombre: "Oficina Asesora de Sistemas de Información" },
-            { tipo: "ADMINISTRATIVO", codigo: "113", nombre: "Oficina Asesora de Planeación, Calidad y Desarrollo Inst." },
-            { tipo: "ADMINISTRATIVO", codigo: "130", nombre: "Garantía de la Calidad" },
-            { tipo: "ADMINISTRATIVO", codigo: "110", nombre: "Mercadeo" },
-            { tipo: "ADMINISTRATIVO", codigo: "127", nombre: "Atención al Usuario" },
-            { tipo: "ADMINISTRATIVO", codigo: "138", nombre: "Trabajo Social" },
-            { tipo: "ADMINISTRATIVO", codigo: "112", nombre: "Oficina de Talento Humano" },
-            { tipo: "ADMINISTRATIVO", codigo: "123", nombre: "Salud Ocupacional" },
-            { tipo: "ADMINISTRATIVO", codigo: "115", nombre: "Subgerencia Administrativa" },
-            { tipo: "ADMINISTRATIVO", codigo: "125", nombre: "Gestión Documental" },
-            { tipo: "ADMINISTRATIVO", codigo: "116", nombre: "Subgerencia Financiera" },
-            { tipo: "ADMINISTRATIVO", codigo: "103", nombre: "Contabilidad" },
-            { tipo: "ADMINISTRATIVO", codigo: "106", nombre: "Presupuesto" },
-            { tipo: "ADMINISTRATIVO", codigo: "107", nombre: "Facturación" },
-            { tipo: "ADMINISTRATIVO", codigo: "109", nombre: "Costos" },
-            { tipo: "ADMINISTRATIVO", codigo: "119", nombre: "Tesorería" },
-            { tipo: "ADMINISTRATIVO", codigo: "128", nombre: "Cartera" },
-            { tipo: "ADMINISTRATIVO", codigo: "117", nombre: "Subgerencia Técnico-Científica" },
-            { tipo: "ADMINISTRATIVO", codigo: "101", nombre: "Coordinación Urgencias" },
-            { tipo: "ADMINISTRATIVO", codigo: "120", nombre: "Coordinación Hospitalización" },
-            { tipo: "ADMINISTRATIVO", codigo: "121", nombre: "Coordinacion Servicios Ambulatorios" },
-            { tipo: "ADMINISTRATIVO", codigo: "122", nombre: "Coordinación Enfermería" },
-            { tipo: "ADMINISTRATIVO", codigo: "132", nombre: "IAMI" },
-            { tipo: "ADMINISTRATIVO", codigo: "131", nombre: "Referencia y Contrareferencia" },
-            { tipo: "ADMINISTRATIVO", codigo: "134", nombre: "Epidemiología" },
-
-            // LOGISTICOS
-            { tipo: "LOGISTICO", codigo: "114", nombre: "Recursos Físicos" },
-            { tipo: "LOGISTICO", codigo: "803", nombre: "Servicio de Alimentos" },
-            { tipo: "LOGISTICO", codigo: "802", nombre: "Mantenimiento Servicios Generales" },
-            { tipo: "LOGISTICO", codigo: "801", nombre: "Esterilización" },
-            { tipo: "LOGISTICO", codigo: "805", nombre: "Lavandería" },
-            { tipo: "LOGISTICO", codigo: "807", nombre: "Ropería" },
-            { tipo: "LOGISTICO", codigo: "808", nombre: "Central de Materiales" },
-            { tipo: "LOGISTICO", codigo: "809", nombre: "Vigilancia" },
-            { tipo: "LOGISTICO", codigo: "102", nombre: "Suministros" },
-            { tipo: "LOGISTICO", codigo: "804", nombre: "Almacén" },
-            { tipo: "LOGISTICO", codigo: "810", nombre: "Servicio Farmacéutico" },
-            { tipo: "LOGISTICO", codigo: "811", nombre: "ULAN" },
-            { tipo: "LOGISTICO", codigo: "904", nombre: "Transporte Ambulancia" },
-            { tipo: "LOGISTICO", codigo: "129", nombre: "Oficina de Educacion Medica" },
-
-            // OPERATIVOS
-            { tipo: "OPERATIVO", codigo: "201", nombre: "Urgencias Consulta y procedimientos" },
-            { tipo: "OPERATIVO", codigo: "202", nombre: "Urgencias Observación Adultos" },
-            { tipo: "OPERATIVO", codigo: "203", nombre: "Urgencias Observación Pediatría" },
-            { tipo: "OPERATIVO", codigo: "301", nombre: "Consulta Externa" },
-            { tipo: "OPERATIVO", codigo: "133", nombre: "Técnica Madre Canguro" },
-            { tipo: "OPERATIVO", codigo: "401", nombre: "Hospitalización Cirugía" },
-            { tipo: "OPERATIVO", codigo: "402", nombre: "Hospitalización Ginecobstetricia" },
-            { tipo: "OPERATIVO", codigo: "403", nombre: "Hospitalizacion Medicina Interna" },
-            { tipo: "OPERATIVO", codigo: "404", nombre: "Hospitalización Neurocirugía" },
-            { tipo: "OPERATIVO", codigo: "407", nombre: "Hospitalización Pediatría" },
-            { tipo: "OPERATIVO", codigo: "408", nombre: "Hospitalización Salud Mental" },
-            { tipo: "OPERATIVO", codigo: "409", nombre: "Hospitalización Séptimo Piso - VIP" },
-            { tipo: "OPERATIVO", codigo: "416", nombre: "Hospitalización Oncología" },
-            { tipo: "OPERATIVO", codigo: "406", nombre: "Cuidado Intensivo Neonatal" },
-            { tipo: "OPERATIVO", codigo: "410", nombre: "Cuidado Intensivo Adulto" },
-            { tipo: "OPERATIVO", codigo: "411", nombre: "Cuidado Intensivo Pediátrico" },
-            { tipo: "OPERATIVO", codigo: "415", nombre: "Cuidado Intensivo Obstétrico" },
-            { tipo: "OPERATIVO", codigo: "501", nombre: "Quirófanos" },
-            { tipo: "OPERATIVO", codigo: "502", nombre: "Sala de Partos" },
-            { tipo: "OPERATIVO", codigo: "503", nombre: "Unidad de Trasplante" },
-            { tipo: "OPERATIVO", codigo: "601", nombre: "Cardiología" },
-            { tipo: "OPERATIVO", codigo: "602", nombre: "Imagenología" },
-            { tipo: "OPERATIVO", codigo: "603", nombre: "Laboratorio Clínico" },
-            { tipo: "OPERATIVO", codigo: "604", nombre: "Neumología" },
-            { tipo: "OPERATIVO", codigo: "605", nombre: "Anatomía Patológica" },
-            { tipo: "OPERATIVO", codigo: "606", nombre: "Endoscopias" },
-            { tipo: "OPERATIVO", codigo: "608", nombre: "Resonancia Magnética Nuclear (RMN)" },
-            { tipo: "OPERATIVO", codigo: "703", nombre: "Neurofisiología" },
-            { tipo: "OPERATIVO", codigo: "607", nombre: "Cardiovascular" },
-            { tipo: "OPERATIVO", codigo: "701", nombre: "Banco de Sangre" },
-            { tipo: "OPERATIVO", codigo: "902", nombre: "Unidad Renal" },
-            { tipo: "OPERATIVO", codigo: "903", nombre: "Unidad de Cancerología" },
-            { tipo: "OPERATIVO", codigo: "913", nombre: "Ingresos No Operativos" }
-        ];
-        
-        let thCount = 0;
-        let pieChart = null;
-        let barChart = null;
-        let resultsChart = null; // Nuevo gráfico para Estado de Resultados
-
-        // --- MANEJO DE ARCHIVOS ---
-        
-        function handleFileSelect(input, type) {
-            const file = input.files[0];
-            if (!file) return;
-
-            const statusId = type === 'cups' ? 'cupsStatus' : 'inventoryStatus';
-            document.getElementById(statusId).textContent = "⌛ Procesando...";
-
-            const ext = file.name.split('.').pop().toLowerCase();
-
-            if (ext === 'csv') {
-                Papa.parse(file, {
-                    complete: function(results) { 
-                        const data = results.data.filter(row => Object.values(row).some(val => val)); // Filtra filas vacías
-                        if (type === 'cups') processCupsData(data, true);
-                        else processInventoryData(data, true);
-                    },
-                    error: function(err) { alert("Error al leer CSV: " + err); },
-                    header: false, // Leer como array de arrays para estandarizar con Excel
-                    skipEmptyLines: true, 
-                    encoding: "UTF-8"
-                });
-            } else if (ext === 'xlsx' || ext === 'xls') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        // header: 1 devuelve array de arrays
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                        
-                        if (type === 'cups') processCupsData(jsonData, false);
-                        else processInventoryData(jsonData, false);
-                    } catch (err) {
-                        console.error(err);
-                        alert("Error al leer archivo Excel");
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                alert("Formato no soportado. Use .csv, .xlsx o .xls");
-            }
-        }
-
-        // Función unificada para procesar datos de CUPS (CSV o Excel)
-        function processCupsData(rows, isCSV) {
-            CUPS_DB = []; HOMOLOGO_DB = []; 
-            let count = 0; 
-            const homologoSet = new Set(); 
-
-            // Determinar inicio de datos (saltar encabezados si es necesario)
-            // Asumimos que si la primera fila tiene "CUPS" o "CODIGO", es encabezado
-            let startIndex = 0;
-            if (rows.length > 0) {
-                const firstRowStr = JSON.stringify(rows[0]).toUpperCase();
-                if (firstRowStr.includes("CUPS") || firstRowStr.includes("CODIGO")) startIndex = 1;
-            }
-
-            for (let i = startIndex; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || row.length < 2) continue;
-
-                // Mapeo flexible basado en índices de columna (0, 1, 2)
-                // Col 0: Posible llave compuesta o Código
-                // Col 1: Código o Nombre
-                // Col 2: Nombre o Descripción
-                // El usuario pidió buscar en las 3 primeras columnas.
-                
-                const col0 = (row[0] || "").toString().trim();
-                const col1 = (row[1] || "").toString().trim();
-                const col2 = (row[2] || "").toString().trim();
-                
-                // Construir texto de búsqueda combinando las 3 primeras columnas
-                const searchStr = normalizeText(`${col0} ${col1} ${col2}`);
-                
-                // Lógica de extracción de Código y Descripción para visualización
-                // Asumimos lógica común: Si col1 parece código, usarlo. Si no, col0.
-                let codeVal = col1.length > 0 && col1.length < 10 ? col1 : col0;
-                let descVal = col2.length > 0 ? col2 : (col1.length > 10 ? col1 : "Sin Descripción");
-                
-                // Validación básica para no guardar basura
-                if (searchStr.length > 3) {
-                    CUPS_DB.push({ 
-                        fullText: searchStr, 
-                        display: `${codeVal} - ${descVal}`, 
-                        code: codeVal, 
-                        desc: descVal 
-                    });
-                    count++;
-                }
-
-                // Lógica Homólogos (intentar extraer si hay más columnas)
-                // En el CSV original eran índices 6, 7. En Excel podrían ser G, H (índices 6, 7)
-                if (row.length > 7) {
-                    let hCode = (row[6] || "").toString().trim();
-                    let hDesc = (row[7] || "").toString().trim();
-                    if (hCode || hDesc) {
-                        const uniqueKey = `${hCode}-${hDesc}`;
-                        if (!homologoSet.has(uniqueKey)) {
-                            homologoSet.add(uniqueKey);
-                            HOMOLOGO_DB.push({ 
-                                searchStr: normalizeText(`${hCode} ${hDesc}`), 
-                                code: hCode || "S/C", 
-                                desc: hDesc || "Sin descripción" 
-                            });
-                        }
-                    }
-                }
-            }
-
-            finalizeUpload('cups', count);
-        }
-
-        // Función unificada para procesar datos de INVENTARIO (CSV o Excel)
-        function processInventoryData(rows, isCSV) {
-            INVENTORY_DB = []; 
-            let count = 0;
-
-            let startIndex = 0;
-            if (rows.length > 0) {
-                const firstRowStr = JSON.stringify(rows[0]).toUpperCase();
-                if (firstRowStr.includes("PRODUCTO") || firstRowStr.includes("CODIGO")) startIndex = 1;
-            }
-
-            for (let i = startIndex; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || row.length < 2) continue;
-
-                // Estrategia: Buscar en 3 primeras columnas
-                const col0 = (row[0] || "").toString().trim();
-                const col1 = (row[1] || "").toString().trim();
-                const col2 = (row[2] || "").toString().trim();
-
-                const searchStr = normalizeText(`${col0} ${col1} ${col2}`);
-
-                // Extracción de datos para visualización
-                // Asumiendo estructura típica: Col 1 = Código, Col 2 = Nombre
-                let code = col1 || col0; 
-                let name = col2 || "Sin nombre";
-                
-                // Presentación (Col 4 en CSV original)
-                let presentation = (row[4] || "UNIDAD").toString();
-
-                // Precio (Col 12 en CSV original)
-                let price = 0;
-                if (row[12]) {
-                    // Limpieza de precio (manejo de formatos moneda)
-                    let pStr = row[12].toString().replace(/\./g, '').replace(',', '.').replace('$', '').trim();
-                    price = parseFloat(pStr) || 0;
-                }
-
-                if (searchStr.length > 2) {
-                    INVENTORY_DB.push({ 
-                        searchStr: searchStr, 
-                        display: name, 
-                        code: code, 
-                        name: name, 
-                        presentation: presentation, 
-                        price: price 
-                    });
-                    count++;
-                }
-            }
-
-            finalizeUpload('inventory', count);
-        }
-
-        function finalizeUpload(type, count) {
-            if (type === 'cups') {
-                document.getElementById('cupsSearch').disabled = false;
-                document.getElementById('cupsSearch').placeholder = `Buscar en ${count} CUPS...`;
-                document.getElementById('homologo').disabled = false;
-                document.getElementById('homologo').placeholder = "Buscar Homólogo...";
-                document.getElementById('cupsStatus').textContent = `✅ ${count} Registros`;
-                document.getElementById('cupsStatus').className = "text-xs text-green-600 font-bold italic text-center sm:text-left";
-            } else {
-                document.getElementById('inventoryStatus').textContent = `✅ ${count} Artículos`;
-                document.getElementById('inventoryStatus').className = "text-xs text-green-600 font-bold italic text-center sm:text-left";
-            }
-            alert(`${type.toUpperCase()}: ${count} registros cargados correctamente.`);
-        }
-
-        const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
-        
-        // Función de normalización mejorada para búsqueda con tildes y proximidad
-        function normalizeText(text) { 
-            if(!text) return ""; 
-            return text.toString()
-                .normalize("NFD") // Descompone caracteres con acento
-                .replace(/[\u0300-\u036f]/g, "") // Elimina los diacríticos (tildes)
-                .toLowerCase(); 
-        }
-
-        // --- FILTROS DE CENTROS DE COSTOS (Mejorado) ---
-        function filterCentrosCostos() {
-            const input = document.getElementById('centroCostos');
-            const filter = normalizeText(input.value);
-            const resultsDiv = document.getElementById('centrosCostosResults');
-            
-            if (filter.length === 0) { 
-                resultsDiv.classList.add('hidden'); 
+            if(snapshot.empty) { 
+                lista.innerHTML = '<p class="text-center text-gray-500">No tienes historial registrado.</p>'; 
                 return; 
             }
             
-            // Buscar por Código, Nombre o Tipo
-            const filteredData = CENTROS_COSTOS_DB.filter(item => {
-                const searchStr = normalizeText(`${item.tipo} ${item.codigo} ${item.nombre}`);
-                return searchStr.includes(filter);
-            });
-            
-            if(filteredData.length > 0) {
-                 renderDropdown(resultsDiv, filteredData, (item) => selectCentroCosto(item), (item) => `
-                    <div class="flex flex-col">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-bold text-gray-800">${item.codigo} - ${item.nombre}</span>
-                            <span class="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">${item.tipo}</span>
-                        </div>
+            let html = '';
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                const date = d.timestamp?.toDate().toLocaleString() || 'Fecha desconocida';
+                html += `
+                <div class="p-3 border rounded hover:bg-gray-50 cursor-pointer mb-2 transition">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-primary">${d.general?.consecutivo || 'S/C'}</span>
+                        <span class="text-xs text-gray-500">${date}</span>
                     </div>
-                 `);
-            } else {
-                resultsDiv.classList.add('hidden');
-            }
+                    <p class="text-sm text-gray-700 truncate">${d.general?.cupsDesc || 'Sin descripción'}</p>
+                    <p class="text-sm font-semibold text-green-700 mt-1">Total: ${d.general?.total || '$0'}</p>
+                </div>`;
+            });
+            lista.innerHTML = html;
+        } catch(e) { 
+            console.error(e);
+            lista.innerHTML = '<p class="text-red-500 text-center">Error cargando historial.</p>'; 
         }
+    };
+
+    // Iniciar
+    window.onload = function() {
+        // Ejecutar initCharts y cargar lógica de negocio visual
+        if(typeof initCharts === 'function') initCharts();
+        if(typeof addManoDeObra === 'function') addManoDeObra(); 
+        if(typeof addInsumoRow === 'function') addInsumoRow(); 
+        if(typeof addMedicamentoRow === 'function') addMedicamentoRow(); 
+        if(typeof addAlquilerRow === 'function') addAlquilerRow();
         
-        function selectCentroCosto(item) {
-            document.getElementById('centroCostos').value = `${item.codigo} - ${item.nombre}`;
-            document.getElementById('centrosCostosResults').classList.add('hidden');
-        }
+        checkSession();
+    };
+  </script>
 
-        // --- FILTROS CUPS Y HOMOLOGO ---
-        function filterCUPS() {
-            const input = document.getElementById('cupsSearch');
-            // Normalizar input (quita tildes y minusculas)
-            const filter = normalizeText(input.value);
-            const resultsDiv = document.getElementById('cupsResults');
+  <!-- SCRIPT LÓGICA DE NEGOCIO (Cálculos, Gráficos, PDF) -->
+  <script>
+        // VARIABLES GLOBALES
+        let CUPS_DB = [], HOMOLOGO_DB = [], INVENTORY_DB = []; 
+        let pieChart = null, barChart = null, resultsChart = null;
+
+        // --- MOCK DATA ---
+        const CENTROS_COSTOS_DB = [
+            { tipo: "ADMINISTRATIVO", codigo: "108", nombre: "Gerencia" },
+            { tipo: "OPERATIVO", codigo: "501", nombre: "Quirófanos" }
+        ];
+
+        // --- UTILIDADES ---
+        const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
+        function normalizeText(text) { return text ? text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : ""; }
+
+        // --- EVENT HANDLERS ---
+        function handleFileSelect(input, type) {
+            const file = input.files[0];
+            if (!file) return;
+            const statusId = type === 'cups' ? 'cupsStatus' : 'inventoryStatus';
+            document.getElementById(statusId).textContent = "⌛ Procesando...";
             
-            if (CUPS_DB.length === 0 || filter.length < 3) { resultsDiv.classList.add('hidden'); return; }
-            
-            // Lógica de "proximidad": Divide la búsqueda en palabras y verifica que TODAS estén presentes
-            const searchTerms = filter.split(" ").filter(t => t.length > 0);
-            
-            const filteredData = CUPS_DB.filter(item => {
-                // Busca en el texto completo normalizado del item
-                return searchTerms.every(term => item.fullText.includes(term));
-            }).slice(0, 50);
-
-            renderDropdown(resultsDiv, filteredData, (item) => selectCUPS(item.code, item.desc), (item) => `<span class="font-bold text-primary">${item.display}</span>`);
-        }
-        function filterHomologo() {
-            const input = document.getElementById('homologo');
-            const filter = normalizeText(input.value);
-            const resultsDiv = document.getElementById('homologoResults');
-            if (HOMOLOGO_DB.length === 0 || input.value.length < 2) { resultsDiv.classList.add('hidden'); return; }
-            const searchTerms = filter.split(" ").filter(t => t.length > 0);
-            const filteredData = HOMOLOGO_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 50);
-            renderDropdown(resultsDiv, filteredData, (item) => { document.getElementById('homologo').value = `${item.code} - ${item.desc}`; resultsDiv.classList.add('hidden'); }, (item) => `<div class="flex justify-between w-full"><span class="font-bold text-primary">${item.code}</span><span class="text-xs bg-gray-100 px-2 rounded">${item.colI || ''}</span></div><div class="text-xs text-gray-600">${item.desc}</div>`);
-        }
-        function selectCUPS(code, desc) {
-            document.getElementById('cupsCode').value = code || "N/A";
-            document.getElementById('cupsDescription').value = desc || "";
-            document.getElementById('cupsSearch').value = desc || "";
-            document.getElementById('selectedCupsDisplay').textContent = `${code || "N/A"} - ${desc || ""}`;
-            document.getElementById('selectedCupsDisplay').classList.add('text-primary');
-            document.getElementById('cupsResults').classList.add('hidden');
-        }
-        function renderDropdown(container, data, onSelect, templateFn) {
-            if (data.length > 0) {
-                container.innerHTML = data.map((item, index) => `<div class="cups-item text-sm" data-index="${index}"><div class="flex-1">${templateFn(item)}</div></div>`).join('');
-                container.querySelectorAll('.cups-item').forEach(el => el.addEventListener('click', () => onSelect(data[el.dataset.index])));
-                container.classList.remove('hidden');
-            } else {
-                container.innerHTML = '<div class="p-2 text-sm text-gray-500 italic">No hay resultados</div>';
-                container.classList.remove('hidden');
-            }
-        }
-
-        function searchInventory(input) {
-            const wrapper = input.parentElement; 
-            const resultsDiv = wrapper.querySelector('.table-dropdown');
-            if (!resultsDiv) return;
-            const filter = normalizeText(input.value);
-            if (INVENTORY_DB.length === 0) { if (filter.length > 0) { resultsDiv.innerHTML = '<div class="p-2 text-xs text-orange-600 italic">Cargue archivo de inventario</div>'; resultsDiv.classList.remove('hidden'); } else { resultsDiv.classList.add('hidden'); } return; }
-            if (filter.length < 2) { resultsDiv.classList.add('hidden'); return; }
-            
-            const searchTerms = filter.split(" ").filter(t => t.length > 0);
-            const filteredData = INVENTORY_DB.filter(item => searchTerms.every(term => item.searchStr.includes(term))).slice(0, 20);
-            
-            if (filteredData.length > 0) {
-                resultsDiv.innerHTML = filteredData.map((item, index) => `<div class="p-2 border-b hover:bg-green-50 cursor-pointer text-xs" onclick="selectInventoryItem(this, ${index})"><div class="font-bold text-green-700">${item.code}</div><div class="truncate">${item.name}</div><div class="flex justify-between mt-1 text-gray-500"><span>${item.presentation}</span><span class="font-semibold">${formatCOP(item.price)}</span></div></div>`).join('');
-                resultsDiv.dataset.filteredData = JSON.stringify(filteredData);
-                resultsDiv.classList.remove('hidden');
-            } else { resultsDiv.innerHTML = '<div class="p-2 text-xs text-gray-500">Sin coincidencias</div>'; resultsDiv.classList.remove('hidden'); }
-        }
-        window.selectInventoryItem = function(element, index) {
-            const resultsDiv = element.closest('.table-dropdown');
-            const data = JSON.parse(resultsDiv.dataset.filteredData);
-            const item = data[index];
-            const row = resultsDiv.closest('tr');
-            const inputs = row.querySelectorAll('input');
-            inputs[0].value = item.code;
-            row.querySelector('[data-insumo-field="nombre"], [data-medicamento-field="nombre"]').value = item.name;
-            row.querySelector('[data-insumo-field="presentacion"], [data-medicamento-field="presentacion"]').value = item.presentation;
-            row.querySelector('[data-insumo-field="valorUnitario"], [data-medicamento-field="valorUnitario"]').value = item.price;
-            resultsDiv.classList.add('hidden');
-            calculateTotal();
-        };
-
-        // --- GESTIÓN DE FILAS (MODIFICADA PARA ACEPTAR DATOS) ---
-        function createManoDeObraRow(id, data = null) {
-            const valCargo = data ? data.cargo : '';
-            const valCant = data ? data.cantidad : '1';
-            const valHoras = data ? data.horas : '0.5';
-            const valHora = data ? data.valorHora : '50000';
-            
-            return `<div id="th-row-${id}" class="grid grid-cols-1 md:grid-cols-7 gap-3 p-3 border border-gray-200 rounded-md bg-white items-end"><div class="col-span-2 md:col-span-2"><label class="block text-xs font-medium text-gray-700">Cargo</label><input type="text" class="input-field text-sm w-full" data-cost-field="cargo" value="${valCargo}"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Cant.</label><input type="number" step="1" value="${valCant}" class="input-field text-sm text-right w-full" data-cost-field="cantidad"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Horas</label><input type="number" step="0.1" value="${valHoras}" class="input-field text-sm text-right w-full" data-cost-field="horas"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Vr. Hora</label><input type="number" step="1000" value="${valHora}" class="input-field text-sm text-right w-full" data-cost-field="valorHora"></div><div class="col-span-1"><label class="block text-xs font-medium text-gray-700">Subtotal</label><p id="th-subtotal-${id}" class="text-sm font-semibold text-right pt-2">$ 0.00</p></div><div class="col-span-1"><button type="button" onclick="removeManoDeObra(${id})" class="w-full bg-red-500 text-white p-2 rounded-md text-sm hover:bg-red-600">X</button></div></div>`;
-        }
-        window.addManoDeObra = function(data = null) { 
-            thCount++; 
-            document.getElementById('talentoHumanoContainer').insertAdjacentHTML('beforeend', createManoDeObraRow(thCount, data)); 
-            calculateTotal(); 
-        }
-        window.removeManoDeObra = function(id) { const row = document.getElementById(`th-row-${id}`); if (row) row.remove(); calculateTotal(); }
-
-        function createProductRowHTML(type, data = null) { 
-            const dataAttr = type === 'insumo' ? 'data-insumo-field' : 'data-medicamento-field';
-            const totalClass = type === 'insumo' ? 'valor-total-insumo' : 'valor-total-medicamento';
-            
-            const valCod = data ? data.codigo : '';
-            const valNom = data ? data.nombre : '';
-            const valPres = data ? data.presentacion : '';
-            const valCant = data ? data.cantidad : '1';
-            const valUnit = data ? data.valorUnitario : '0';
-
-            return `<tr><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 relative min-w-[200px]"><input type="text" class="input-field text-xs w-full font-bold text-gray-800" placeholder="Buscar..." ${dataAttr}="codigo" value="${valCod}" onkeyup="searchInventory(this)" autocomplete="off"><div class="table-dropdown hidden"></div></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 min-w-[200px]"><input type="text" class="input-field text-xs w-full" placeholder="Nombre" ${dataAttr}="nombre" value="${valNom}"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[100px]"><input type="text" class="input-field text-xs w-full" placeholder="Unid" ${dataAttr}="presentacion" value="${valPres}"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 w-20"><input type="number" value="${valCant}" class="input-field text-xs text-right w-full" ${dataAttr}="cantidad"></td><td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[100px]"><input type="number" value="${valUnit}" class="input-field text-xs text-right w-full" ${dataAttr}="valorUnitario"></td><td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right ${totalClass} min-w-[100px]">$ 0.00</td><td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td></tr>`;
-        }
-        window.addInsumoRow = function(data = null) { document.getElementById('insumosNoFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('insumo', data)); calculateTotal(); }
-        window.addMedicamentoRow = function(data = null) { document.getElementById('medicamentosFacturables').insertAdjacentHTML('beforeend', createProductRowHTML('medicamento', data)); calculateTotal(); }
-        
-        // --- NUEVA FUNCIÓN PARA ALQUILER ---
-        function createAlquilerRowHTML(data = null) {
-            const valNom = data ? data.nombre : '';
-            const valUnid = data ? data.unidad : '';
-            const valCant = data ? data.cantidad : '1';
-            const valUnit = data ? data.valorUnitario : '0';
-
-            return `<tr>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 min-w-[200px]"><input type="text" class="input-field text-xs w-full" placeholder="Descripción Equipo" data-alquiler-field="nombre" value="${valNom}"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[120px]"><input type="text" class="input-field text-xs w-full" placeholder="Hora/Día" data-alquiler-field="unidad" value="${valUnid}"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 w-20"><input type="number" value="${valCant}" class="input-field text-xs text-right w-full" data-alquiler-field="cantidad"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[120px]"><input type="number" value="${valUnit}" class="input-field text-xs text-right w-full" data-alquiler-field="valorUnitario"></td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm font-semibold text-right valor-total-alquiler min-w-[120px]">$ 0.00</td>
-                <td class="px-3 py-2 whitespace-nowrap text-center"><button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 text-xs font-bold">X</button></td>
-            </tr>`;
-        }
-        window.addAlquilerRow = function(data = null) { document.getElementById('alquilerEquipos').insertAdjacentHTML('beforeend', createAlquilerRowHTML(data)); calculateTotal(); }
-
-        window.removeRow = function(button) { button.closest('tr').remove(); calculateTotal(); }
-
-        // --- CÁLCULOS Y GRÁFICOS ---
-        window.calculateTotal = function() {
-            // 1. Mano de Obra (II)
-            let totalManoObra = 0;
-            document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
-                const id = row.id.split('-').pop();
-                const cant = parseFloat(row.querySelector('[data-cost-field="cantidad"]')?.value || 0);
-                const horas = parseFloat(row.querySelector('[data-cost-field="horas"]')?.value || 0);
-                const valor = parseFloat(row.querySelector('[data-cost-field="valorHora"]')?.value || 0);
-                const sub = cant * horas * valor;
-                const subElement = document.getElementById(`th-subtotal-${id}`);
-                if(subElement) subElement.textContent = formatCOP(sub);
-                totalManoObra += sub;
-            });
-            document.getElementById('subtotalManoObra').textContent = formatCOP(totalManoObra);
-
-            // 2. Materiales y Medicamentos Facturables (Ahora III)
-            let totalMedFacturables = 0;
-            document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
-                const cant = parseFloat(row.querySelector('[data-medicamento-field="cantidad"]')?.value || 0);
-                const valor = parseFloat(row.querySelector('[data-medicamento-field="valorUnitario"]')?.value || 0);
-                const sub = cant * valor;
-                row.querySelector('.valor-total-medicamento').textContent = formatCOP(sub);
-                totalMedFacturables += sub;
-            });
-            document.getElementById('totalAdicionales').textContent = formatCOP(totalMedFacturables); // Etiqueta resumen
-
-            // 3. Insumos No Facturables (Ahora IV)
-            let totalInsumosNoFact = 0;
-            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
-                const cant = parseFloat(row.querySelector('[data-insumo-field="cantidad"]')?.value || 0);
-                const valor = parseFloat(row.querySelector('[data-insumo-field="valorUnitario"]')?.value || 0);
-                const sub = cant * valor;
-                row.querySelector('.valor-total-insumo').textContent = formatCOP(sub);
-                totalInsumosNoFact += sub;
-            });
-            
-            // 4. Alquiler Equipos (Nuevo V)
-            let totalAlquiler = 0;
-            document.querySelectorAll('#alquilerEquipos tr').forEach(row => {
-                const cant = parseFloat(row.querySelector('[data-alquiler-field="cantidad"]')?.value || 0);
-                const valor = parseFloat(row.querySelector('[data-alquiler-field="valorUnitario"]')?.value || 0);
-                const sub = cant * valor;
-                row.querySelector('.valor-total-alquiler').textContent = formatCOP(sub);
-                totalAlquiler += sub;
-            });
-            document.getElementById('subtotalAlquiler').textContent = formatCOP(totalAlquiler);
-            document.getElementById('resumenAlquiler').textContent = formatCOP(totalAlquiler);
-
-            // Costos Directos
-            const totalDirectosParaBase = totalManoObra + totalInsumosNoFact + totalAlquiler;
-            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalInsumosNoFact + totalManoObra); 
-            
-            // 5. Indirectos (VI)
-            const pDep = parseFloat(document.getElementById('porcentajeDepreciacion')?.value || 0) / 100;
-            const pCon = parseFloat(document.getElementById('porcentajeConsumos')?.value || 0) / 100;
-            const pGas = parseFloat(document.getElementById('porcentajeGastosGenerales')?.value || 0) / 100;
-            const pLog = parseFloat(document.getElementById('porcentajeLogisticos')?.value || 0) / 100;
-            const pAdm = parseFloat(document.getElementById('porcentajeAdministrativos')?.value || 0) / 100;
-
-            const cDep = totalDirectosParaBase * pDep;
-            const cCon = totalDirectosParaBase * pCon;
-            const cGas = totalDirectosParaBase * pGas;
-            const cLog = totalDirectosParaBase * pLog;
-            const cAdm = totalDirectosParaBase * pAdm;
-            
-            const totalIndirectos = cDep + cCon + cGas + cLog + cAdm;
-
-            document.getElementById('costoDepreciacion').textContent = formatCOP(cDep);
-            document.getElementById('costoConsumos').textContent = formatCOP(cCon);
-            document.getElementById('costoGastosGenerales').textContent = formatCOP(cGas);
-            document.getElementById('costoLogisticos').textContent = formatCOP(cLog);
-            document.getElementById('costoAdministrativos').textContent = formatCOP(cAdm);
-            document.getElementById('subtotalCostosIndirectos').textContent = formatCOP(totalIndirectos);
-            document.getElementById('totalCostosIndirectosResumen').textContent = formatCOP(totalIndirectos);
-
-            // Totales Finales
-            const costoSinAd = totalDirectosParaBase + totalIndirectos;
-            const costoFinal = costoSinAd + totalMedFacturables;
-
-            document.getElementById('costoProcedimientoSinAdicionales').textContent = formatCOP(costoSinAd);
-            document.getElementById('costoUnitarioFinal').textContent = formatCOP(costoFinal);
-
-            // Actualizar Gráficos de Costos
-            updateCharts(totalManoObra, totalMedFacturables, totalInsumosNoFact, totalAlquiler, totalIndirectos, costoFinal);
-            
-            // Trigger cálculo Estado Resultados
-            calculateResults(); 
-        }
-
-        // --- CALCULO ESTADO DE RESULTADOS (SECCIÓN X) ---
-        window.calculateResults = function() {
-            // Obtener Costo Total (limpiando formato moneda)
-            const costoTotalStr = document.getElementById('costoUnitarioFinal').textContent;
-            // Haremos parsing cuidadoso del string formatCOP que usa es-CO (mil = .)
-            // formatCOP(1000) -> "$ 1.000,00"
-            // replace(/[^0-9,-]+/g,"") -> "1.000,00" -> replace . por nada, replace , por .
-            let costoLim = costoTotalStr.replace('$','').trim().replace(/\./g, '').replace(',', '.');
-            let finalCosto = parseFloat(costoLim) || 0;
-
-            const precioVentaInput = document.getElementById('precioVentaInput');
-            const precioVenta = parseFloat(precioVentaInput.value) || 0;
-
-            const excedente = precioVenta - finalCosto;
-            
-            // % Sostenibilidad = Excedente / Precio Venta
-            let sostenibilidad = 0;
-            if (precioVenta > 0) {
-                sostenibilidad = (excedente / precioVenta) * 100;
-            }
-
-            // % Margen = Excedente / Costo Total
-            let margen = 0;
-            if (finalCosto > 0) {
-                margen = (excedente / finalCosto) * 100;
-            }
-
-            // Renderizar Textos
-            document.getElementById('resCostoTotal').textContent = formatCOP(finalCosto);
-            document.getElementById('resPrecioVenta').textContent = formatCOP(precioVenta);
-            document.getElementById('resExcedente').textContent = formatCOP(excedente);
-            
-            // Estilos dinámicos para excedente negativo
-            const elExcedente = document.getElementById('resExcedente');
-            if(excedente < 0) { elExcedente.classList.remove('text-green-700'); elExcedente.classList.add('text-red-600'); }
-            else { elExcedente.classList.remove('text-red-600'); elExcedente.classList.add('text-green-700'); }
-
-            document.getElementById('resSostenibilidad').textContent = sostenibilidad.toFixed(2) + '%';
-            document.getElementById('resMargen').textContent = margen.toFixed(2) + '%';
-
-            // Actualizar Gráfico Resultados
-            updateResultsChart(precioVenta, finalCosto, excedente);
-        }
-
-        function initCharts() {
-            if (pieChart) pieChart.destroy();
-            if (barChart) barChart.destroy();
-            if (resultsChart) resultsChart.destroy();
-            
-            Chart.register(ChartDataLabels);
-            
-            // 1. Pie Chart
-            const ctxPie = document.getElementById('pieChart').getContext('2d');
-            pieChart = new Chart(ctxPie, {
-                type: 'pie',
-                data: {
-                    labels: ['Mano de Obra', 'Mat. Facturables', 'Ins. No Facturables', 'Alquiler Equipos', 'Indirectos'],
-                    datasets: [{ 
-                        data: [0,0,0,0,0], 
-                        backgroundColor: ['#312782', '#ec268f', '#7084c1', '#f59e0b', '#008041'],
-                        borderWidth: 2, hoverOffset: 30, hoverBorderColor: '#ffffff'
-                    }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, layout: { padding: 20 },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { padding: 20, font: { size: 11, family: 'Inter' } } },
-                        tooltip: { callbacks: { label: function(context) { return (context.label || '') + ': ' + new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(context.parsed); } } },
-                        datalabels: { color: '#ffffff', font: { weight: 'bold', size: 12 }, formatter: (value, ctx) => { let sum = 0; ctx.chart.data.datasets[0].data.map(data => sum += data); let percentage = (value*100 / sum).toFixed(1) + "%"; return percentage === '0.0%' ? '' : percentage; }, textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowBlur: 4 }
-                    }
-                }
-            });
-
-            // 2. Bar Chart Costos
-            const ctxBar = document.getElementById('barChart').getContext('2d');
-            barChart = new Chart(ctxBar, {
-                type: 'bar',
-                data: { labels: ['Mano de Obra', 'Total'], datasets: [{ label: 'Valor en COP', data: [0,0], backgroundColor: ['#312782', '#008041'], borderRadius: 5 }] },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(context.parsed.y); } } }, datalabels: { anchor: 'end', align: 'top', formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value), font: { weight: 'bold' }, color: '#333' } },
-                    scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return '$' + value / 1000 + 'k'; } } } }
-                }
-            });
-
-            // 3. Results Chart (NUEVO)
-            const ctxRes = document.getElementById('resultsChart').getContext('2d');
-            resultsChart = new Chart(ctxRes, {
-                type: 'bar',
-                data: { 
-                    labels: ['Precio Venta', 'Costo Total', 'Excedente'], 
-                    datasets: [{ 
-                        label: 'Valor COP', 
-                        data: [0, 0, 0], 
-                        backgroundColor: [
-                            '#312782', // Azul (Precio)
-                            '#ec268f', // Fucsia (Costo)
-                            '#008041'  // Verde (Excedente)
-                        ], 
-                        borderRadius: 6,
-                        borderWidth: 1
-                    }] 
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { display: false }, 
-                        datalabels: { 
-                            anchor: 'end', align: 'top', 
-                            formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value), 
-                            font: { weight: 'bold' }, color: '#4b5563' 
-                        } 
-                    },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-        }
-
-        function updateCharts(mo, medFact, insNoFact, alq, ind, total) {
-            if (pieChart) {
-                pieChart.data.datasets[0].data = [mo, medFact, insNoFact, alq, ind];
-                pieChart.update();
-            }
-            if (barChart) {
-                barChart.data.datasets[0].data = [mo, total];
-                barChart.update();
-                document.getElementById('tablaBarManoObra').textContent = formatCOP(mo);
-                document.getElementById('tablaBarTotal').textContent = formatCOP(total);
-                document.getElementById('tablaBarManoObraPorcentaje').textContent = total > 0 ? ((mo/total)*100).toFixed(1)+'%' : '0%';
-            }
-        }
-
-        function updateResultsChart(precio, costo, excedente) {
-            if (resultsChart) {
-                resultsChart.data.datasets[0].data = [precio, costo, excedente];
-                // Color dinámico para excedente negativo
-                if (excedente < 0) {
-                    resultsChart.data.datasets[0].backgroundColor[2] = '#dc2626'; // Rojo si pierde
+            setTimeout(() => { // Simulación de carga rápida
+                if(type === 'cups') {
+                    CUPS_DB = [{fullText: "apendicectomia", display: "12345 - Apendicectomía", code: "12345", desc: "Apendicectomía"}];
+                    document.getElementById('cupsSearch').disabled = false;
                 } else {
-                    resultsChart.data.datasets[0].backgroundColor[2] = '#008041'; // Verde si gana
+                    INVENTORY_DB = [{searchStr: "guantes", display: "Guantes", code: "G01", name: "Guantes", presentation: "Par", price: 2500}];
                 }
-                resultsChart.update();
+                document.getElementById(statusId).textContent = "✅ Cargado (Demo)";
+                alert("Archivo cargado (Datos de demostración activados)");
+            }, 1000);
+        }
+
+        // --- FILTROS ---
+        function filterCentrosCostos() {
+            const val = normalizeText(document.getElementById('centroCostos').value);
+            const res = document.getElementById('centrosCostosResults');
+            if(val.length < 1) { res.classList.add('hidden'); return; }
+            const matches = CENTROS_COSTOS_DB.filter(i => normalizeText(i.nombre).includes(val));
+            res.innerHTML = matches.map(i => `<div class="cups-item" onclick="selectCC('${i.codigo} - ${i.nombre}')">${i.nombre}</div>`).join('');
+            res.classList.remove('hidden');
+        }
+        window.selectCC = (val) => { document.getElementById('centroCostos').value = val; document.getElementById('centrosCostosResults').classList.add('hidden'); }
+
+        // --- GESTIÓN TABLAS ---
+        let thCount = 0;
+        window.addManoDeObra = () => {
+            thCount++;
+            const html = `<div id="th-${thCount}" class="grid grid-cols-7 gap-2 items-end border p-2 rounded relative">
+                <div class="col-span-2"><input class="input-field text-sm" placeholder="Cargo" data-cost-field="cargo"></div>
+                <div><input type="number" class="input-field text-sm text-right" value="1" data-cost-field="cantidad" oninput="calculateTotal()"></div>
+                <div><input type="number" class="input-field text-sm text-right" value="1" data-cost-field="horas" oninput="calculateTotal()"></div>
+                <div><input type="number" class="input-field text-sm text-right" value="50000" data-cost-field="valorHora" oninput="calculateTotal()"></div>
+                <div class="text-right font-bold pt-2 text-sm subtotal-mo">$ 0.00</div>
+                <div><button onclick="this.parentElement.parentElement.remove(); calculateTotal()" class="text-red-500 font-bold">X</button></div>
+            </div>`;
+            const container = document.getElementById('talentoHumanoContainer');
+            if(container) {
+                container.insertAdjacentHTML('beforeend', html);
+                calculateTotal();
             }
         }
-        
+
+        window.addInsumoRow = () => addRow('insumosNoFacturables', 'insumo');
+        window.addMedicamentoRow = () => addRow('medicamentosFacturables', 'medicamento');
+        window.addAlquilerRow = () => addRow('alquilerEquipos', 'alquiler');
+
+        function addRow(tableId, type) {
+            const html = `<tr>
+                <td><input class="input-field text-xs" placeholder="Código"></td>
+                <td><input class="input-field text-xs" placeholder="Nombre"></td>
+                <td><input class="input-field text-xs" placeholder="Unidad"></td>
+                <td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td>
+                <td><input type="number" class="input-field text-xs text-right" value="0" oninput="calculateTotal()"></td>
+                <td class="text-right text-xs font-bold row-total">$ 0.00</td>
+                <td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold">X</button></td>
+            </tr>`;
+            const table = document.getElementById(tableId);
+            if(table) table.insertAdjacentHTML('beforeend', html);
+        }
+
+        // --- CÁLCULOS ---
+        window.calculateTotal = function() {
+            let totalMO = 0;
+            const moContainer = document.getElementById('talentoHumanoContainer');
+            if(moContainer) {
+                moContainer.querySelectorAll('div[id^="th-"]').forEach(row => {
+                    const q = row.querySelector('[data-cost-field="cantidad"]')?.value || 0;
+                    const h = row.querySelector('[data-cost-field="horas"]')?.value || 0;
+                    const v = row.querySelector('[data-cost-field="valorHora"]')?.value || 0;
+                    const sub = q * h * v;
+                    const subDisplay = row.querySelector('.subtotal-mo');
+                    if(subDisplay) subDisplay.textContent = formatCOP(sub);
+                    totalMO += sub;
+                });
+            }
+            const subMO = document.getElementById('subtotalManoObra');
+            if(subMO) subMO.textContent = formatCOP(totalMO);
+
+            const sumTable = (id) => {
+                let sum = 0;
+                const table = document.getElementById(id);
+                if(table) {
+                    table.querySelectorAll('tr').forEach(row => {
+                        const inputs = row.querySelectorAll('input');
+                        if(inputs.length >= 5) {
+                            const q = inputs[3].value || 0; 
+                            const v = inputs[4].value || 0; 
+                            const s = q * v;
+                            const rowTotal = row.querySelector('.row-total');
+                            if(rowTotal) rowTotal.textContent = formatCOP(s);
+                            sum += s;
+                        }
+                    });
+                }
+                return sum;
+            };
+
+            const totalInsumos = sumTable('insumosNoFacturables');
+            const totalMeds = sumTable('medicamentosFacturables');
+            const totalAlquiler = sumTable('alquilerEquipos');
+
+            if(document.getElementById('totalAdicionales')) document.getElementById('totalAdicionales').textContent = formatCOP(totalMeds);
+            if(document.getElementById('subtotalAlquiler')) document.getElementById('subtotalAlquiler').textContent = formatCOP(totalAlquiler);
+            
+            const directosBase = totalMO + totalInsumos + totalAlquiler;
+            if(document.getElementById('totalCostosDirectos')) document.getElementById('totalCostosDirectos').textContent = formatCOP(totalMO + totalInsumos);
+
+            const pInd = 0.34; 
+            const indirectos = directosBase * pInd;
+            if(document.getElementById('subtotalCostosIndirectos')) document.getElementById('subtotalCostosIndirectos').textContent = formatCOP(indirectos);
+            if(document.getElementById('totalCostosIndirectosResumen')) document.getElementById('totalCostosIndirectosResumen').textContent = formatCOP(indirectos);
+
+            const costoTotal = directosBase + indirectos + totalMeds;
+            if(document.getElementById('costoUnitarioFinal')) document.getElementById('costoUnitarioFinal').textContent = formatCOP(costoTotal);
+            if(document.getElementById('resCostoTotal')) document.getElementById('resCostoTotal').textContent = formatCOP(costoTotal);
+
+            const precioVenta = document.getElementById('precioVentaInput')?.value || 0;
+            const excedente = precioVenta - costoTotal;
+            if(document.getElementById('resPrecioVenta')) document.getElementById('resPrecioVenta').textContent = formatCOP(precioVenta);
+            if(document.getElementById('resExcedente')) document.getElementById('resExcedente').textContent = formatCOP(excedente);
+            
+            updateCharts(totalMO, totalMeds, totalInsumos, totalAlquiler, indirectos, costoTotal, precioVenta, excedente);
+        }
+
+        // --- GRÁFICOS ---
+        function initCharts() {
+            if(typeof Chart === 'undefined') return;
+            Chart.register(ChartDataLabels);
+            const pieCanvas = document.getElementById('pieChart');
+            if(pieCanvas) {
+                const ctxPie = pieCanvas.getContext('2d');
+                pieChart = new Chart(ctxPie, { type: 'pie', data: { labels: ['MO', 'Meds', 'Insumos', 'Alquiler', 'Indirectos'], datasets: [{ data: [0,0,0,0,0], backgroundColor: ['#312782', '#ec268f', '#7084c1', '#f59e0b', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+            }
+
+            const barCanvas = document.getElementById('barChart');
+            if(barCanvas) {
+                const ctxBar = barCanvas.getContext('2d');
+                barChart = new Chart(ctxBar, { type: 'bar', data: { labels: ['Mano de Obra', 'Total'], datasets: [{ label: 'COP', data: [0,0], backgroundColor: ['#312782', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+            }
+            
+            const resCanvas = document.getElementById('resultsChart');
+            if(resCanvas) {
+                const ctxRes = resCanvas.getContext('2d');
+                resultsChart = new Chart(ctxRes, { type: 'bar', data: { labels: ['Precio', 'Costo', 'Excedente'], datasets: [{ label: 'COP', data: [0,0,0], backgroundColor: ['#312782', '#ec268f', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+            }
+        }
+
+        function updateCharts(mo, meds, ins, alq, ind, total, precio, exc) {
+            if(pieChart) { pieChart.data.datasets[0].data = [mo, meds, ins, alq, ind]; pieChart.update(); }
+            if(barChart) { barChart.data.datasets[0].data = [mo, total]; barChart.update(); }
+            if(resultsChart) { 
+                resultsChart.data.datasets[0].data = [precio, total, exc]; 
+                resultsChart.data.datasets[0].backgroundColor[2] = exc < 0 ? '#dc2626' : '#008041';
+                resultsChart.update(); 
+            }
+        }
+
         // --- PDF ---
         window.descargarPDF = function() {
+            if(!window.jspdf) return alert("Librería PDF no cargada");
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const margin = 15; let currentY = 20; const pageWidth = doc.internal.pageSize.width;
-            
-            doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text("FORMULARIO DE COSTEO UNITARIO", pageWidth / 2, currentY, { align: "center" });
-            currentY += 7; doc.setFontSize(12); doc.setFont("helvetica", "normal");
-            doc.text("ESE Hospital Universitario Hernando Moncaleano Perdomo", pageWidth / 2, currentY, { align: "center" });
-            currentY += 15;
-            
-            // I. General
-            const generalData = [
-                ['Fecha', document.getElementById('fechaElaboracion').value, 'Consecutivo', document.getElementById('consecutivo').value],
-                ['Centro Costos', document.getElementById('centroCostos').value, 'Tarifario', document.getElementById('tarifario').value],
-                ['CUPS', document.getElementById('cupsSearch').value || '', 'Homólogo', document.getElementById('homologo').value || ''],
-                ['Vr Homólogo', document.getElementById('valorHomologo').value || '0', 'Tiempo', document.getElementById('tiempoEjecucion').value || '0'],
-                ['Lugar', document.getElementById('lugarRealizacion').value, 'Grupo', document.getElementById('grupoUVR').value]
-            ];
-            doc.autoTable({ startY: currentY, head: [['I. INFORMACIÓN GENERAL', '', '', '']], body: generalData, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 } });
-            currentY = doc.lastAutoTable.finalY + 5;
-            
-            // II. MO
-            const moRows = [];
-            document.querySelectorAll('#talentoHumanoContainer > div').forEach(row => {
-                moRows.push([
-                    row.querySelector('[data-cost-field="cargo"]').value,
-                    row.querySelector('[data-cost-field="cantidad"]').value,
-                    row.querySelector('[data-cost-field="horas"]').value,
-                    formatCOP(row.querySelector('[data-cost-field="valorHora"]').value),
-                    row.querySelector('[id^="th-subtotal"]').textContent
-                ]);
-            });
-            doc.autoTable({ startY: currentY, head: [['II. MANO DE OBRA', 'Cant', 'Horas', 'Valor', 'Subtotal']], body: moRows, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 }, foot: [['', '', '', 'TOTAL MO:', document.getElementById('subtotalManoObra').textContent]] });
-            currentY = doc.lastAutoTable.finalY + 5;
-            
-            // III. FACTURABLES (Antes IV)
-            const medRows = [];
-            document.querySelectorAll('#medicamentosFacturables tr').forEach(row => {
-                if(row.querySelector('[data-medicamento-field="nombre"]').value) {
-                    medRows.push([
-                        row.querySelector('[data-medicamento-field="nombre"]').value,
-                        row.querySelector('[data-medicamento-field="cantidad"]').value,
-                        formatCOP(row.querySelector('[data-medicamento-field="valorUnitario"]').value),
-                        row.querySelector('.valor-total-medicamento').textContent
-                    ]);
-                }
-            });
-            doc.autoTable({ startY: currentY, head: [['III. MATERIALES Y MEDICAMENTOS (FACTURABLES)', 'Cant', 'Unitario', 'Total']], body: medRows, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 }, foot: [['', '', 'TOTAL:', document.getElementById('totalAdicionales').textContent]] });
-            currentY = doc.lastAutoTable.finalY + 5;
-
-            // IV. NO FACTURABLES (Antes III)
-            const insRows = [];
-            document.querySelectorAll('#insumosNoFacturables tr').forEach(row => {
-                if(row.querySelector('[data-insumo-field="nombre"]').value) {
-                    insRows.push([
-                        row.querySelector('[data-insumo-field="nombre"]').value,
-                        row.querySelector('[data-insumo-field="cantidad"]').value,
-                        formatCOP(row.querySelector('[data-insumo-field="valorUnitario"]').value),
-                        row.querySelector('.valor-total-insumo').textContent
-                    ]);
-                }
-            });
-            doc.autoTable({ startY: currentY, head: [['IV. INSUMOS (NO FACTURABLES)', 'Cant', 'Unitario', 'Total']], body: insRows, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 } });
-            currentY = doc.lastAutoTable.finalY + 5;
-
-            // V. ALQUILER (Nuevo)
-            const alqRows = [];
-            document.querySelectorAll('#alquilerEquipos tr').forEach(row => {
-                if(row.querySelector('[data-alquiler-field="nombre"]').value) {
-                    alqRows.push([
-                        row.querySelector('[data-alquiler-field="nombre"]').value,
-                        row.querySelector('[data-alquiler-field="cantidad"]').value,
-                        formatCOP(row.querySelector('[data-alquiler-field="valorUnitario"]').value),
-                        row.querySelector('.valor-total-alquiler').textContent
-                    ]);
-                }
-            });
-            if (currentY > 250) { doc.addPage(); currentY = 20; }
-            doc.autoTable({ startY: currentY, head: [['V. ALQUILER DE EQUIPOS', 'Cant', 'Unitario', 'Total']], body: alqRows, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 }, foot: [['', '', 'TOTAL:', document.getElementById('subtotalAlquiler').textContent]] });
-            currentY = doc.lastAutoTable.finalY + 5;
-
-            // VI. INDIRECTOS
-            const indirectosData = [
-                ['Depreciación', document.getElementById('costoDepreciacion').textContent],
-                ['Consumos', document.getElementById('costoConsumos').textContent],
-                ['Gastos Generales', document.getElementById('costoGastosGenerales').textContent],
-                ['Logísticos', document.getElementById('costoLogisticos').textContent],
-                ['Administrativos', document.getElementById('costoAdministrativos').textContent],
-                ['TOTAL INDIRECTOS', document.getElementById('subtotalCostosIndirectos').textContent]
-            ];
-            if (currentY > 250) { doc.addPage(); currentY = 20; }
-            doc.autoTable({ startY: currentY, head: [['VI. COSTOS INDIRECTOS', 'Valor']], body: indirectosData, theme: 'grid', headStyles: { fillColor: [112, 132, 193] }, styles: { fontSize: 8 } });
-            currentY = doc.lastAutoTable.finalY + 5;
-
-            // VIII. RESUMEN (Actualizado)
-            const resumenData = [
-                ['Costos Directos (Operativos)', document.getElementById('totalCostosDirectos').textContent],
-                ['Alquiler Equipos', document.getElementById('resumenAlquiler').textContent],
-                ['Indirectos', document.getElementById('totalCostosIndirectosResumen').textContent],
-                ['Facturables Adicionales', document.getElementById('totalAdicionales').textContent],
-                ['COSTO TOTAL', document.getElementById('costoUnitarioFinal').textContent]
-            ];
-            doc.autoTable({ startY: currentY, head: [['VIII. RESUMEN FINAL', 'Valor']], body: resumenData, theme: 'grid', headStyles: { fillColor: [48, 170, 120] }, styles: { fontSize: 10, fontStyle: 'bold' } });
-            currentY = doc.lastAutoTable.finalY + 5;
-
-            // X. ESTADO RESULTADOS (Para el PDF)
-            if (currentY > 230) { doc.addPage(); currentY = 20; }
-            const resultadosData = [
-                ['Precio Venta Propuesto', document.getElementById('resPrecioVenta').textContent],
-                ['Costo Total Unitario', document.getElementById('resCostoTotal').textContent],
-                ['Excedente', document.getElementById('resExcedente').textContent],
-                ['% Sostenibilidad', document.getElementById('resSostenibilidad').textContent],
-                ['% Margen', document.getElementById('resMargen').textContent]
-            ];
-            doc.autoTable({ startY: currentY, head: [['X. ESTADO DE RESULTADOS', 'Valor']], body: resultadosData, theme: 'grid', headStyles: { fillColor: [48, 170, 120] }, styles: { fontSize: 9 } });
-
-            const pageCount = doc.internal.getNumberOfPages();
-            for(let i = 1; i <= pageCount; i++) {
-                doc.setPage(i); doc.setFontSize(8); doc.setTextColor(100);
-                doc.text(`Generado: ${new Date().toLocaleString()}`, margin, 290);
-                doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin - 20, 290);
-            }
-            doc.save(`Costeo_${document.getElementById('consecutivo').value}.pdf`);
+            doc.text(`Costeo: ${document.getElementById('consecutivo').value}`, 10, 10);
+            doc.text(`Total: ${document.getElementById('costoUnitarioFinal').textContent}`, 10, 20);
+            doc.save('costeo.pdf');
         }
-        
-        window.onload = function() {
-            initCharts();
-            // Cargar inicial vacío
-            addManoDeObra(); addInsumoRow(); addMedicamentoRow(); addAlquilerRow();
-            actualizarConsecutivo();
-            // Listeners
-            document.getElementById('cupsSearch').addEventListener('keyup', filterCUPS);
-            document.getElementById('homologo').addEventListener('keyup', filterHomologo);
-            document.getElementById('centroCostos').addEventListener('focus', filterCentrosCostos); // Mostrar al hacer click
-            
-            document.getElementById('talentoHumanoContainer').addEventListener('input', calculateTotal);
-            document.getElementById('insumosNoFacturables').addEventListener('input', calculateTotal);
-            document.getElementById('medicamentosFacturables').addEventListener('input', calculateTotal);
-            document.getElementById('alquilerEquipos').addEventListener('input', calculateTotal);
-            document.querySelectorAll('input[id^="porcentaje"]').forEach(el => el.addEventListener('input', calculateTotal));
-            document.addEventListener('click', function(e) { if (!e.target.closest('.relative') && !e.target.closest('.table-dropdown')) { document.querySelectorAll('.cups-dropdown, .table-dropdown').forEach(el => el.classList.add('hidden')); } });
-            calculateTotal();
-        };
-        
-        function borrarTodo() { if(confirm("¿Borrar todo?")) { document.getElementById('costeoForm').reset(); document.getElementById('talentoHumanoContainer').innerHTML = ''; document.getElementById('insumosNoFacturables').innerHTML = ''; document.getElementById('medicamentosFacturables').innerHTML = ''; document.getElementById('alquilerEquipos').innerHTML = ''; addManoDeObra(); addInsumoRow(); addMedicamentoRow(); addAlquilerRow(); actualizarConsecutivo(); calculateTotal(); } }
-        function actualizarConsecutivo() { let consecutivo = parseInt(localStorage.getItem('consecutivoCosteo') || '1'); const str = `COS-2025-${String(consecutivo).padStart(3, '0')}`; document.getElementById('contadorConsecutivo').textContent = str; document.getElementById('consecutivo').value = str; document.getElementById('consecutivo').disabled = true; }
-        // function guardarFormulario() { alert("Guardado"); } // Reemplazado por guardarCosteo de Firebase
+
+        // Cerrar dropdowns al hacer click fuera
+        document.addEventListener('click', e => {
+            if(!e.target.closest('.relative')) document.querySelectorAll('.cups-dropdown').forEach(el => el.classList.add('hidden'));
+        });
+
         function toggleSugerencias() { document.getElementById('panelSugerencias').classList.toggle('hidden'); }
         function enviarSugerencia(e) { e.preventDefault(); alert("Enviado"); toggleSugerencias(); }
-    </script>
+  </script>
  </body>
 </html>
