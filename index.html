@@ -447,41 +447,80 @@ const appId = "costos-hospitalarios-v1";
         }
     };
 
-    // --- LOGIN (TEST SIN FIREBASE) ---
-document.getElementById('appLoginForm').addEventListener('submit', (e) => {
+   // --- LOGIN REAL CON FIRESTORE ---
+document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPass').value.trim();
 
-    console.log("TEST LOGIN - email:", email);
+    const btn = e.target.querySelector('button');
+    const err = document.getElementById('appLoginError');
+    const originalText = btn.textContent;
 
-    // Simulamos un usuario cualquiera
-    const fakeUser = {
-        uid: 'local-' + Date.now().toString(36),
-        email: email,
-        name: email,
-        role: 'operario',
-        active: true
-    };
+    btn.textContent = "Verificando...";
+    btn.disabled = true;
+    err.classList.add('hidden');
 
-    // Guardamos sesión local
-    currentUserSession = fakeUser;
-    localStorage.setItem('operarioSession', JSON.stringify(fakeUser));
+    try {
+        // 1. Aseguramos auth anónima
+        await ensureAuth();
 
-    // Forzamos cierre de login y muestra del app
-    const overlay  = document.getElementById('loginOverlay');
-    const mainApp  = document.getElementById('mainAppContent');
+        // 2. Leemos TODOS los usuarios (colección correcta)
+        const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+        const snapshot = await getDocs(usersRef);
 
-    if (!overlay || !mainApp) {
-        alert("No encuentro loginOverlay o mainAppContent. Revisa los IDs en el HTML.");
-        return;
+        if (snapshot.empty) {
+            throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados.\nUse 'admin.html' para crear el primer usuario.");
+        }
+
+        console.log("Intentando login para:", email);
+
+        // 3. Buscamos coincidencia de correo y contraseña
+        let validUser = null;
+        const inputEmail = email.toLowerCase();
+        const inputPass  = String(pass).trim();
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            const storedEmail = String(data.email || "").toLowerCase();
+            const storedPass  = String(data.password || "").trim();
+
+            if (storedEmail === inputEmail) {
+                if (storedPass === inputPass) {
+                    if (data.active === false) {
+                        console.warn("Usuario encontrado pero inactivo:", storedEmail);
+                    } else {
+                        validUser = {
+                            uid: data.uid || docSnap.id,
+                            email: data.email,
+                            name: data.name || data.email,
+                            role: data.role || 'operario',
+                            active: data.active !== false
+                        };
+                    }
+                } else {
+                    console.warn("Correo encontrado pero contraseña incorrecta:", storedEmail);
+                }
+            }
+        });
+
+        if (!validUser) {
+            throw new Error("Usuario no encontrado o contraseña incorrecta.");
+        }
+
+        // 4. Guardamos sesión y actualizamos UI
+        currentUserSession = validUser;
+        localStorage.setItem('operarioSession', JSON.stringify(validUser));
+        await checkSession(); // usa el mismo checkSession que ya tienes
+
+    } catch (error) {
+        console.error(error);
+        err.innerText = error.message;
+        err.classList.remove('hidden');
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
     }
-
-    overlay.classList.add('hidden');
-    mainApp.classList.remove('hidden');
-
-    alert("TEST OK: se cerró el login en modo local.");
 });
 
 
