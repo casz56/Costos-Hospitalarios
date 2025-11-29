@@ -53,9 +53,11 @@
 
         /* Login Modal Específico */
         #loginOverlay { display: flex; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: #f4f7f9; align-items: center; justify-content: center; }
+        #loginOverlay.hidden { display: none; }
+
         .login-card { width: 100%; max-width: 400px; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-top: 6px solid var(--color-primary); }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
+  
  </head>
  <body class="p-2 md:p-6 lg:p-8">
 
@@ -385,10 +387,10 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, orderBy, Timestamp, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = { 
+const firebaseConfig = { 
     apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
     authDomain: "costos-hospitalarios.firebaseapp.com",
     projectId: "costos-hospitalarios",
@@ -435,96 +437,103 @@ const appId = "costos-hospitalarios-v1";
         }
 
         const stored = localStorage.getItem('operarioSession');
+        const overlay  = document.getElementById('loginOverlay');
+        const mainApp  = document.getElementById('mainAppContent');
+
         if (stored) {
             currentUserSession = JSON.parse(stored);
-            document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
-            document.getElementById('loginOverlay').classList.add('hidden');
-            document.getElementById('mainAppContent').classList.remove('hidden');
+            if (document.getElementById('userEmailDisplay')) {
+                document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
+            }
+            // Ocultar login (clase + estilo directo)
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.style.display = 'none';
+            }
+            if (mainApp) {
+                mainApp.classList.remove('hidden');
+                mainApp.style.display = 'block';
+            }
         } else {
             currentUserSession = null;
-            document.getElementById('loginOverlay').classList.remove('hidden');
-            document.getElementById('mainAppContent').classList.add('hidden');
+            // Mostrar login (clase + estilo directo)
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.style.display = 'flex';
+            }
+            if (mainApp) {
+                mainApp.classList.add('hidden');
+                mainApp.style.display = 'none';
+            }
         }
     };
 
-   // --- LOGIN REAL CON FIRESTORE ---
-document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass  = document.getElementById('loginPass').value.trim();
+    // --- LOGIN MANUAL (Contra DB 'registered_users') ---
+    document.getElementById('appLoginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        
+        const btn = e.target.querySelector('button');
+        const err = document.getElementById('appLoginError');
+        const originalText = btn.textContent;
+        
+        btn.textContent = "Verificando...";
+        btn.disabled = true;
+        err.classList.add('hidden');
 
-    const btn = e.target.querySelector('button');
-    const err = document.getElementById('appLoginError');
-    const originalText = btn.textContent;
+        try {
+            await ensureAuth(); // Permiso de lectura anónimo
+            
+            // CAMBIO: Descargar TODOS los usuarios y filtrar en JS para evitar problemas de mayúsculas/minúsculas
+            const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+            const snapshot = await getDocs(usersRef);
 
-    btn.textContent = "Verificando...";
-    btn.disabled = true;
-    err.classList.add('hidden');
+            let validUser = null;
 
-    try {
-        // 1. Aseguramos auth anónima
-        await ensureAuth();
-
-        // 2. Leemos TODOS los usuarios (colección correcta)
-        const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
-        const snapshot = await getDocs(usersRef);
-
-        if (snapshot.empty) {
-            throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados.\nUse 'admin.html' para crear el primer usuario.");
-        }
-
-        console.log("Intentando login para:", email);
-
-        // 3. Buscamos coincidencia de correo y contraseña
-        let validUser = null;
-        const inputEmail = email.toLowerCase();
-        const inputPass  = String(pass).trim();
-
-        snapshot.forEach(docSnap => {
-            const data = docSnap.data() || {};
-            const storedEmail = String(data.email || "").toLowerCase();
-            const storedPass  = String(data.password || "").trim();
-
-            if (storedEmail === inputEmail) {
-                if (storedPass === inputPass) {
-                    if (data.active === false) {
-                        console.warn("Usuario encontrado pero inactivo:", storedEmail);
-                    } else {
-                        validUser = {
-                            uid: data.uid || docSnap.id,
-                            email: data.email,
-                            name: data.name || data.email,
-                            role: data.role || 'operario',
-                            active: data.active !== false
-                        };
-                    }
-                } else {
-                    console.warn("Correo encontrado pero contraseña incorrecta:", storedEmail);
-                }
+            if (snapshot.empty) {
+                throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados. \nPor favor use el archivo 'admin.html' para crear el primer usuario.");
             }
-        });
 
-        if (!validUser) {
-            throw new Error("Usuario no encontrado o contraseña incorrecta.");
+            console.log("Intentando login para:", email);
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                // Comparación flexible (lowercase) para el correo
+                if (data.email.toLowerCase() === email.toLowerCase()) {
+                    if (data.password === pass) {
+                        if (data.active !== false) {
+                            validUser = data;
+                        } else {
+                            throw new Error("Este usuario ha sido desactivado.");
+                        }
+                    } else {
+                         // Correo coincide pero contraseña no
+                         console.warn("Correo encontrado, contraseña incorrecta");
+                    }
+                }
+            });
+
+            if (validUser) {
+                currentUserSession = validUser;
+                localStorage.setItem('operarioSession', JSON.stringify(validUser));
+                checkSession();
+            } else {
+                // Si llegamos aquí y no hay validUser, es credencial incorrecta
+                throw new Error("Usuario no encontrado o contraseña incorrecta.");
+            }
+
+        } catch (error) {
+            console.error(error);
+            err.innerText = error.message; // Usar innerText para saltos de línea
+            err.classList.remove('hidden');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
+    });
 
-        // 4. Guardamos sesión y actualizamos UI
-        currentUserSession = validUser;
-        localStorage.setItem('operarioSession', JSON.stringify(validUser));
-        await checkSession(); // usa el mismo checkSession que ya tienes
-
-    } catch (error) {
-        console.error(error);
-        err.innerText = error.message;
-        err.classList.remove('hidden');
-    } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-    }
-});
-
-
-window.logoutApp = () => {
+    window.logoutApp = () => {
         localStorage.removeItem('operarioSession');
         location.reload();
     };
@@ -619,12 +628,7 @@ window.logoutApp = () => {
         
         checkSession();
     };
-  </script>
-
-  <!-- SCRIPT LÓGICA DE NEGOCIO (Cálculos, Gráficos, PDF) -->
-  <script>
-        // VARIABLES GLOBALES
-        let CUPS_DB = [], HOMOLOGO_DB = [], INVENTORY_DB = []; 
+  </script> 
         let pieChart = null, barChart = null, resultsChart = null;
 
         // --- MOCK DATA ---
