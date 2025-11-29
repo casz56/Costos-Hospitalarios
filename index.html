@@ -447,44 +447,43 @@ const appId = "costos-hospitalarios-v1";
         }
     };
 
-    // --- LOGIN MANUAL (Contra DB 'registered_users') ---
-    document.getElementById('appLoginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim();
-        const pass = document.getElementById('loginPass').value.trim();
+    // --- LOGIN (TEST SIN FIREBASE) ---
+document.getElementById('appLoginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
 
-        const btn = e.target.querySelector('button');
-        const err = document.getElementById('appLoginError');
-        const originalText = btn.textContent;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value.trim();
 
-        // Modo desarrollo: aceptar cualquier usuario que exista en el formulario,
-        // sin consultar Firebase. Esto garantiza el acceso al módulo de costeo
-        // mientras terminamos de depurar credenciales y datos en Firestore.
-        btn.textContent = "Ingresando...";
-        btn.disabled = true;
-        err.classList.add('hidden');
+    console.log("TEST LOGIN - email:", email);
 
-        try {
-            // Crear una sesión local mínima
-            const fakeUser = {
-                uid: 'local-' + Date.now().toString(36),
-                email: email,
-                name: email,
-                role: 'operario',
-                active: true
-            };
-            currentUserSession = fakeUser;
-            localStorage.setItem('operarioSession', JSON.stringify(fakeUser));
-            checkSession();
-        } catch (error) {
-            console.error(error);
-            err.innerText = "No se pudo iniciar sesión en modo desarrollo.";
-            err.classList.remove('hidden');
-        } finally {
-            btn.textContent = originalText;
-            btn.disabled = false;
-        }
-    });
+    // Simulamos un usuario cualquiera
+    const fakeUser = {
+        uid: 'local-' + Date.now().toString(36),
+        email: email,
+        name: email,
+        role: 'operario',
+        active: true
+    };
+
+    // Guardamos sesión local
+    currentUserSession = fakeUser;
+    localStorage.setItem('operarioSession', JSON.stringify(fakeUser));
+
+    // Forzamos cierre de login y muestra del app
+    const overlay  = document.getElementById('loginOverlay');
+    const mainApp  = document.getElementById('mainAppContent');
+
+    if (!overlay || !mainApp) {
+        alert("No encuentro loginOverlay o mainAppContent. Revisa los IDs en el HTML.");
+        return;
+    }
+
+    overlay.classList.add('hidden');
+    mainApp.classList.remove('hidden');
+
+    alert("TEST OK: se cerró el login en modo local.");
+});
+
 
 window.logoutApp = () => {
         localStorage.removeItem('operarioSession');
