@@ -984,14 +984,23 @@
             const drawHeader = (doc) => {
                 doc.setFillColor(...pdfCol.azulOscuro); // AZUL INSTITUCIONAL
                 doc.rect(0, 0, 210, 30, 'F');
+                
+                // Intento robusto de cargar el logo desde el DOM
                 const imgEl = document.getElementById('logoInstitucional');
-                if (imgEl && imgEl.complete) {
+                const imgHeader = document.getElementById('logoInstitucionalHeader');
+                const finalImg = (imgEl && imgEl.complete && imgEl.naturalHeight > 0) ? imgEl : imgHeader;
+
+                if (finalImg && finalImg.complete && finalImg.naturalHeight > 0) {
                     try {
-                        const canvas = document.createElement('canvas'); canvas.width = imgEl.naturalWidth; canvas.height = imgEl.naturalHeight;
-                        const ctx = canvas.getContext('2d'); ctx.drawImage(imgEl, 0, 0);
+                        const canvas = document.createElement('canvas'); 
+                        canvas.width = finalImg.naturalWidth; 
+                        canvas.height = finalImg.naturalHeight;
+                        const ctx = canvas.getContext('2d'); 
+                        ctx.drawImage(finalImg, 0, 0);
                         doc.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 5, 45, 20);
-                    } catch(e) {}
+                    } catch(e) { console.warn("No se pudo cargar logo al PDF", e); }
                 }
+                
                 doc.setFont("helvetica", "bold"); doc.setTextColor(255, 255, 255);
                 doc.setFontSize(16); doc.text("FORMULARIO DE COSTEO UNITARIO", 65, 12);
                 doc.setFontSize(11); doc.setFont("helvetica", "normal"); doc.text("ESE Hospital Universitario Hernando Moncaleano Perdomo", 65, 19);
@@ -1025,10 +1034,13 @@
                 ['UVR / Grupo', document.getElementById('grupoUVR').value]
             ];
 
-            doc.autoTable({ startY: finalY, head: [['CONCEPTO', 'DETALLE']], body: infoData, ...stylesDef, didDrawPage: (data) => drawHeader(doc) });
+            // Tabla Información General (Sin didDrawPage aquí para evitar duplicados, lo haremos al final)
+            doc.autoTable({ startY: finalY, head: [['CONCEPTO', 'DETALLE']], body: infoData, ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
 
             const addSectionTitle = (text, y) => {
+                // Verificar si necesitamos nueva página para el título
+                if (y > 270) { doc.addPage(); y = 35; }
                 doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...pdfCol.azulOscuro); // TITULO AZUL OSCURO
                 doc.text(text, 14, y); return y + 4;
             };
@@ -1091,8 +1103,13 @@
                 }
             });
 
+            // --- APLICAR HEADER Y FOOTER EN TODAS LAS PÁGINAS ---
             const pageCount = doc.internal.getNumberOfPages();
-            for(let i = 1; i <= pageCount; i++) { doc.setPage(i); drawFooter(doc, i, pageCount); }
+            for(let i = 1; i <= pageCount; i++) { 
+                doc.setPage(i); 
+                drawHeader(doc); // Dibuja el encabezado en cada página
+                drawFooter(doc, i, pageCount); 
+            }
             doc.save(`Costeo_${document.getElementById('consecutivo').value || 'S_C'}.pdf`);
         };
   </script>
