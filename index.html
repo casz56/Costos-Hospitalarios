@@ -297,7 +297,8 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Descripción Equipo</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[150px]">Cód. Equipo</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[200px]">Nombre del Equipo</th>
                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase min-w-[120px]">Unidad</th>
                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Cant.</th>
                     <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase min-w-[120px]">Valor Unitario</th>
@@ -580,9 +581,14 @@
         location.reload();
     };
 
-    // --- GUARDAR COSTEO ---
+    // --- GUARDAR COSTEO (CORREGIDO) ---
     window.guardarCosteo = async function() {
-        if (!currentUserSession) return;
+        if (!currentUserSession) {
+            alert("⚠️ Atención: No hay una sesión activa.\n\nPor favor inicie sesión con su usuario y contraseña para guardar el costeo.");
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('loginOverlay').style.display = 'flex';
+            return;
+        }
         
         try {
             await ensureAuth();
@@ -1000,8 +1006,8 @@
         window.addAlquilerRow = () => addRow('alquilerEquipos', 'alquiler');
 
         function addRow(tableId, type) {
-            // CAMBIO: Wrappers relatives para los inputs de búsqueda
-            // CAMBIO: Valor Unitario type="text"
+            // CAMBIO: Estructura unificada para III, IV y V
+            // Se añaden 2 columnas iniciales: Código y Nombre
             const html = `<tr>
                 <td class="relative">
                     <input class="input-field text-xs" placeholder="Código" onkeyup="searchInventory(this, '${type}')" onkeydown="handleEnterKey(event, this)">
@@ -1070,6 +1076,8 @@
 
             // Colores Institucionales
             const colorInstitucional = [49, 39, 130]; // #312782
+            // CAMBIO: Color para filas destacadas solicitado (#7084C1 -> RGB: 112, 132, 193)
+            const colorInstitucionalClaro = [112, 132, 193];
 
             // Helper para capturar datos de tablas HTML que contienen inputs
             const getTableData = (tbodyId) => {
@@ -1218,9 +1226,9 @@
             finalY = addSectionTitle("V. ALQUILER DE EQUIPOS", finalY);
             doc.autoTable({
                 startY: finalY,
-                head: [['Equipo', 'Unidad', 'Cant.', 'V. Unit', 'Total']],
-                body: getTableData('alquilerEquipos').map(r => r.slice(0, 5)),
-                foot: [['', '', '', 'TOTAL', document.getElementById('subtotalAlquiler').innerText]],
+                head: [['Cód. Equipo', 'Nombre Equipo', 'Unidad', 'Cant.', 'V. Unit', 'Total']],
+                body: getTableData('alquilerEquipos').map(r => r.slice(0, 6)),
+                foot: [['', '', '', '', 'TOTAL', document.getElementById('subtotalAlquiler').innerText]],
                 ...stylesDef
             });
             finalY = doc.lastAutoTable.finalY + 10;
@@ -1249,7 +1257,9 @@
                     // Resaltar filas importantes (Costo Total y Excedente)
                     if (data.row.index === 4 || data.row.index === 6) {
                         data.cell.styles.fontStyle = 'bold';
-                        data.cell.styles.fillColor = [230, 230, 250]; // Lavanda suave
+                        // CAMBIO: Color #7084C1 aplicado a las celdas destacadas
+                        data.cell.styles.fillColor = colorInstitucionalClaro;
+                        data.cell.styles.textColor = [255, 255, 255]; // Texto blanco para mejor contraste
                     }
                 }
             });
@@ -1294,6 +1304,8 @@
                     table.querySelectorAll('tr').forEach(row => {
                         const inputs = row.querySelectorAll('input');
                         if(inputs.length >= 5) {
+                            // NOTA: Como ahora todas las tablas tienen la misma estructura (7 cols)
+                            // Los índices de inputs son: [0]Code, [1]Name, [2]Unit, [3]Cant, [4]Value
                             const q = parseFloat(inputs[3].value || 0); 
                             // Usar parseCurrencyVal
                             const v = parseCurrencyVal(inputs[4].value); 
