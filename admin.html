@@ -35,9 +35,12 @@
                 </div>
             </div>
             <div class="text-center mt-8 mb-6">
+                <!-- LOGO INSTITUCIONAL AGREGADO (MODIFICADO) -->
+                <div class="flex justify-center mb-4">
+                    <img src="Logo_HUHMP.png" onerror="this.onerror=null; this.src='Logo_HUHMP.png'" alt="Logo ESE HUHMP" class="w-32 h-auto object-contain">
+                </div>
                 <h1 class="text-2xl font-bold text-gray-800">Panel Administrativo</h1>
                 <p class="text-gray-500 text-sm mt-1">Gestión de Usuarios Costeo Unitario</p>
-                <span class="inline-block mt-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">Modo Demo (Auth Local)</span>
             </div>
             <form id="loginForm" class="space-y-4">
                 <div>
@@ -84,12 +87,17 @@
         <!-- Main Content -->
         <main class="flex-1 bg-gray-50 flex flex-col h-screen overflow-hidden">
             <!-- Header -->
-            <header class="bg-white shadow-sm p-6 flex justify-between items-center z-0">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Directorio de Usuarios</h2>
-                    <p class="text-sm text-gray-500">Administre los accesos al sistema de costeo (Base de Datos Local).</p>
+            <header class="bg-white shadow-sm p-6 flex justify-between items-center z-0 relative">
+                <div class="flex items-center gap-4">
+                    <!-- LOGO INSTITUCIONAL -->
+                    <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="h-12 w-auto object-contain">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Directorio de Usuarios</h2>
+                        <p class="text-sm text-gray-500">Administre los accesos al sistema de costeo (Base de Datos Local).</p>
+                    </div>
                 </div>
-                <button onclick="openModal('createUserModal')" class="bg-secondary hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 font-bold">
+                <!-- BOTÓN DE CREAR USUARIO (VERDE Y VISIBLE) -->
+                <button onclick="openModal('createUserModal')" class="bg-secondary hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 font-bold whitespace-nowrap">
                     <span class="text-xl leading-none">+</span> Crear Nuevo Usuario
                 </button>
             </header>
@@ -181,8 +189,9 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN (GitHub / Localhost) ---
-        const firebaseConfig = { 
+        // --- CONFIGURACIÓN MANUAL (GitHub / Localhost) ---
+        // Esta configuración se usará automáticamente si estás fuera del chat de IA.
+        const manualConfig = { 
             apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
             authDomain: "costos-hospitalarios.firebaseapp.com",
             projectId: "costos-hospitalarios",
@@ -191,7 +200,27 @@
             appId: "1:404619927928:web:2c9a3f83ba58504dba288d",
             measurementId: "G-446CF9TS9H"
         };
-        const appId = "costos-hospitalarios-v1";
+        
+        // Variables dinámicas
+        let firebaseConfig;
+        let appId = "costos-hospitalarios-v1"; // ID por defecto para manual
+
+        // --- DETECCIÓN DE ENTORNO INTELIGENTE ---
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                // Estamos en el Chat de IA: Usar credenciales inyectadas
+                console.log("✅ Entorno IA detectado: Usando credenciales seguras.");
+                firebaseConfig = JSON.parse(__firebase_config);
+                // Si el entorno provee un app_id, usarlo. Si no, usar el manual.
+                if(typeof __app_id !== 'undefined') appId = __app_id;
+            } else {
+                throw new Error("Local mode");
+            }
+        } catch (e) {
+            // Estamos en Local o GitHub: Usar configuración manual
+            console.log("⚠️ Entorno Local/GitHub detectado: Usando configuración manual.");
+            firebaseConfig = manualConfig;
+        }
 
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
@@ -228,7 +257,7 @@
                 await ensureAuth(); // Conectarse primero
             } catch (e) {
                 console.error("Critical Auth Error:", e);
-                alert("Error de conexión con el sistema de seguridad.");
+                alert("Error de conexión con el sistema de seguridad (Auth).\nVerifica la consola para más detalles.");
                 return;
             }
 
