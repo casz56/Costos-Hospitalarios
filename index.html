@@ -65,6 +65,12 @@
             border-color: var(--color-institutional-light);
             box-shadow: 0 0 0 3px rgba(112, 132, 193, 0.2);
         }
+        .input-field:disabled {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+            border-color: #e5e7eb;
+        }
 
         .form-card { 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
@@ -102,6 +108,21 @@
         .login-card { width: 100%; max-width: 400px; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-top: 6px solid var(--color-primary); }
         
         .text-right-input { text-align: right; }
+
+        /* Banner de Modo Historial */
+        #historyModeBanner {
+            display: none;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            justify-content: space-between;
+            align-items: center;
+        }
         
         /* Animaciones */
         @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -127,21 +148,19 @@
 
   <div id="mainAppContent" class="hidden w-full max-w-[1400px] mx-auto"> 
    
-   <!-- HEADER RESPONSIVO: Flexbox para auto-scale -->
+   <!-- HEADER RESPONSIVO -->
    <header class="bg-primary rounded-xl text-white shadow-xl overflow-hidden flex flex-col lg:flex-row items-center justify-between p-6 gap-6 relative">
     
-    <!-- Bloque Logo: Centrado en móvil, Izquierda en Desktop -->
     <div class="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
         <img id="logoInstitucionalHeader" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo ESE HUHMP" class="h-16 md:h-20 lg:h-24 w-auto object-contain transition-all duration-300">
     </div>
 
-    <!-- Bloque Títulos: Centrado siempre, escala texto -->
     <div class="flex-grow text-center px-2 md:px-4">
         <h1 class="text-xl md:text-2xl lg:text-3xl font-bold leading-tight">FORMULARIO DE COSTEO UNITARIO</h1>
         <h2 class="text-sm md:text-base lg:text-lg font-light mt-1 opacity-90">ESE Hospital Universitario Hernando Moncaleano Perdomo</h2>
     </div>
 
-    <!-- Bloque Info/Usuario: Centrado en móvil, Derecha en Desktop -->
+    <!-- Bloque Usuario y Logout Mejorado -->
     <div class="flex flex-col items-center lg:items-end gap-3 w-full lg:w-auto">
         <div class="bg-secondary px-4 py-2 rounded-lg shadow-lg border border-white/20 flex items-center gap-3">
             <div class="text-center lg:text-right">
@@ -149,13 +168,27 @@
                 <p id="contadorConsecutivo" class="text-lg md:text-xl font-bold text-white leading-none">001</p>
             </div>
         </div>
-        <div class="flex flex-col items-center lg:items-end">
-            <span id="userEmailDisplay" class="text-xs text-blue-200 font-mono mb-1 truncate max-w-[200px]">...</span>
-            <button onclick="logoutApp()" class="text-xs text-white underline hover:text-blue-200 transition">Cerrar Sesión</button>
+        <div class="flex flex-col items-center lg:items-end bg-white/10 p-2 rounded-lg">
+            <span id="userEmailDisplay" class="text-xs text-white font-mono mb-1 truncate max-w-[200px] block">...</span>
+            <button onclick="logoutApp()" class="text-xs text-white font-bold bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition w-full">Cerrar Sesión</button>
         </div>
     </div>
    </header>
    
+   <!-- BANNER DE MODO HISTORIAL (Visible solo cuando se carga un costeo) -->
+   <div id="historyModeBanner" class="mt-6 flex flex-col md:flex-row gap-4">
+       <div class="flex items-center gap-2">
+           <span class="text-2xl">👁️</span>
+           <div>
+               <p class="text-lg">MODO VISUALIZACIÓN (HISTORIAL)</p>
+               <p class="text-sm font-normal text-gray-700">Está viendo un registro guardado. La edición está deshabilitada.</p>
+           </div>
+       </div>
+       <button onclick="exitHistoryMode()" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-opacity-90 transition">
+           Salir / Nuevo Costeo
+       </button>
+   </div>
+
    <!-- BARRA DE HERRAMIENTAS RESPONSIVA -->
    <div class="bg-white p-4 md:p-6 rounded-lg shadow-md mb-6 mt-6 border-l-4 border-secondary">
        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
@@ -163,17 +196,16 @@
                <span class="bg-gray-100 p-1 rounded">🛠️</span> Configuración
            </h3>
            <div class="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
-               <button onclick="window.restablecerFormulario()" class="flex-1 sm:flex-none bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-700 transition shadow-sm">Restablecer</button>
-               <button onclick="window.guardarCosteo()" class="flex-1 sm:flex-none bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm">Guardar</button>
+               <button id="btnRestablecer" onclick="window.restablecerFormulario()" class="flex-1 sm:flex-none bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-700 transition shadow-sm">Restablecer</button>
+               <button id="btnGuardar" onclick="window.guardarCosteo()" class="flex-1 sm:flex-none bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm">Guardar</button>
                <button onclick="window.verHistorial()" class="flex-1 sm:flex-none bg-btn-institutional text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-600 transition shadow-sm">Historial</button>
            </div>
        </div>
        
        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-           <!-- Botones de carga full width en móvil -->
            <div class="flex flex-col gap-1 w-full group">
                <div class="file-upload-wrapper w-full relative">
-                   <button type="button" class="bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-blue-700 transition w-full shadow-sm flex items-center justify-center gap-2">
+                   <button type="button" id="btnCargarCups" class="bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-blue-700 transition w-full shadow-sm flex items-center justify-center gap-2">
                        <span>📂</span> Cargar CUPS (.csv/.xlsx)
                    </button>
                    <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
@@ -183,7 +215,7 @@
            
            <div class="flex flex-col gap-1 w-full group">
                <div class="file-upload-wrapper w-full relative">
-                   <button type="button" class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-green-700 transition w-full shadow-sm flex items-center justify-center gap-2">
+                   <button type="button" id="btnCargarInv" class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-green-700 transition w-full shadow-sm flex items-center justify-center gap-2">
                        <span>📦</span> Cargar Inventario (.csv)
                    </button>
                    <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
@@ -254,7 +286,7 @@
             <tbody class="bg-white divide-y divide-gray-200" id="talentoHumanoContainer"></tbody>
         </table>
     </div>
-    <button type="button" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95"> + Añadir Mano de Obra </button>
+    <button type="button" id="btnAddMO" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95"> + Añadir Mano de Obra </button>
     
     <div class="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-md flex justify-between items-center">
         <label class="block text-sm font-bold text-gray-700">SUBTOTAL MANO DE OBRA:</label>
@@ -279,7 +311,7 @@
         <tbody class="bg-white divide-y divide-gray-200" id="medicamentosFacturables"></tbody>
      </table>
     </div>
-    <button type="button" onclick="addMedicamentoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Material Adicional</button>
+    <button type="button" id="btnAddMeds" onclick="addMedicamentoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Material Adicional</button>
 
     <!-- IV. INSUMOS -->
     <div class="section-header rounded-md mb-4 mt-8">IV. COSTOS DIRECTOS - 4. Insumos (No Facturables)</div>
@@ -299,7 +331,7 @@
         <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables"></tbody>
      </table>
     </div>
-    <button type="button" onclick="addInsumoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Insumo</button>
+    <button type="button" id="btnAddInsumos" onclick="addInsumoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Insumo</button>
 
     <!-- V. ALQUILER -->
     <div class="section-header rounded-md mb-4 mt-8">V. ALQUILER DE EQUIPOS</div>
@@ -319,7 +351,7 @@
             <tbody class="bg-white divide-y divide-gray-200" id="alquilerEquipos"></tbody>
         </table>
     </div>
-    <button type="button" onclick="addAlquilerRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Equipo</button>
+    <button type="button" id="btnAddAlquiler" onclick="addAlquilerRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Equipo</button>
     
     <div class="mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded-r-md flex justify-between items-center">
         <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER:</label>
@@ -384,7 +416,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Estudio de Mercado</label>
                 <div class="file-upload-wrapper w-full relative group">
-                    <button type="button" class="bg-gray-100 text-gray-700 border-2 border-dashed border-gray-300 px-4 py-4 rounded-lg text-sm font-semibold hover:border-primary hover:text-primary transition flex items-center justify-center gap-2 w-full h-full">
+                    <button type="button" id="btnCargarMercado" class="bg-gray-100 text-gray-700 border-2 border-dashed border-gray-300 px-4 py-4 rounded-lg text-sm font-semibold hover:border-primary hover:text-primary transition flex items-center justify-center gap-2 w-full h-full">
                         📂 Cargar Archivo (.xlsx)
                     </button>
                     <input type="file" id="archivoMercadeo" onchange="alert('Simulación: Ingrese valor manual.')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
@@ -530,19 +562,53 @@
 
     window.logoutApp = () => { localStorage.removeItem('operarioSession'); location.reload(); };
 
+    // --- NUEVA FUNCIÓN: GUARDAR COSTEO COMPLETO ---
     window.guardarCosteo = async function() {
         if (!currentUserSession) { alert("⚠️ Atención: No hay una sesión activa."); document.getElementById('loginOverlay').classList.remove('hidden'); return; }
         try {
             await ensureAuth();
+            
+            // Helper para extraer datos de tablas
+            const extractTableData = (tbodyId) => {
+                const rows = document.querySelectorAll(`#${tbodyId} tr`);
+                return Array.from(rows).map(row => {
+                    const inputs = row.querySelectorAll('input');
+                    if(inputs.length === 0) return null; // Ignorar filas vacías
+                    // Mapeo genérico basado en la estructura visual (ajustar según cada tabla)
+                    return Array.from(inputs).map(inp => inp.value);
+                }).filter(r => r !== null);
+            };
+
             const costeoData = {
                 userId: currentUserSession.uid, userEmail: currentUserSession.email, timestamp: Timestamp.now(),
                 general: {
                     fecha: document.getElementById('fechaElaboracion').value, consecutivo: document.getElementById('consecutivo').value,
                     cupsCode: document.getElementById('cupsCode').value || '', cupsDesc: document.getElementById('cupsDescription').value || '',
                     centroCostos: document.getElementById('centroCostos').value || '', tarifario: document.getElementById('tarifario').value || '',
+                    homologo: document.getElementById('homologo').value || '', valorHomologo: document.getElementById('valorHomologo').value || '',
+                    tiempo: document.getElementById('tiempoEjecucion').value || '', lugar: document.getElementById('lugarRealizacion').value || '',
+                    uvr: document.getElementById('grupoUVR').value || '',
                     total: document.getElementById('costoUnitarioFinal').textContent
+                },
+                // Guardamos porcentajes de indirectos
+                indirectos: {
+                    depreciacion: document.getElementById('porcentajeDepreciacion').value,
+                    consumos: document.getElementById('porcentajeConsumos').value,
+                    gastos: document.getElementById('porcentajeGastosGenerales').value,
+                    logisticos: document.getElementById('porcentajeLogisticos').value,
+                    admin: document.getElementById('porcentajeAdministrativos').value
+                },
+                // Guardamos precio venta
+                precioVenta: document.getElementById('precioVentaInput').value,
+                // Guardamos detalle de tablas
+                tables: {
+                    manoObra: extractTableData('talentoHumanoContainer'),
+                    medicamentos: extractTableData('medicamentosFacturables'),
+                    insumos: extractTableData('insumosNoFacturables'),
+                    alquiler: extractTableData('alquilerEquipos')
                 }
             };
+            
             await addDoc(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), costeoData);
             alert("¡Costeo guardado exitosamente!");
             let consec = parseInt(localStorage.getItem('consecutivoCosteo') || '1');
@@ -561,12 +627,132 @@
             const snapshot = await getDocs(q);
             if(snapshot.empty) { lista.innerHTML = '<p class="text-center text-gray-500">No tienes historial registrado.</p>'; return; }
             let html = '';
-            snapshot.forEach(doc => {
-                const d = doc.data(); const date = d.timestamp?.toDate().toLocaleString() || 'Fecha desconocida';
-                html += `<div class="p-3 border rounded hover:bg-gray-50 cursor-pointer mb-2 transition"><div class="flex justify-between"><span class="font-bold text-primary">${d.general?.consecutivo || 'S/C'}</span><span class="text-xs text-gray-500">${date}</span></div><p class="text-sm text-gray-700 truncate">${d.general?.cupsDesc || 'Sin descripción'}</p><p class="text-sm font-semibold text-green-700 mt-1">Total: ${d.general?.total || '$0'}</p></div>`;
+            snapshot.forEach(docSnap => {
+                const d = docSnap.data(); const date = d.timestamp?.toDate().toLocaleString() || 'Fecha desconocida';
+                const id = docSnap.id;
+                html += `
+                <div class="p-4 border rounded-lg hover:bg-gray-50 mb-3 transition shadow-sm bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-primary bg-blue-100 px-2 py-0.5 rounded text-sm">${d.general?.consecutivo || 'S/C'}</span>
+                            <span class="text-xs text-gray-500">${date}</span>
+                        </div>
+                        <p class="text-sm text-gray-800 font-medium truncate w-full md:max-w-md">${d.general?.cupsDesc || 'Sin descripción'}</p>
+                        <p class="text-sm font-bold text-green-700 mt-1">Total: ${d.general?.total || '$0'}</p>
+                    </div>
+                    <button onclick="window.cargarCosteoHistorial('${id}')" class="bg-secondary text-white px-4 py-2 rounded font-bold text-sm shadow hover:bg-green-700 transition flex items-center gap-2">
+                        <span>👁️</span> Ver Detalle
+                    </button>
+                </div>`;
             });
             lista.innerHTML = html;
         } catch(e) { console.error(e); lista.innerHTML = '<p class="text-red-500 text-center">Error cargando historial.</p>'; }
+    };
+
+    // --- CARGAR COSTEO HISTÓRICO Y BLOQUEAR ---
+    window.cargarCosteoHistorial = async function(docId) {
+        try {
+            document.getElementById('historialLista').innerHTML = '<p class="text-center">Cargando detalle...</p>';
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos', docId);
+            const docSnap = await getDoc(docRef);
+            
+            if (!docSnap.exists()) { alert("El documento ya no existe."); return; }
+            const data = docSnap.data();
+
+            // 1. Llenar Generales
+            document.getElementById('fechaElaboracion').value = data.general.fecha || '';
+            document.getElementById('consecutivo').value = data.general.consecutivo || '';
+            document.getElementById('cupsCode').value = data.general.cupsCode || '';
+            document.getElementById('cupsDescription').value = data.general.cupsDesc || '';
+            document.getElementById('selectedCupsDisplay').textContent = (data.general.cupsCode || '') + ' - ' + (data.general.cupsDesc || '');
+            document.getElementById('centroCostos').value = data.general.centroCostos || '';
+            document.getElementById('tarifario').value = data.general.tarifario || '';
+            document.getElementById('homologo').value = data.general.homologo || '';
+            document.getElementById('valorHomologo').value = data.general.valorHomologo || '';
+            document.getElementById('tiempoEjecucion').value = data.general.tiempo || '';
+            document.getElementById('lugarRealizacion').value = data.general.lugar || '';
+            document.getElementById('grupoUVR').value = data.general.uvr || '';
+            document.getElementById('precioVentaInput').value = data.precioVenta || '';
+
+            // 2. Llenar Indirectos
+            if (data.indirectos) {
+                document.getElementById('porcentajeDepreciacion').value = data.indirectos.depreciacion || 3;
+                document.getElementById('porcentajeConsumos').value = data.indirectos.consumos || 0;
+                document.getElementById('porcentajeGastosGenerales').value = data.indirectos.gastos || 6;
+                document.getElementById('porcentajeLogisticos').value = data.indirectos.logisticos || 8;
+                document.getElementById('porcentajeAdministrativos').value = data.indirectos.admin || 17;
+            }
+
+            // 3. Reconstruir Tablas
+            reconstruirTabla('talentoHumanoContainer', data.tables?.manoObra, window.addManoDeObra);
+            reconstruirTabla('medicamentosFacturables', data.tables?.medicamentos, window.addMedicamentoRow);
+            reconstruirTabla('insumosNoFacturables', data.tables?.insumos, window.addInsumoRow);
+            reconstruirTabla('alquilerEquipos', data.tables?.alquiler, window.addAlquilerRow);
+
+            // 4. Recalcular
+            window.calculateTotal();
+
+            // 5. Activar Modo Lectura
+            toggleReadOnlyMode(true);
+            
+            // Cerrar modal
+            document.getElementById('historialModal').style.display = 'none';
+
+        } catch (e) {
+            console.error(e);
+            alert("Error al cargar el costeo.");
+        }
+    };
+
+    function reconstruirTabla(containerId, rowsData, addRowFunc) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ""; // Limpiar
+        if (!rowsData || !Array.isArray(rowsData)) return;
+
+        rowsData.forEach(rowData => {
+            // Añadir fila vacía usando la función original
+            addRowFunc(); 
+            // Obtener la última fila añadida
+            const rows = container.querySelectorAll('tr');
+            const lastRow = rows[rows.length - 1];
+            const inputs = lastRow.querySelectorAll('input');
+            
+            // Llenar inputs
+            rowData.forEach((val, index) => {
+                if (inputs[index]) inputs[index].value = val;
+            });
+        });
+    }
+
+    function toggleReadOnlyMode(active) {
+        const form = document.getElementById('costeoForm');
+        const inputs = form.querySelectorAll('input, select');
+        const addButtons = document.querySelectorAll('#btnAddMO, #btnAddMeds, #btnAddInsumos, #btnAddAlquiler, #btnRestablecer, #btnGuardar, #btnCargarCups, #btnCargarInv, #btnCargarMercado');
+        const deleteButtons = document.querySelectorAll('button.text-red-500'); // Botones X de las tablas
+
+        // Banner
+        const banner = document.getElementById('historyModeBanner');
+        banner.style.display = active ? 'flex' : 'none';
+
+        // Inputs
+        inputs.forEach(inp => inp.disabled = active);
+        
+        // Botones de acción
+        addButtons.forEach(btn => {
+            btn.disabled = active;
+            btn.style.opacity = active ? '0.5' : '1';
+            btn.style.pointerEvents = active ? 'none' : 'auto';
+        });
+
+        // Botones eliminar filas
+        deleteButtons.forEach(btn => btn.style.display = active ? 'none' : 'inline-block');
+    }
+
+    window.exitHistoryMode = function() {
+        if(confirm("¿Desea salir del modo histórico y limpiar el formulario para uno nuevo?")) {
+            toggleReadOnlyMode(false);
+            window.restablecerFormulario(); // Limpia todo
+        }
     };
 
     window.onload = function() { if(typeof initCharts === 'function') initCharts(); checkSession(); };
