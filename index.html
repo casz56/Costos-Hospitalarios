@@ -239,7 +239,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
      <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Elaboración</label> <input type="date" value="2025-11-24" class="input-field" id="fechaElaboracion"></div>
      <div><label class="block text-sm font-medium text-gray-700 mb-1">Consecutivo</label> <input type="text" placeholder="Ej: COS-2025-001" class="input-field" id="consecutivo" oninput="document.getElementById('contadorConsecutivo').textContent = this.value"></div>
-     <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Centro de Costos / Código</label> <input type="text" placeholder="Buscar..." class="input-field" id="centroCostos" autocomplete="off" onkeyup="filterCentrosCostos()"><div id="centrosCostosResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div></div>
+     <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Centro de Costos / Código</label> 
+        <input type="text" placeholder="Buscar..." class="input-field" id="centroCostos" autocomplete="off" onkeyup="filterCentrosCostos('centroCostos')">
+        <div id="centrosCostosResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div>
+    </div>
     </div>
     
     <!-- SECCIÓN CUPS -->
@@ -258,14 +261,22 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div><label class="block text-sm font-medium text-gray-700 mb-1">Tarifario</label> <select class="input-field" id="tarifario"> <option value="">Seleccione...</option> <option value="SOAT">SOAT</option> <option value="ISS 2001">ISS 2001</option> <option value="Propias">Propias</option> <option value="Otro">Otro</option> </select></div>
-            <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Homólogo (Buscar)</label> <div class="relative"><input type="text" placeholder="Buscar..." class="input-field" id="homologo" autocomplete="off" onkeyup="filterHomologos()" disabled><div id="homologoResults" class="cups-dropdown absolute w-full hidden shadow-xl"></div></div></div>
+            <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Homólogo (Buscar)</label> 
+                <div class="relative">
+                    <input type="text" placeholder="Buscar..." class="input-field" id="homologo" autocomplete="off" onkeyup="filterHomologos()">
+                    <div id="homologoResults" class="cups-dropdown absolute w-full hidden shadow-xl"></div>
+                </div>
+            </div>
             <div><label class="block text-sm font-medium text-gray-700 mb-1">Valor Homólogo</label> <input type="text" placeholder="$ 0" class="input-field text-right-input" id="valorHomologo" oninput="formatCurrency(this)"></div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
      <div><label class="block text-sm font-medium text-gray-700 mb-1">Tiempo Ejecución (Horas)</label> <input type="number" step="0.5" placeholder="0.0" class="input-field" id="tiempoEjecucion"></div>
-     <div><label class="block text-sm font-medium text-gray-700 mb-1">Lugar Realización</label> <input type="text" placeholder="Ej: Quirófanos" class="input-field" id="lugarRealizacion"></div>
+     <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Lugar Realización</label> 
+        <input type="text" placeholder="Buscar..." class="input-field" id="lugarRealizacion" autocomplete="off" onkeyup="filterCentrosCostos('lugarRealizacion')">
+        <div id="lugarRealizacionResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div>
+    </div>
      <div><label class="block text-sm font-medium text-gray-700 mb-1">Grupo Qx / UVR</label> <input type="text" placeholder="Ej: 200 UVR" class="input-field" id="grupoUVR"></div>
     </div>
     
@@ -432,7 +443,7 @@
         </div>
     </div>
 
-    <!-- X. RESULTADOS -->
+    <!-- X. ESTADO DE RESULTADOS (MODIFICADO) -->
     <div class="section-header rounded-md mb-4 mt-8">X. ESTADO DE RESULTADOS</div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="space-y-4">
@@ -446,13 +457,15 @@
                     <p id="resPrecioVenta" class="text-xl md:text-2xl font-bold text-blue-600 mt-1">$ 0</p>
                 </div>
             </div>
-            <div class="result-card bg-white p-5 rounded-xl shadow border-l-8 border-secondary flex flex-col items-center justify-center py-6 hover:scale-105 transition-transform">
+            <!-- Excedente card updated -->
+            <div class="result-card bg-blue-50 p-5 rounded-xl shadow border-l-8 border-primary flex flex-col items-center justify-center py-6 hover:scale-105 transition-transform">
                 <p class="text-sm text-gray-500 uppercase font-bold tracking-widest">Excedente / Utilidad</p>
                 <p id="resExcedente" class="text-3xl md:text-4xl font-extrabold text-secondary mt-2">$ 0</p>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-800 p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Sostenibilidad</p><p id="resSostenibilidad" class="text-lg font-bold text-white">0%</p></div>
-                <div class="bg-gray-800 p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Margen</p><p id="resMargen" class="text-lg font-bold text-white">0%</p></div>
+                <!-- Sostenibilidad/Margen boxes updated to use bg-primary -->
+                <div class="bg-primary p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Sostenibilidad</p><p id="resSostenibilidad" class="text-lg font-bold text-white">0%</p></div>
+                <div class="bg-primary p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Margen</p><p id="resMargen" class="text-lg font-bold text-white">0%</p></div>
             </div>
         </div>
         <div class="form-card p-4 flex flex-col h-full">
@@ -524,6 +537,7 @@
             if (document.getElementById('userEmailDisplay')) document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
             if (overlay) { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
             if (mainApp) { mainApp.classList.remove('hidden'); mainApp.style.display = 'block'; }
+            resetInactivityTimer(); // Start timer on login
         } else {
             currentUserSession = null;
             if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
@@ -782,14 +796,91 @@
   </script>
 
   <script>
-        let CUPS_DB = [], INVENTORY_DB = []; 
+        let CUPS_DB = [], INVENTORY_DB = [], CUPS_HOMOLOGOS_DB = []; // Agregado CUPS_HOMOLOGOS_DB
         let pieChart = null, barChart = null, resultsChart = null;
 
-        // Mock data
+        // Base de Datos de Centros de Costos Completa y Detallada
         const CENTROS_COSTOS_DB = [
             { tipo: "ADMINISTRATIVOS", codigo: "108", nombre: "Gerencia" },
-            { tipo: "OPERATIVOS", codigo: "501", nombre: "Quirófanos" }
+            { tipo: "ADMINISTRATIVOS", codigo: "118", nombre: "Revisoría Fiscal" },
+            { tipo: "ADMINISTRATIVOS", codigo: "105", nombre: "Control Interno Disciplinario" },
+            { tipo: "ADMINISTRATIVOS", codigo: "104", nombre: "Control Interno" },
+            { tipo: "ADMINISTRATIVOS", codigo: "111", nombre: "Oficina Asesora Jurídica" },
+            { tipo: "ADMINISTRATIVOS", codigo: "142", nombre: "Oficina de Contratación" },
+            { tipo: "ADMINISTRATIVOS", codigo: "143", nombre: "Oficina Asesora de Sistemas de Información" },
+            { tipo: "ADMINISTRATIVOS", codigo: "113", nombre: "Oficina Asesora de Planeación, Calidad y Desarrollo Inst." },
+            { tipo: "ADMINISTRATIVOS", codigo: "130", nombre: "Garantía de la Calidad" },
+            { tipo: "ADMINISTRATIVOS", codigo: "110", nombre: "Mercadeo" },
+            { tipo: "ADMINISTRATIVOS", codigo: "127", nombre: "Atención al Usuario" },
+            { tipo: "ADMINISTRATIVOS", codigo: "138", nombre: "Trabajo Social" },
+            { tipo: "ADMINISTRATIVOS", codigo: "112", nombre: "Oficina de Talento Humano" },
+            { tipo: "ADMINISTRATIVOS", codigo: "123", nombre: "Salud Ocupacional" },
+            { tipo: "ADMINISTRATIVOS", codigo: "115", nombre: "Subgerencia Administrativa" },
+            { tipo: "ADMINISTRATIVOS", codigo: "125", nombre: "Gestión Documental" },
+            { tipo: "ADMINISTRATIVOS", codigo: "116", nombre: "Subgerencia Financiera" },
+            { tipo: "ADMINISTRATIVOS", codigo: "103", nombre: "Contabilidad" },
+            { tipo: "ADMINISTRATIVOS", codigo: "106", nombre: "Presupuesto" },
+            { tipo: "ADMINISTRATIVOS", codigo: "107", nombre: "Facturación" },
+            { tipo: "ADMINISTRATIVOS", codigo: "109", nombre: "Costos" },
+            { tipo: "ADMINISTRATIVOS", codigo: "119", nombre: "Tesorería" },
+            { tipo: "ADMINISTRATIVOS", codigo: "128", nombre: "Cartera" },
+            { tipo: "ADMINISTRATIVOS", codigo: "117", nombre: "Subgerencia Técnico-Científica" },
+            { tipo: "ADMINISTRATIVOS", codigo: "101", nombre: "Coordinación Urgencias" },
+            { tipo: "ADMINISTRATIVOS", codigo: "120", nombre: "Coordinación Hospitalización" },
+            { tipo: "ADMINISTRATIVOS", codigo: "121", nombre: "Coordinacion Servicios Ambulatorios" },
+            { tipo: "ADMINISTRATIVOS", codigo: "122", nombre: "Coordinación Enfermería" },
+            { tipo: "ADMINISTRATIVOS", codigo: "132", nombre: "IAMI" },
+            { tipo: "ADMINISTRATIVOS", codigo: "131", nombre: "Referencia y Contrareferencia" },
+            { tipo: "ADMINISTRATIVOS", codigo: "134", nombre: "Epidemiología" },
+            { tipo: "LOGISTICOS", codigo: "114", nombre: "Recursos Físicos" },
+            { tipo: "LOGISTICOS", codigo: "803", nombre: "Servicio de Alimentos" },
+            { tipo: "LOGISTICOS", codigo: "802", nombre: "Mantenimiento Servicios Generales" },
+            { tipo: "LOGISTICOS", codigo: "801", nombre: "Esterilización" },
+            { tipo: "LOGISTICOS", codigo: "805", nombre: "Lavandería" },
+            { tipo: "LOGISTICOS", codigo: "807", nombre: "Ropería" },
+            { tipo: "LOGISTICOS", codigo: "808", nombre: "Central de Materiales" },
+            { tipo: "LOGISTICOS", codigo: "809", nombre: "Vigilancia" },
+            { tipo: "LOGISTICOS", codigo: "102", nombre: "Suministros" },
+            { tipo: "LOGISTICOS", codigo: "804", nombre: "Almacén" },
+            { tipo: "LOGISTICOS", codigo: "810", nombre: "Servicio Farmacéutico" },
+            { tipo: "LOGISTICOS", codigo: "811", nombre: "ULAN" },
+            { tipo: "LOGISTICOS", codigo: "904", nombre: "Transporte Ambulancia" },
+            { tipo: "LOGISTICOS", codigo: "129", nombre: "Oficina de Educacion Medica" },
+            { tipo: "OPERATIVOS", codigo: "201", nombre: "Urgencias Consulta y procedimientos" },
+            { tipo: "OPERATIVOS", codigo: "202", nombre: "Urgencias Observación Adultos" },
+            { tipo: "OPERATIVOS", codigo: "203", nombre: "Urgencias Observación Pediatría" },
+            { tipo: "OPERATIVOS", codigo: "301", nombre: "Consulta Externa" },
+            { tipo: "OPERATIVOS", codigo: "133", nombre: "Técnica Madre Canguro" },
+            { tipo: "OPERATIVOS", codigo: "401", nombre: "Hospitalización Cirugía" },
+            { tipo: "OPERATIVOS", codigo: "402", nombre: "Hospitalización Ginecobstetricia" },
+            { tipo: "OPERATIVOS", codigo: "403", nombre: "Hospitalizacion Medicina Interna" },
+            { tipo: "OPERATIVOS", codigo: "404", nombre: "Hospitalización Neurocirugía" },
+            { tipo: "OPERATIVOS", codigo: "407", nombre: "Hospitalización Pediatría" },
+            { tipo: "OPERATIVOS", codigo: "408", nombre: "Hospitalización Salud Mental" },
+            { tipo: "OPERATIVOS", codigo: "409", nombre: "Hospitalización Séptimo Piso - VIP" },
+            { tipo: "OPERATIVOS", codigo: "416", nombre: "Hospitalización Oncología" },
+            { tipo: "OPERATIVOS", codigo: "406", nombre: "Cuidado Intensivo Neonatal" },
+            { tipo: "OPERATIVOS", codigo: "410", nombre: "Cuidado Intensivo Adulto" },
+            { tipo: "OPERATIVOS", codigo: "411", nombre: "Cuidado Intensivo Pediátrico" },
+            { tipo: "OPERATIVOS", codigo: "415", nombre: "Cuidado Intensivo Obstétrico" },
+            { tipo: "OPERATIVOS", codigo: "501", nombre: "Quirófanos" },
+            { tipo: "OPERATIVOS", codigo: "502", nombre: "Sala de Partos" },
+            { tipo: "OPERATIVOS", codigo: "503", nombre: "Unidad de Trasplante" },
+            { tipo: "OPERATIVOS", codigo: "601", nombre: "Cardiología" },
+            { tipo: "OPERATIVOS", codigo: "602", nombre: "Imagenología" },
+            { tipo: "OPERATIVOS", codigo: "603", nombre: "Laboratorio Clínico" },
+            { tipo: "OPERATIVOS", codigo: "604", nombre: "Neumología" },
+            { tipo: "OPERATIVOS", codigo: "605", nombre: "Anatomía Patológica" },
+            { tipo: "OPERATIVOS", codigo: "606", nombre: "Endoscopias" },
+            { tipo: "OPERATIVOS", codigo: "608", nombre: "Resonancia Magnética Nuclear (RMN)" },
+            { tipo: "OPERATIVOS", codigo: "703", nombre: "Neurofisiología" },
+            { tipo: "OPERATIVOS", codigo: "607", nombre: "Cardiovascular" },
+            { tipo: "OPERATIVOS", codigo: "701", nombre: "Banco de Sangre" },
+            { tipo: "OPERATIVOS", codigo: "902", nombre: "Unidad Renal" },
+            { tipo: "OPERATIVOS", codigo: "903", nombre: "Unidad de Cancerología" },
+            { tipo: "OPERATIVOS", codigo: "913", nombre: "Ingresos No Operativos" }
         ];
+
 
         const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
         function normalizeText(text) { return text ? text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : ""; }
@@ -806,9 +897,26 @@
                 const workbook = XLSX.read(data, {type: 'array'});
                 const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
                 if(json.length < 2) { alert("Archivo vacío."); document.getElementById(statusId).textContent = "❌ Error"; return; }
+                
                 if(type === 'cups') {
-                    CUPS_DB = json.slice(1).map(row => ({ fullText: normalizeText((row[0]||"") + " " + (row[1]||"")), display: `${row[0]} - ${row[1]}`, code: row[0], desc: row[1] })).filter(i => i.code);
-                    document.getElementById('cupsSearch').disabled = false; document.getElementById('homologo').disabled = false;
+                    // Cargar CUPS para el servicio principal (columnas A y B)
+                    CUPS_DB = json.slice(1).map(row => ({ 
+                        fullText: normalizeText((row[0]||"") + " " + (row[1]||"")), 
+                        display: `${row[0] || 'S/C'} - ${row[1] || 'S/D'}`, 
+                        code: row[0], 
+                        desc: row[1] 
+                    })).filter(i => i.code);
+
+                    // Cargar CUPS para la búsqueda de Homólogo (columnas F y G -> indices 5 y 6)
+                    CUPS_HOMOLOGOS_DB = json.slice(1).map(row => ({
+                        fullText: normalizeText((row[5]||"") + " " + (row[6]||"")),
+                        display: `${row[5] || 'S/C'} - ${row[6] || 'S/D'}`,
+                        code: row[5],
+                        desc: row[6]
+                    })).filter(i => i.code);
+                    
+                    document.getElementById('cupsSearch').disabled = false;
+                    document.getElementById('homologo').disabled = false; // Habilitar la búsqueda de homólogo
                 } else {
                     INVENTORY_DB = json.slice(1).map(row => ({ fullText: normalizeText((row[0]||"") + " " + (row[1]||"")), code: row[0], name: row[1], presentation: row[2]||"Unidad", price: parseFloat(row[3])||0 })).filter(i => i.code);
                 }
@@ -817,15 +925,34 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function filterCentrosCostos() {
-            const val = normalizeText(document.getElementById('centroCostos').value);
-            const res = document.getElementById('centrosCostosResults');
-            if(val.length < 1) { res.classList.add('hidden'); return; }
-            const matches = CENTROS_COSTOS_DB.filter(i => normalizeText(i.nombre).includes(val) || normalizeText(i.codigo).includes(val));
-            res.innerHTML = matches.map(i => `<div class="cups-item" onclick="selectCC('${i.codigo} - ${i.nombre}')">${i.codigo} - ${i.nombre}</div>`).join('');
-            res.classList.remove('hidden');
+        function filterCentrosCostos(fieldId) {
+            const inputElement = document.getElementById(fieldId);
+            const val = normalizeText(inputElement.value);
+            const resultsDiv = fieldId === 'centroCostos' ? document.getElementById('centrosCostosResults') : document.getElementById('lugarRealizacionResults');
+            
+            if(val.length < 1) { resultsDiv.classList.add('hidden'); resultsDiv.innerHTML = ''; return; }
+            
+            const matches = CENTROS_COSTOS_DB.filter(i => 
+                normalizeText(i.nombre).includes(val) || normalizeText(i.codigo).includes(val)
+            ).slice(0, 20);
+
+            resultsDiv.innerHTML = matches.map(i => 
+                `<div class="cups-item" onclick="selectCC('${fieldId}', '${i.codigo}', '${i.nombre}', '${i.tipo}')">
+                    ${i.codigo} - ${i.nombre} <span class="text-gray-500">(${i.tipo})</span>
+                </div>`
+            ).join('');
+            resultsDiv.classList.remove('hidden');
         }
-        window.selectCC = (val) => { document.getElementById('centroCostos').value = val; document.getElementById('centrosCostosResults').classList.add('hidden'); }
+        
+        window.selectCC = (fieldId, codigo, nombre, tipo) => { 
+            const formattedValue = `${codigo} - ${nombre} (${tipo})`;
+            document.getElementById(fieldId).value = formattedValue; 
+            
+            // Cerrar el dropdown correcto
+            const resultsDiv = fieldId === 'centroCostos' ? document.getElementById('centrosCostosResults') : document.getElementById('lugarRealizacionResults');
+            resultsDiv.classList.add('hidden');
+        }
+
 
         window.filterCups = function() {
             const inputVal = normalizeText(document.getElementById('cupsSearch').value);
@@ -840,18 +967,34 @@
             resultsDiv.classList.remove('hidden');
         }
 
+        // FUNCIÓN MODIFICADA PARA BUSCAR EN CUPS_HOMOLOGOS_DB (COL F & G)
         window.filterHomologos = function() {
             const inputVal = normalizeText(document.getElementById('homologo').value);
             const resultsDiv = document.getElementById('homologoResults'); resultsDiv.innerHTML = '';
+            
+            // Solo buscar si hay DB cargada y al menos 3 caracteres
+            if (CUPS_HOMOLOGOS_DB.length === 0) return;
             if (inputVal.length < 3) { resultsDiv.classList.add('hidden'); return; }
-            const matches = CUPS_DB.filter(item => item.fullText.includes(inputVal)).slice(0, 20);
+            
+            const matches = CUPS_HOMOLOGOS_DB.filter(item => item.fullText.includes(inputVal)).slice(0, 20);
+            
             matches.forEach(item => {
                 const div = document.createElement('div'); div.className = 'cups-item'; div.textContent = item.display;
-                div.onclick = function() { document.getElementById('homologo').value = item.display; resultsDiv.classList.add('hidden'); };
+                div.onclick = function() { 
+                    document.getElementById('homologo').value = item.display; 
+                    resultsDiv.classList.add('hidden'); 
+                };
                 resultsDiv.appendChild(div);
             });
             resultsDiv.classList.remove('hidden');
         }
+        
+        // FUNCIÓN AÑADIDA PARA SELECCIONAR HOMOLOGO (PARA COMPLETAR EL FLUJO)
+        window.selectHomologo = (code, desc) => {
+            document.getElementById('homologo').value = `${code} - ${desc}`;
+            document.getElementById('homologoResults').classList.add('hidden');
+        }
+
 
         window.searchInventory = function(input, type) {
             const val = normalizeText(input.value);
