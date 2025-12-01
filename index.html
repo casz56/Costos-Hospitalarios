@@ -562,6 +562,29 @@
 
     window.logoutApp = () => { localStorage.removeItem('operarioSession'); location.reload(); };
 
+    // --- INACTIVIDAD (10 MIN) ---
+    let inactivityTimer;
+    const INACTIVITY_LIMIT_MS = 10 * 60 * 1000; // 10 minutos
+
+    const resetInactivityTimer = () => {
+        // Solo reiniciar si hay una sesión activa (variable local o localStorage)
+        if (!currentUserSession && !localStorage.getItem('operarioSession')) return;
+
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            // Doble verificación antes de cerrar
+            if (localStorage.getItem('operarioSession')) {
+                alert("⚠️ Sesión cerrada por inactividad (10 minutos).");
+                window.logoutApp();
+            }
+        }, INACTIVITY_LIMIT_MS);
+    };
+
+    // Escuchar eventos de actividad
+    ['mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll', 'click'].forEach(evt => {
+        document.addEventListener(evt, resetInactivityTimer, true);
+    });
+
     // --- NUEVA FUNCIÓN: GUARDAR COSTEO COMPLETO ---
     window.guardarCosteo = async function() {
         if (!currentUserSession) { alert("⚠️ Atención: No hay una sesión activa."); document.getElementById('loginOverlay').classList.remove('hidden'); return; }
