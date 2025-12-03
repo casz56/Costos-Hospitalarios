@@ -2,7 +2,6 @@
 <html lang="es">
  <head>
   <meta charset="UTF-8">
-  <!-- Viewport optimizado para escala automática en móviles -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Costeo Unitario - ESE H.U. Hernando Moncaleano</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
   <style>
         :root {
-            /* COLORES ORIGINALES */
             --color-primary: #312782;       
             --color-secondary: #008041;
             --color-accent: #ec268f;
@@ -28,17 +26,12 @@
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--color-bg-light); -webkit-font-smoothing: antialiased; }
         
-        /* Clases de utilidad personalizadas */
         .bg-primary { background-color: var(--color-primary); }
         .text-primary { color: var(--color-primary); }
         .border-primary { border-color: var(--color-primary); }
         .bg-secondary { background-color: var(--color-secondary); }
         .text-secondary { color: var(--color-secondary); }
         .bg-accent { background-color: var(--color-accent); }
-        .text-accent { color: var(--color-accent); }
-        
-        .bg-btn-institutional { background-color: var(--color-institutional-light); }
-        .bg-btn-institutional:hover { background-color: #5a6da3; }
         
         .section-header { 
             background-color: var(--color-primary); 
@@ -47,10 +40,8 @@
             font-weight: 700; 
             border-radius: 0.5rem 0.5rem 0 0; 
             margin-top: 2rem; 
-            font-size: 1rem;
-        }
-        @media (min-width: 768px) {
-            .section-header { font-size: 1.125rem; }
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .input-field { 
@@ -58,89 +49,102 @@
             padding: 0.6rem 0.75rem; 
             border-radius: 0.375rem; 
             width: 100%; 
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
         .input-field:focus {
             outline: none;
             border-color: var(--color-institutional-light);
             box-shadow: 0 0 0 3px rgba(112, 132, 193, 0.2);
         }
-        .input-field:disabled {
+        .input-field:disabled, .input-read-only {
             background-color: #f3f4f6;
             color: #6b7280;
             cursor: not-allowed;
             border-color: #e5e7eb;
+            font-weight: 600;
         }
 
         .form-card { 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
             border-radius: 0.5rem; 
             background-color: white; 
         }
 
-        /* Dropdowns responsivos */
-        .cups-dropdown, .table-search-dropdown { 
+        .cups-dropdown { 
             max-height: 250px; 
             overflow-y: auto; 
             background-color: white; 
             border: 1px solid #d1d5db; 
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
             z-index: 50; 
+            border-radius: 0 0 0.5rem 0.5rem;
         }
-        .cups-dropdown { border-top: none; border-radius: 0 0 0.5rem 0.5rem; }
-        .table-search-dropdown { position: absolute; top: 100%; left: 0; width: 100%; min-width: 250px; border-radius: 0.375rem; }
+        
+        /* Dropdown específico para tablas dinámicas */
+        .table-search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            min-width: 350px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
 
-        .cups-item { padding: 0.75rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; font-size: 0.875rem; display: flex; align-items: center; }
+        .cups-item { padding: 0.75rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; font-size: 0.875rem; }
         .cups-item:hover { background-color: #e0f2fe; }
-        
-        /* File input estilizado */
-        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-        
-        .result-card { transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-        .result-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        
-        /* Modal y Login */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 0; border: 1px solid #888; width: 90%; max-width: 800px; border-radius: 0.75rem; animation: slideDown 0.3s ease-out; }
-        
-        #loginOverlay { display: flex; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: #f4f7f9; align-items: center; justify-content: center; padding: 1rem; }
-        .login-card { width: 100%; max-width: 400px; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-top: 6px solid var(--color-primary); }
-        
-        .text-right-input { text-align: right; }
 
-        /* Banner de Modo Historial */
-        #historyModeBanner {
-            display: none;
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 1rem;
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            color: #6b7280;
+            transition: all 0.2s;
+            flex: 1;
             text-align: center;
-            margin-bottom: 1rem;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            justify-content: space-between;
-            align-items: center;
+            cursor: pointer;
+            background: white;
         }
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            background-color: #f0fdf4;
+        }
+        .tab-btn:hover:not(.active) { background-color: #f9fafb; color: #374151; }
+
+        .res-card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #6b7280; margin-bottom: 0.25rem; }
+        .res-card-value { font-size: 1.5rem; font-weight: 800; }
+        .dark-card { background-color: var(--color-primary); color: white; padding: 1rem; border-radius: 0.5rem; text-align: center; }
         
-        /* Animaciones */
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        #loginOverlay { position: fixed; z-index: 9999; inset: 0; background-color: #f4f7f9; display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 100%; max-width: 400px; background: white; padding: 2.5rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-top: 6px solid var(--color-primary); }
+        
+        #historyModeBanner { display: none; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+        .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 0.75rem; animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .file-input-hidden { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
     </style>
  </head>
  <body class="p-2 md:p-4 lg:p-8 min-h-screen">
 
   <!-- LOGIN -->
   <div id="loginOverlay">
-      <div class="login-card text-center w-full mx-4">
-          <img id="logoInstitucional" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo" class="h-16 md:h-20 mx-auto mb-6 object-contain bg-primary p-2 rounded">
-          <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">Bienvenido</h2>
-          <p class="text-sm text-gray-500 mb-6">Inicie sesión para acceder al costeo</p>
-          <span class="inline-block mb-4 px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">Modo Operario</span>
+      <div class="login-card text-center mx-4">
+          <img id="logoLogin" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo" class="h-16 mx-auto mb-6 object-contain bg-primary p-2 rounded">
+          <h2 class="text-2xl font-bold text-gray-800 mb-1">Costeo Unitario</h2>
+          <p class="text-sm text-gray-500 mb-6">Plataforma de Gestión Financiera</p>
           <form id="appLoginForm" class="space-y-4 text-left">
-              <div><label class="block text-sm font-medium text-gray-700 mb-1">Correo</label><input type="email" id="loginEmail" class="input-field" required placeholder="usuario@ese.gov.co"></div>
+              <div><label class="block text-sm font-medium text-gray-700 mb-1">Correo Institucional</label><input type="email" id="loginEmail" class="input-field" required placeholder="usuario@ese.gov.co"></div>
               <div><label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label><input type="password" id="loginPass" class="input-field" required></div>
-              <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition shadow-lg transform active:scale-95">Ingresar</button>
+              <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition shadow-lg">Iniciar Sesión</button>
               <p id="appLoginError" class="text-red-500 text-xs text-center hidden mt-2 font-medium"></p>
           </form>
       </div>
@@ -148,400 +152,408 @@
 
   <div id="mainAppContent" class="hidden w-full max-w-[1400px] mx-auto"> 
    
-   <!-- HEADER RESPONSIVO -->
-   <header class="bg-primary rounded-xl text-white shadow-xl overflow-hidden flex flex-col lg:flex-row items-center justify-between p-6 gap-6 relative">
-    
-    <div class="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
-        <img id="logoInstitucionalHeader" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo ESE HUHMP" class="h-16 md:h-20 lg:h-24 w-auto object-contain transition-all duration-300">
-    </div>
-
-    <div class="flex-grow text-center px-2 md:px-4">
+   <header class="bg-primary rounded-xl text-white shadow-xl flex flex-col lg:flex-row items-center justify-between p-6 gap-6 relative mb-6">
+    <div class="flex-shrink-0"><img id="logoHeader" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo" class="h-16 md:h-20 w-auto object-contain"></div>
+    <div class="flex-grow text-center lg:text-left px-4">
         <h1 class="text-xl md:text-2xl lg:text-3xl font-bold leading-tight">FORMULARIO DE COSTEO UNITARIO</h1>
-        <h2 class="text-sm md:text-base lg:text-lg font-light mt-1 opacity-90">ESE Hospital Universitario Hernando Moncaleano Perdomo</h2>
+        <h2 class="text-sm md:text-base font-light opacity-90">ESE Hospital Universitario Hernando Moncaleano Perdomo</h2>
     </div>
-
-    <!-- Bloque Usuario y Logout Mejorado -->
-    <div class="flex flex-col items-center lg:items-end gap-3 w-full lg:w-auto">
-        <div class="bg-secondary px-4 py-2 rounded-lg shadow-lg border border-white/20 flex items-center gap-3">
-            <div class="text-center lg:text-right">
-                <p class="text-[10px] md:text-xs font-semibold text-white uppercase tracking-wider">Consecutivo</p>
-                <p id="contadorConsecutivo" class="text-lg md:text-xl font-bold text-white leading-none">001</p>
-            </div>
+    <div class="flex flex-col items-center lg:items-end gap-2">
+        <div class="bg-white/10 px-4 py-2 rounded-lg text-right">
+            <p class="text-[10px] uppercase tracking-wider opacity-80">Consecutivo</p>
+            <p id="headerConsecutivo" class="text-xl font-bold font-mono">Generando...</p>
         </div>
-        <div class="flex flex-col items-center lg:items-end bg-white/10 p-2 rounded-lg">
-            <span id="userEmailDisplay" class="text-xs text-white font-mono mb-1 truncate max-w-[200px] block">...</span>
-            <button onclick="logoutApp()" class="text-xs text-white font-bold bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition w-full">Cerrar Sesión</button>
+        <div class="flex items-center gap-3 bg-white/5 px-3 py-1 rounded-full">
+            <span id="userEmailDisplay" class="text-xs font-mono truncate max-w-[150px]">...</span>
+            <button onclick="logoutApp()" class="text-xs font-bold text-red-300 hover:text-red-100">Salir</button>
         </div>
     </div>
    </header>
-   
-   <!-- BANNER DE MODO HISTORIAL (Visible solo cuando se carga un costeo) -->
-   <div id="historyModeBanner" class="mt-6 flex flex-col md:flex-row gap-4">
-       <div class="flex items-center gap-2">
-           <span class="text-2xl">👁️</span>
-           <div>
-               <p class="text-lg">MODO VISUALIZACIÓN (HISTORIAL)</p>
-               <p class="text-sm font-normal text-gray-700">Está viendo un registro guardado. La edición está deshabilitada.</p>
-           </div>
+
+   <div id="historyModeBanner" class="hidden shadow-md">
+       <div class="flex items-center gap-3">
+           <span class="text-2xl">📁</span>
+           <div><p class="font-bold">MODO REVISIÓN DE HISTORIAL</p><p class="text-sm">¿Desea editar este registro o solo visualizarlo?</p></div>
        </div>
-       <button onclick="exitHistoryMode()" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-opacity-90 transition">
-           Salir / Nuevo Costeo
-       </button>
+       <div class="flex gap-3">
+           <button onclick="enableHistoryEditing()" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-800 transition shadow">
+               ✏️ Continuar Editando
+           </button>
+           <button onclick="confirmHistoryClose()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition shadow">
+               🔒 Confirmar / Cerrar
+           </button>
+       </div>
    </div>
 
-   <!-- BARRA DE HERRAMIENTAS RESPONSIVA -->
-   <div class="bg-white p-4 md:p-6 rounded-lg shadow-md mb-6 mt-6 border-l-4 border-secondary">
-       <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+   <!-- BARRA DE HERRAMIENTAS -->
+   <div class="bg-white p-6 rounded-lg shadow-md mb-8 border-l-4 border-secondary">
+       <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
            <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-               <span class="bg-gray-100 p-1 rounded">🛠️</span> Configuración
+               <span class="text-xl">🛠️</span> Configuración
            </h3>
-           <div class="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
-               <button id="btnRestablecer" onclick="window.restablecerFormulario()" class="flex-1 sm:flex-none bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-700 transition shadow-sm">Restablecer</button>
-               <button id="btnGuardar" onclick="window.guardarCosteo()" class="flex-1 sm:flex-none bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm">Guardar</button>
-               <button onclick="window.verHistorial()" class="flex-1 sm:flex-none bg-btn-institutional text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-600 transition shadow-sm">Historial</button>
+           <div class="flex gap-2">
+               <button onclick="if(confirm('¿Limpiar todo?')) window.restablecerFormulario()" class="bg-gray-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-gray-700 transition shadow-sm">Restablecer</button>
+               <button onclick="window.guardarCosteo()" class="bg-green-700 text-white px-4 py-2 rounded font-bold text-sm hover:bg-green-800 transition shadow-sm">Guardar</button>
+               <button onclick="window.verHistorial()" class="bg-[#7084C1] text-white px-4 py-2 rounded font-bold text-sm hover:bg-indigo-600 transition shadow-sm">Historial</button>
            </div>
        </div>
        
-       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-           <div class="flex flex-col gap-1 w-full group">
-               <div class="file-upload-wrapper w-full relative">
-                   <button type="button" id="btnCargarCups" class="bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-blue-700 transition w-full shadow-sm flex items-center justify-center gap-2">
-                       <span>📂</span> Cargar CUPS (.csv/.xlsx)
-                   </button>
-                   <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-               </div>
-               <span id="cupsStatus" class="text-xs text-gray-500 italic text-center sm:text-left transition-colors group-hover:text-blue-600">⚠️ Pendiente</span>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <!-- Botón 1: CUPS -->
+           <div class="relative w-full h-full group">
+               <button class="w-full h-14 bg-blue-600 text-white rounded-lg font-bold shadow-md hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                   <span>📂</span> Cargar CUPS (.csv/.xlsx)
+               </button>
+               <input type="file" id="cupsInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'cups')" class="file-input-hidden">
+               <p id="cupsStatus" class="text-xs text-gray-500 mt-1 italic text-center">⚠️ Pendiente</p>
            </div>
-           
-           <div class="flex flex-col gap-1 w-full group">
-               <div class="file-upload-wrapper w-full relative">
-                   <button type="button" id="btnCargarInv" class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-green-700 transition w-full shadow-sm flex items-center justify-center gap-2">
-                       <span>📦</span> Cargar Inventario (.csv)
-                   </button>
-                   <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-               </div>
-               <span id="inventoryStatus" class="text-xs text-gray-500 italic text-center sm:text-left transition-colors group-hover:text-green-600">⚠️ Pendiente</span>
+
+           <!-- Botón 2: Inventario -->
+           <div class="relative w-full h-full group">
+               <button class="w-full h-14 bg-green-600 text-white rounded-lg font-bold shadow-md hover:bg-green-700 transition flex items-center justify-center gap-2">
+                   <span>📦</span> Cargar Inventario (.csv)
+               </button>
+               <input type="file" id="inventoryInput" accept=".csv, .xlsx, .xls" onchange="handleFileSelect(this, 'inventory')" class="file-input-hidden">
+               <p id="inventoryStatus" class="text-xs text-gray-500 mt-1 italic text-center">⚠️ Pendiente</p>
            </div>
-           
-           <div class="flex flex-col gap-1 w-full">
-               <button type="button" onclick="descargarPDF()" class="bg-accent text-white px-4 py-3 rounded-lg text-sm font-bold hover:bg-pink-600 transition w-full shadow-sm flex items-center justify-center gap-2">
+
+           <!-- Botón 3: PDF -->
+           <div class="w-full h-full">
+               <button onclick="descargarPDF()" class="w-full h-14 bg-[#ec268f] text-white rounded-lg font-bold shadow-md hover:bg-pink-600 transition flex items-center justify-center gap-2">
                    <span>📄</span> Descargar PDF
                </button>
-               <span class="text-xs text-gray-500 italic text-center sm:text-left">Formato A4 - Institucional</span>
+               <p class="text-xs text-gray-400 mt-1 text-center italic">Formato A4 - Institucional</p>
            </div>
        </div>
    </div>
 
-   <form id="costeoForm" class="form-card p-4 md:p-6 mb-8 rounded-b-xl" onsubmit="return false;">
+   <form id="costeoForm" class="form-card p-6 mb-8" onsubmit="return false;">
     
-    <div class="section-header rounded-md mb-4">I. INFORMACIÓN GENERAL DEL SERVICIO</div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-     <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Elaboración</label> <input type="date" value="2025-11-24" class="input-field" id="fechaElaboracion"></div>
-     <div><label class="block text-sm font-medium text-gray-700 mb-1">Consecutivo</label> <input type="text" placeholder="Ej: COS-2025-001" class="input-field" id="consecutivo" oninput="document.getElementById('contadorConsecutivo').textContent = this.value"></div>
-     <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Centro de Costos / Código</label> 
-        <input type="text" placeholder="Buscar..." class="input-field" id="centroCostos" autocomplete="off" onkeyup="filterCentrosCostos('centroCostos')">
-        <div id="centrosCostosResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div>
-    </div>
-    </div>
-    
-    <!-- SECCIÓN CUPS -->
-    <div class="mb-6 bg-gray-50 p-4 md:p-6 rounded-lg border border-gray-200">
-        <label class="block text-sm font-bold text-gray-700 mb-2">1. Descripción del Servicio a Costear (CUPS)</label>
-        <div class="relative w-full">
-            <input type="text" placeholder="Escriba Código o Nombre para buscar..." class="input-field pl-3 py-3" id="cupsSearch" autocomplete="off" onkeyup="filterCups()" disabled>
-            <div id="cupsResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div>
+    <!-- I. GENERAL -->
+    <div class="section-header rounded-t-lg">I. INFORMACIÓN GENERAL DEL SERVICIO</div>
+    <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 border-x border-b rounded-b-lg mb-6">
+        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha</label><input type="date" id="fechaElaboracion" class="input-field"></div>
+        <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Consecutivo (Auto)</label>
+            <input type="text" id="consecutivo" class="input-field input-read-only bg-gray-100 text-gray-600 font-mono font-bold" readonly>
+        </div>
+        <div class="relative">
+            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Centro de Costos</label>
+            <input type="text" id="centroCostos" class="input-field" placeholder="Buscar..." onkeyup="filterCentrosCostos('centroCostos')">
+            <div id="centrosCostosResults" class="cups-dropdown absolute w-full hidden"></div>
         </div>
         
-        <div class="mt-3 p-4 bg-white border-l-4 border-blue-500 rounded-r-md shadow-sm">
-            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Servicio Seleccionado:</p>
-            <p id="selectedCupsDisplay" class="font-bold text-base md:text-lg text-primary mt-1 break-words">-- Ninguno seleccionado --</p>
-            <input type="hidden" id="cupsCode"> <input type="hidden" id="cupsDescription">
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">Tarifario</label> <select class="input-field" id="tarifario"> <option value="">Seleccione...</option> <option value="SOAT">SOAT</option> <option value="ISS 2001">ISS 2001</option> <option value="Propias">Propias</option> <option value="Otro">Otro</option> </select></div>
-            <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Homólogo (Buscar)</label> 
-                <div class="relative">
-                    <input type="text" placeholder="Buscar..." class="input-field" id="homologo" autocomplete="off" onkeyup="filterHomologos()">
-                    <div id="homologoResults" class="cups-dropdown absolute w-full hidden shadow-xl"></div>
-                </div>
+        <div class="md:col-span-3 bg-white p-4 rounded border border-gray-200 mt-2">
+            <label class="block text-sm font-bold text-primary mb-2">1. Selección del Servicio (CUPS)</label>
+            <div class="relative">
+                <input type="text" id="cupsSearch" class="input-field pl-9" placeholder="🔍 Escriba código o nombre (Aprox)..." onkeyup="filterCups()" disabled>
+                <div id="cupsResults" class="cups-dropdown absolute w-full hidden"></div>
             </div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">Valor Homólogo</label> <input type="text" placeholder="$ 0" class="input-field text-right-input" id="valorHomologo" oninput="formatCurrency(this)"></div>
+            <div class="mt-2 text-sm text-gray-600 bg-blue-50 p-2 rounded border border-blue-100">
+                <span class="font-bold">Seleccionado:</span> <span id="selectedCupsDisplay">-- Ninguno --</span>
+                <input type="hidden" id="cupsCode"><input type="hidden" id="cupsDescription">
+            </div>
         </div>
+
+        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tarifario</label>
+            <select id="tarifario" class="input-field"><option value="">Seleccione...</option><option value="SOAT">SOAT</option><option value="ISS 2001">ISS 2001</option><option value="Propias">Propias</option></select>
+        </div>
+        <div class="relative">
+            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Homólogo (Cols E, F y G)</label>
+            <input type="text" id="homologo" class="input-field" placeholder="Buscar en Homólogos..." onkeyup="filterHomologos()">
+            <div id="homologoResults" class="cups-dropdown absolute w-full hidden"></div>
+        </div>
+        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Valor Homólogo</label><input type="text" id="valorHomologo" class="input-field text-right" placeholder="$ 0" oninput="formatCurrency(this)"></div>
+
+        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Horas Ejecución</label><input type="number" id="tiempoEjecucion" class="input-field" placeholder="0.0" step="0.5"></div>
+        <div class="relative">
+            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Lugar Realización</label>
+            <input type="text" id="lugarRealizacion" class="input-field" placeholder="Buscar..." onkeyup="filterCentrosCostos('lugarRealizacion')">
+            <div id="lugarRealizacionResults" class="cups-dropdown absolute w-full hidden"></div>
+        </div>
+        <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Grupo Qx / UVR</label><input type="text" id="grupoUVR" class="input-field" placeholder="Ej: 200 UVR"></div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-     <div><label class="block text-sm font-medium text-gray-700 mb-1">Tiempo Ejecución (Horas)</label> <input type="number" step="0.5" placeholder="0.0" class="input-field" id="tiempoEjecucion"></div>
-     <div class="relative"><label class="block text-sm font-medium text-gray-700 mb-1">Lugar Realización</label> 
-        <input type="text" placeholder="Buscar..." class="input-field" id="lugarRealizacion" autocomplete="off" onkeyup="filterCentrosCostos('lugarRealizacion')">
-        <div id="lugarRealizacionResults" class="cups-dropdown absolute w-full hidden shadow-2xl"></div>
+    <!-- II. MANO DE OBRA -->
+    <div class="section-header rounded-t-lg flex justify-between items-center">
+        <span>II. MANO DE OBRA DIRECTA</span>
     </div>
-     <div><label class="block text-sm font-medium text-gray-700 mb-1">Grupo Qx / UVR</label> <input type="text" placeholder="Ej: 200 UVR" class="input-field" id="grupoUVR"></div>
-    </div>
-    
-    <!-- II. MANO DE OBRA (Tabla con scroll horizontal suave) -->
-    <div class="section-header rounded-md mb-4">II. COSTOS DIRECTOS - 2. Talento Humano</div>
-    <div class="w-full overflow-x-auto mb-4 rounded-lg border border-gray-200 shadow-sm bg-white">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[180px]">Cargo / Perfil</th>
-                    <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase w-20">Cant.</th>
-                    <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase w-20">Horas</th>
-                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[120px]">Valor Hora</th>
-                    <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[120px]">Subtotal</th>
-                    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase w-16">❌</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="talentoHumanoContainer"></tbody>
-        </table>
-    </div>
-    <button type="button" id="btnAddMO" onclick="addManoDeObra()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95"> + Añadir Mano de Obra </button>
-    
-    <div class="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-md flex justify-between items-center">
-        <label class="block text-sm font-bold text-gray-700">SUBTOTAL MANO DE OBRA:</label>
-        <p id="subtotalManoObra" class="text-lg md:text-xl font-bold text-primary">$ 0.00</p>
+    <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
+        <div class="flex border-b border-gray-200 mb-4">
+            <button type="button" class="tab-btn" onclick="selectMOType('Eventos', this)">Eventos</button>
+            <button type="button" class="tab-btn" onclick="selectMOType('Horas', this)">Horas</button>
+            <button type="button" class="tab-btn" onclick="selectMOType('Paquete', this)">Paquete</button>
+        </div>
+        <input type="hidden" id="moTypeSelection" value="">
+        
+        <div id="moContentBlock" class="hidden opacity-0 transition-opacity duration-300">
+            <div class="bg-blue-50 border border-blue-200 p-2 mb-3 rounded text-xs text-blue-800 font-bold flex justify-between items-center">
+                <span>Modalidad seleccionada: <span id="moTypeDisplay"></span></span>
+                <button type="button" class="text-xs underline text-blue-600" onclick="resetMOTabs()">Cambiar</button>
+            </div>
+            <div class="overflow-x-auto mb-3 border rounded-lg">
+                <table class="w-full text-sm text-left">
+                    <thead id="moTableHead" class="bg-gray-50 text-gray-500 uppercase text-xs"></thead>
+                    <tbody id="talentoHumanoContainer" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+            <button type="button" onclick="addManoDeObra()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Cargo</button>
+        </div>
+        
+        <div id="moPlaceholder" class="text-center py-10 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+            <p class="text-lg mb-2">👋 Seleccione una modalidad arriba</p>
+            <p class="text-xs">Elija entre Eventos, Horas o Paquete para habilitar esta sección.</p>
+        </div>
+
+        <div class="mt-4 flex justify-between items-center bg-gray-50 p-3 rounded border">
+            <span class="font-bold text-gray-600 text-sm">SUBTOTAL MANO DE OBRA:</span>
+            <span id="subtotalManoObra" class="text-xl font-bold text-primary">$ 0.00</span>
+        </div>
     </div>
 
     <!-- III. MATERIALES -->
-    <div class="section-header rounded-md mb-4 mt-8">III. COSTOS DIRECTOS - 3. Materiales (Facturables)</div>
-    <div class="w-full overflow-x-auto mb-4 rounded-lg border border-gray-200 shadow-sm bg-white">
-     <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[140px]">Cód.</th>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[200px]">Nombre</th>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[100px]">Pres.</th>
-                <th class="px-2 py-3 text-left text-xs font-bold text-gray-500 uppercase w-20">Cant.</th>
-                <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">V. Unit</th>
-                <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">Total</th>
-                <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase">❌</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200" id="medicamentosFacturables"></tbody>
-     </table>
+    <div class="section-header rounded-t-lg">III. MATERIALES (FACTURABLES)</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
+        <p class="text-xs text-gray-500 mb-2 italic">ℹ️ Escriba el Código o Nombre para buscar. El sistema autocompletará Presentación (Col D) y Precio (Col M).</p>
+        <div class="overflow-x-visible mb-3 border rounded-lg">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-32">Pres. (Col D)</th>
+                        <th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit (Col M)</th>
+                        <th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th>
+                    </tr>
+                </thead>
+                <tbody id="medicamentosFacturables" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+        <button type="button" onclick="addMedicamentoRow()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Material</button>
     </div>
-    <button type="button" id="btnAddMeds" onclick="addMedicamentoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Material Adicional</button>
 
     <!-- IV. INSUMOS -->
-    <div class="section-header rounded-md mb-4 mt-8">IV. COSTOS DIRECTOS - 4. Insumos (No Facturables)</div>
-    <div class="w-full overflow-x-auto mb-4 rounded-lg border border-gray-200 shadow-sm bg-white">
-     <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[140px]">Cód.</th>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[200px]">Nombre</th>
-                <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[100px]">Pres.</th>
-                <th class="px-2 py-3 text-left text-xs font-bold text-gray-500 uppercase w-20">Cant.</th>
-                <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">V. Unit</th>
-                <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">Total</th>
-                <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase">❌</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200" id="insumosNoFacturables"></tbody>
-     </table>
+    <div class="section-header rounded-t-lg">IV. INSUMOS (NO FACTURABLES)</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
+        <p class="text-xs text-gray-500 mb-2 italic">ℹ️ Escriba el Código o Nombre para buscar. El sistema autocompletará Presentación (Col D) y Precio (Col M).</p>
+        <div class="overflow-x-visible mb-3 border rounded-lg">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <tr><th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-32">Pres. (Col D)</th><th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit (Col M)</th><th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th></tr>
+                </thead>
+                <tbody id="insumosNoFacturables" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+        <button type="button" onclick="addInsumoRow()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Insumo</button>
     </div>
-    <button type="button" id="btnAddInsumos" onclick="addInsumoRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Insumo</button>
 
     <!-- V. ALQUILER -->
-    <div class="section-header rounded-md mb-4 mt-8">V. ALQUILER DE EQUIPOS</div>
-    <div class="w-full overflow-x-auto mb-4 rounded-lg border border-gray-200 shadow-sm bg-white">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[140px]">Cód.</th>
-                    <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[200px]">Nombre Equipo</th>
-                    <th class="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase min-w-[100px]">Unidad</th>
-                    <th class="px-2 py-3 text-left text-xs font-bold text-gray-500 uppercase w-20">Cant.</th>
-                    <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">V. Unit</th>
-                    <th class="px-3 py-3 text-right text-xs font-bold text-gray-500 uppercase min-w-[110px]">Total</th>
-                    <th class="px-2 py-3 text-center text-xs font-bold text-gray-500 uppercase">❌</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="alquilerEquipos"></tbody>
-        </table>
-    </div>
-    <button type="button" id="btnAddAlquiler" onclick="addAlquilerRow()" class="bg-btn-institutional text-white px-6 py-2 rounded-lg font-semibold transition shadow-md w-full md:w-auto hover:scale-105 active:scale-95">+ Añadir Equipo</button>
-    
-    <div class="mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded-r-md flex justify-between items-center">
-        <label class="block text-sm font-bold text-gray-700">SUBTOTAL ALQUILER:</label>
-        <p id="subtotalAlquiler" class="text-lg md:text-xl font-bold text-secondary">$ 0.00</p>
+    <div class="section-header rounded-t-lg">V. ALQUILER DE EQUIPOS</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
+        <div class="overflow-x-auto mb-3 border rounded-lg">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <tr><th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Equipo</th><th class="px-3 py-3 w-24">Unidad</th><th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit</th><th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th></tr>
+                </thead>
+                <tbody id="alquilerEquipos" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+        <button type="button" onclick="addAlquilerRow()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Equipo</button>
+        <div class="mt-4 flex justify-between items-center bg-gray-50 p-3 rounded border"><span class="font-bold text-gray-600 text-sm">SUBTOTAL ALQUILER:</span><span id="subtotalAlquiler" class="text-xl font-bold text-secondary">$ 0.00</span></div>
     </div>
 
     <!-- VI. INDIRECTOS -->
-    <div class="section-header rounded-md mb-4 mt-8">VI. COSTOS INDIRECTOS</div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-     <div class="bg-gray-50 p-4 rounded-lg border">
-      <h3 class="font-bold text-gray-700 mb-3 border-b pb-2">Costos Primarios (%)</h3>
-      <div class="space-y-4">
-       <div class="flex items-center justify-between"><label class="text-sm font-medium text-gray-700 w-1/3">Depreciación</label><input type="number" step="0.1" value="3" class="input-field w-20 text-right h-8" id="porcentajeDepreciacion" oninput="calculateTotal()"><p id="costoDepreciacion" class="font-semibold text-right w-1/3 text-sm">$ 0</p></div>
-       <div class="flex items-center justify-between"><label class="text-sm font-medium text-gray-700 w-1/3">Consumos</label><input type="number" step="0.1" value="0" class="input-field w-20 text-right h-8" id="porcentajeConsumos" oninput="calculateTotal()"><p id="costoConsumos" class="font-semibold text-right w-1/3 text-sm">$ 0</p></div>
-       <div class="flex items-center justify-between"><label class="text-sm font-medium text-gray-700 w-1/3">Gastos Gral.</label><input type="number" step="0.1" value="6" class="input-field w-20 text-right h-8" id="porcentajeGastosGenerales" oninput="calculateTotal()"><p id="costoGastosGenerales" class="font-semibold text-right w-1/3 text-sm">$ 0</p></div>
-      </div>
-     </div>
-     <div class="bg-gray-50 p-4 rounded-lg border">
-      <h3 class="font-bold text-gray-700 mb-3 border-b pb-2">Costos Secundarios (%)</h3>
-      <div class="space-y-4">
-       <div class="flex items-center justify-between"><label class="text-sm font-medium text-gray-700 w-1/3">Logísticos</label><input type="number" step="0.1" value="8" class="input-field w-20 text-right h-8" id="porcentajeLogisticos" oninput="calculateTotal()"><p id="costoLogisticos" class="font-semibold text-right w-1/3 text-sm">$ 0</p></div>
-       <div class="flex items-center justify-between"><label class="text-sm font-medium text-gray-700 w-1/3">Administrativos</label><input type="number" step="0.1" value="17" class="input-field w-20 text-right h-8" id="porcentajeAdministrativos" oninput="calculateTotal()"><p id="costoAdministrativos" class="font-semibold text-right w-1/3 text-sm">$ 0</p></div>
-       <div class="flex justify-between items-center bg-blue-100 p-3 rounded mt-4 border-l-4 border-blue-600"><label class="text-sm font-bold">SUBTOTAL:</label><p id="subtotalCostosIndirectos" class="text-base font-bold text-primary">$ 0.00</p></div>
-      </div>
-     </div>
-    </div>
-    
-    <!-- VII. GRÁFICAS (Height relativo) -->
-    <div class="section-header rounded-md mb-4 mt-8">VII. GRÁFICAS</div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm flex flex-col h-full min-h-[350px]">
-            <h3 class="text-lg font-bold text-primary mb-4 text-center">Distribución de Costos</h3>
-            <div class="flex-grow relative w-full h-64 md:h-80"><canvas id="pieChart"></canvas></div>
+    <div class="section-header rounded-t-lg">VI. COSTOS INDIRECTOS</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h4 class="font-bold text-gray-700 border-b pb-2 mb-3 text-sm">Costos Primarios (%)</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center"><label class="text-sm text-gray-600">Depreciación</label><div class="flex items-center gap-2"><input type="number" id="porcentajeDepreciacion" value="3" class="input-field w-16 text-right h-8" oninput="calculateTotal()"><span id="costoDepreciacion" class="font-bold text-sm w-24 text-right">$0</span></div></div>
+                    <div class="flex justify-between items-center"><label class="text-sm text-gray-600">Consumos</label><div class="flex items-center gap-2"><input type="number" id="porcentajeConsumos" value="0" class="input-field w-16 text-right h-8" oninput="calculateTotal()"><span id="costoConsumos" class="font-bold text-sm w-24 text-right">$0</span></div></div>
+                    <div class="flex justify-between items-center"><label class="text-sm text-gray-600">Gastos Gral.</label><div class="flex items-center gap-2"><input type="number" id="porcentajeGastosGenerales" value="6" class="input-field w-16 text-right h-8" oninput="calculateTotal()"><span id="costoGastosGenerales" class="font-bold text-sm w-24 text-right">$0</span></div></div>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-700 border-b pb-2 mb-3 text-sm">Costos Secundarios (%)</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center"><label class="text-sm text-gray-600">Logísticos</label><div class="flex items-center gap-2"><input type="number" id="porcentajeLogisticos" value="8" class="input-field w-16 text-right h-8" oninput="calculateTotal()"><span id="costoLogisticos" class="font-bold text-sm w-24 text-right">$0</span></div></div>
+                    <div class="flex justify-between items-center"><label class="text-sm text-gray-600">Administrativos</label><div class="flex items-center gap-2"><input type="number" id="porcentajeAdministrativos" value="17" class="input-field w-16 text-right h-8" oninput="calculateTotal()"><span id="costoAdministrativos" class="font-bold text-sm w-24 text-right">$0</span></div></div>
+                    <div class="mt-4 pt-3 border-t flex justify-between"><span class="font-bold text-primary">Total Indirectos:</span><span id="subtotalCostosIndirectos" class="font-bold text-primary">$0</span></div>
+                </div>
+            </div>
         </div>
-        <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm flex flex-col h-full min-h-[350px]">
-            <h3 class="text-lg font-bold text-primary mb-4 text-center">Impacto Mano de Obra</h3>
-            <div class="relative w-full h-48 md:h-60 mb-4"><canvas id="barChart"></canvas></div>
-            <div class="overflow-x-auto mt-auto">
-                <table class="min-w-full border text-sm">
-                    <thead class="bg-primary text-white"><tr><th class="px-2 py-1">Concepto</th><th class="px-2 py-1 text-right">Valor</th><th class="px-2 py-1 text-right">%</th></tr></thead>
-                    <tbody class="divide-y"><tr class="bg-gray-50"><td class="px-2 py-1">Mano de Obra</td><td id="tablaBarManoObra" class="text-right">$0</td><td id="tablaBarManoObraPorcentaje" class="text-right">0%</td></tr><tr><td class="px-2 py-1 font-bold">Total</td><td id="tablaBarTotal" class="text-right font-bold">$0</td><td id="tablaBarTotalPorcentaje" class="text-right font-bold">100%</td></tr></tbody>
-                </table>
+    </div>
+
+    <!-- VII. GRÁFICAS -->
+    <div class="section-header rounded-t-lg">VII. ANÁLISIS GRÁFICO</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="h-80 relative">
+            <h4 class="text-center font-bold text-gray-700 mb-2">Estructura de Costos</h4>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="h-80 relative flex flex-col">
+            <h4 class="text-center font-bold text-gray-700 mb-2">Peso Mano de Obra</h4>
+            <div class="flex-grow"><canvas id="barChart"></canvas></div>
+            <div class="mt-2 text-xs text-center text-gray-500">
+                <span id="tablaBarManoObraPorcentaje" class="font-bold text-primary text-lg">0%</span> del costo total
             </div>
         </div>
     </div>
 
     <!-- VIII. RESUMEN -->
-    <div class="section-header rounded-md mb-4 mt-8">VIII. RESUMEN DE COSTOS</div>
-    <div class="space-y-3 p-4 md:p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-inner">
-     <div class="flex justify-between text-sm md:text-base border-b border-blue-200 pb-2"><span class="font-medium text-gray-700">Costos Directos Base</span> <span id="totalCostosDirectos" class="font-bold">$ 0.00</span></div>
-     <div class="flex justify-between text-sm md:text-base border-b border-blue-200 pb-2"><span class="font-medium text-gray-700">Alquiler Equipos</span> <span id="resumenAlquiler" class="font-bold">$ 0.00</span></div>
-     <div class="flex justify-between text-sm md:text-base border-b border-blue-200 pb-2"><span class="font-medium text-gray-700">Costos Indirectos</span> <span id="totalCostosIndirectosResumen" class="font-bold">$ 0.00</span></div>
-     <div class="flex justify-between text-base md:text-lg pt-2 text-primary"><span class="font-bold">Subtotal Operativo</span> <span id="costoProcedimientoSinAdicionales" class="font-bold">$ 0.00</span></div>
-     <div class="flex justify-between text-sm md:text-base border-b border-blue-200 pb-2"><span class="font-medium text-gray-700">+ Facturables Adicionales</span> <span id="totalAdicionales" class="font-bold">$ 50,000.00</span></div>
-     <div class="flex flex-col sm:flex-row justify-between items-center text-xl md:text-2xl font-extrabold text-white bg-primary p-4 rounded-lg mt-4 shadow-lg gap-2"><span>TOTAL COSTO UNITARIO</span> <span id="costoUnitarioFinal">$ 50,000.00</span></div>
+    <div class="section-header rounded-t-lg">VIII. RESUMEN FINANCIERO</div>
+    <div class="bg-blue-50 border border-blue-200 rounded-b-lg p-6 mb-6 space-y-2 text-sm">
+        <div class="flex justify-between"><span class="text-gray-600">Costos Directos Base</span><span id="totalCostosDirectos" class="font-bold">$ 0</span></div>
+        <div class="flex justify-between"><span class="text-gray-600">Alquiler Equipos</span><span id="resumenAlquiler" class="font-bold">$ 0</span></div>
+        <div class="flex justify-between"><span class="text-gray-600">Indirectos</span><span id="totalCostosIndirectosResumen" class="font-bold">$ 0</span></div>
+        <div class="flex justify-between pt-2 border-t border-blue-200"><span class="font-bold text-primary">Subtotal Operativo</span><span id="costoProcedimientoSinAdicionales" class="font-bold text-primary">$ 0</span></div>
+        <div class="flex justify-between"><span class="text-gray-600">+ Facturables Adic.</span><span id="totalAdicionales" class="font-bold">$ 0</span></div>
+        <div class="mt-4 bg-primary text-white p-4 rounded-lg flex justify-between items-center text-xl font-bold shadow-lg">
+            <span>COSTO UNITARIO TOTAL</span>
+            <span id="costoUnitarioFinal">$ 0</span>
+        </div>
     </div>
 
     <!-- IX. PRECIO -->
-    <div class="section-header rounded-md mb-4 mt-8">IX. PRECIO DE VENTA</div>
-    <div class="form-card p-4 md:p-6 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Estudio de Mercado</label>
-                <div class="file-upload-wrapper w-full relative group">
-                    <button type="button" id="btnCargarMercado" class="bg-gray-100 text-gray-700 border-2 border-dashed border-gray-300 px-4 py-4 rounded-lg text-sm font-semibold hover:border-primary hover:text-primary transition flex items-center justify-center gap-2 w-full h-full">
-                        📂 Cargar Archivo (.xlsx)
-                    </button>
-                    <input type="file" id="archivoMercadeo" onchange="alert('Simulación: Ingrese valor manual.')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+    <div class="section-header rounded-t-lg">IX. PRECIO DE VENTA</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Estudio de Mercado</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition cursor-pointer relative">
+                <input type="file" id="archivoMercadeo" class="absolute inset-0 opacity-0 cursor-pointer" onchange="alert('Simulación: Ingrese valor manual')">
+                <p class="text-gray-500 text-sm">📂 Cargar archivo de soporte</p>
+            </div>
+        </div>
+        <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Precio de Venta Propuesto</label>
+            <div class="relative">
+                <span class="absolute left-3 top-2 text-gray-400 font-bold text-lg">$</span>
+                <input type="text" id="precioVentaInput" class="input-field pl-8 text-xl font-bold text-right text-gray-800" placeholder="0" oninput="formatCurrency(this); calculateTotal()">
+            </div>
+        </div>
+    </div>
+
+    <!-- X. ESTADO DE RESULTADOS -->
+    <div class="section-header rounded-t-lg">X. ESTADO DE RESULTADOS</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 border border-l-4 border-l-primary rounded-lg shadow-sm">
+                        <p class="res-card-label">Costo Unitario</p>
+                        <p id="resCostoTotal" class="res-card-value text-primary">$ 0</p>
+                    </div>
+                    <div class="p-4 border border-l-4 border-l-blue-500 rounded-lg shadow-sm">
+                        <p class="res-card-label">Tarifa Venta</p>
+                        <p id="resPrecioVenta" class="res-card-value text-blue-600">$ 0</p>
+                    </div>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-lg text-center border-2 border-green-100">
+                    <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">Excedente / Utilidad</p>
+                    <p id="resExcedente" class="text-4xl font-extrabold text-green-600 mt-2">$ 0</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="dark-card">
+                        <p class="text-[10px] font-bold uppercase opacity-80">Sostenibilidad</p>
+                        <p id="resSostenibilidad" class="text-xl font-bold">0%</p>
+                    </div>
+                    <div class="dark-card">
+                        <p class="text-[10px] font-bold uppercase opacity-80">Margen</p>
+                        <p id="resMargen" class="text-xl font-bold">0%</p>
+                    </div>
                 </div>
             </div>
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Precio de Venta Propuesto</label>
-                <div class="relative rounded-md shadow-sm">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"><span class="text-gray-500 font-bold">$</span></div>
-                    <input type="text" id="precioVentaInput" class="block w-full rounded-md border-gray-300 pl-8 py-3 focus:border-indigo-500 focus:ring-indigo-500 text-lg font-bold text-right" placeholder="0" oninput="formatCurrency(this); calculateResults()">
+
+            <div class="bg-white rounded-xl p-2 border border-gray-100 flex flex-col">
+                <h4 class="text-center font-bold text-gray-700 mb-2">Comparativo Financiero</h4>
+                <div class="flex-grow relative min-h-[300px]">
+                    <canvas id="resultsChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- X. ESTADO DE RESULTADOS (MODIFICADO) -->
-    <div class="section-header rounded-md mb-4 mt-8">X. ESTADO DE RESULTADOS</div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="result-card bg-white p-4 rounded-xl shadow border-l-4 border-primary hover:scale-105 transition-transform">
-                    <p class="text-xs text-gray-500 uppercase font-bold">Costo Unitario</p>
-                    <p id="resCostoTotal" class="text-xl md:text-2xl font-bold text-primary mt-1">$ 0</p>
-                </div>
-                <div class="result-card bg-white p-4 rounded-xl shadow border-l-4 border-blue-500 hover:scale-105 transition-transform">
-                    <p class="text-xs text-gray-500 uppercase font-bold">Tarifa Venta</p>
-                    <p id="resPrecioVenta" class="text-xl md:text-2xl font-bold text-blue-600 mt-1">$ 0</p>
-                </div>
-            </div>
-            <!-- Excedente card updated -->
-            <div class="result-card bg-blue-50 p-5 rounded-xl shadow border-l-8 border-primary flex flex-col items-center justify-center py-6 hover:scale-105 transition-transform">
-                <p class="text-sm text-gray-500 uppercase font-bold tracking-widest">Excedente / Utilidad</p>
-                <p id="resExcedente" class="text-3xl md:text-4xl font-extrabold text-secondary mt-2">$ 0</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Sostenibilidad/Margen boxes updated to use bg-primary -->
-                <div class="bg-primary p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Sostenibilidad</p><p id="resSostenibilidad" class="text-lg font-bold text-white">0%</p></div>
-                <div class="bg-primary p-3 rounded-lg text-center shadow-lg"><p class="text-[10px] font-bold text-gray-300 uppercase">Margen</p><p id="resMargen" class="text-lg font-bold text-white">0%</p></div>
-            </div>
-        </div>
-        <div class="form-card p-4 flex flex-col h-full">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">Comparativo Financiero</h3>
-            <div class="flex-grow relative min-h-[250px]"><canvas id="resultsChart"></canvas></div>
-        </div>
-    </div>
    </form>
   </div>
   
-  <!-- BOTÓN FLOTANTE RESPONSIVO -->
-  <button id="botonSugerencias" onclick="toggleSugerencias()" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 text-white p-3 md:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 z-50 flex items-center justify-center bg-accent">
-   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-7 md:w-7" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-  </button>
-  
-  <div id="panelSugerencias" class="fixed bottom-20 right-4 md:bottom-24 md:right-8 bg-white rounded-2xl shadow-2xl z-40 hidden overflow-hidden w-[90%] md:w-[380px] max-w-sm max-h-[500px] border border-gray-200">
-   <div class="p-4 flex items-center justify-between bg-accent"><h3 class="text-white font-bold text-lg">Sugerencias</h3><button onclick="toggleSugerencias()" class="text-white font-bold text-xl">×</button></div>
-   <div class="p-4 overflow-y-auto max-h-[400px]">
-    <form onsubmit="enviarSugerencia(event)" class="space-y-4">
-     <textarea id="textoSugerencia" rows="4" class="input-field resize-none w-full" placeholder="Escribe tu sugerencia..."></textarea>
-     <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-bold shadow-md hover:bg-opacity-90">Enviar</button>
-    </form>
-   </div>
-  </div>
-
   <div id="historialModal" class="modal">
-    <div class="modal-content w-[95%] md:w-[90%] max-w-3xl">
-        <div class="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center"><h3 class="text-lg md:text-xl font-bold">Historial de Costeos</h3><button onclick="document.getElementById('historialModal').style.display='none'" class="text-2xl font-bold">×</button></div>
-        <div class="p-4 md:p-6"><div id="historialLista" class="space-y-2 max-h-[60vh] overflow-y-auto"><p class="text-center text-gray-400 italic py-8">Cargando historial...</p></div></div>
+    <div class="modal-content">
+        <div class="bg-primary text-white p-4 flex justify-between items-center rounded-t-lg">
+            <h3 class="font-bold text-lg">Historial de Costeos</h3>
+            <button onclick="document.getElementById('historialModal').style.display='none'" class="text-2xl hover:text-gray-300">×</button>
+        </div>
+        <div class="p-4 bg-gray-50 max-h-[60vh] overflow-y-auto" id="historialLista"></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, where, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, orderBy, limit, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const userHardcodedConfig = { apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA", authDomain: "costos-hospitalarios.firebaseapp.com", projectId: "costos-hospitalarios", storageBucket: "costos-hospitalarios.firebasestorage.app", messagingSenderId: "404619927928", appId: "1:404619927928:web:2c9a3f83ba58504dba288d", measurementId: "G-446CF9TS9H" };
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userHardcodedConfig;
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA", authDomain: "costos-hospitalarios.firebaseapp.com", projectId: "costos-hospitalarios"};
     const appId = typeof __app_id !== 'undefined' ? __app_id : "costos-hospitalarios-v1";
-
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let authPromise = null;
+    let currentUserSession = null;
+
     const ensureAuth = () => {
-        if (authPromise) return authPromise;
-        authPromise = new Promise((resolve, reject) => {
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
-                if (user) { unsubscribe(); resolve(user); }
+        return new Promise((resolve, reject) => {
+            if(auth.currentUser) return resolve(auth.currentUser);
+            const unsubscribe = onAuthStateChanged(auth, u => {
+                unsubscribe();
+                if(u) resolve(u);
+                else {
+                    const method = (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) 
+                        ? signInWithCustomToken(auth, __initial_auth_token)
+                        : signInAnonymously(auth);
+                    method.then(cred => resolve(cred.user)).catch(reject);
+                }
             });
-            if (!auth.currentUser) {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth).catch(reject)); } 
-                else { signInAnonymously(auth).catch(reject); }
-            }
         });
-        return authPromise;
     };
 
-    let currentUserSession = null;
+    async function getNextConsecutive() {
+        if(!currentUserSession) return;
+        const el = document.getElementById('consecutivo');
+        const headerEl = document.getElementById('headerConsecutivo');
+        el.value = "Generando...";
+        headerEl.textContent = "...";
+        try {
+            const q = query(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), orderBy('timestamp', 'desc'), limit(1));
+            const snap = await getDocs(q);
+            let nextSeq = 1;
+            const year = new Date().getFullYear();
+            if(!snap.empty) {
+                const lastData = snap.docs[0].data();
+                const lastCode = lastData.general?.consecutivo || "";
+                const parts = lastCode.split('-');
+                if(parts.length === 3 && parseInt(parts[1]) === year) { nextSeq = parseInt(parts[2]) + 1; }
+            }
+            const newCode = `COS-${year}-${String(nextSeq).padStart(3, '0')}`;
+            el.value = newCode;
+            headerEl.textContent = newCode;
+        } catch(e) { console.error("Error consecutivo:", e); el.value = `COS-${new Date().getFullYear()}-ERR`; }
+    }
+
     const checkSession = async () => {
-        try { await ensureAuth(); } catch (e) { console.error("Auth error:", e); }
+        try { await ensureAuth(); } catch(e) { console.error("Auth", e); }
         const stored = localStorage.getItem('operarioSession');
         const overlay = document.getElementById('loginOverlay');
-        const mainApp = document.getElementById('mainAppContent');
-        if (stored) {
+        const main = document.getElementById('mainAppContent');
+        if(stored) {
             currentUserSession = JSON.parse(stored);
-            if (document.getElementById('userEmailDisplay')) document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
-            if (overlay) { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
-            if (mainApp) { mainApp.classList.remove('hidden'); mainApp.style.display = 'block'; }
-            resetInactivityTimer(); // Start timer on login
+            document.getElementById('userEmailDisplay').textContent = currentUserSession.email;
+            overlay.style.display = 'none';
+            main.classList.remove('hidden');
+            getNextConsecutive();
         } else {
-            currentUserSession = null;
-            if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
-            if (mainApp) { mainApp.classList.add('hidden'); mainApp.style.display = 'none'; }
+            overlay.style.display = 'flex';
+            main.classList.add('hidden');
         }
     };
 
@@ -550,107 +562,86 @@
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
         const btn = e.target.querySelector('button');
-        const err = document.getElementById('appLoginError');
-        const originalText = btn.textContent;
-        btn.textContent = "Verificando..."; btn.disabled = true; err.classList.add('hidden');
+        btn.textContent = "Verificando..."; btn.disabled = true;
         try {
             await ensureAuth();
             const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
-            const snapshot = await getDocs(usersRef);
-            let validUser = null;
-            if (snapshot.empty) throw new Error("⚠️ BASE DE DATOS VACÍA: No hay usuarios registrados.");
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.email.toLowerCase() === email.toLowerCase() && data.password === pass) {
-                    if (data.active !== false) validUser = data; else throw new Error("Este usuario ha sido desactivado.");
-                }
+            const snap = await getDocs(usersRef);
+            let valid = null;
+            snap.forEach(d => {
+                const u = d.data();
+                if(u.email.toLowerCase() === email.toLowerCase() && u.password === pass && u.active !== false) valid = u;
             });
-            if (validUser) {
-                currentUserSession = validUser;
-                localStorage.setItem('operarioSession', JSON.stringify(validUser));
+            if(valid) {
+                currentUserSession = valid;
+                localStorage.setItem('operarioSession', JSON.stringify(valid));
                 checkSession();
-            } else { throw new Error("Usuario no encontrado o contraseña incorrecta."); }
-        } catch (error) { console.error(error); err.innerText = error.message; err.classList.remove('hidden'); } 
-        finally { btn.textContent = originalText; btn.disabled = false; }
+            } else { throw new Error("Credenciales inválidas"); }
+        } catch(err) {
+            document.getElementById('appLoginError').textContent = err.message;
+            document.getElementById('appLoginError').classList.remove('hidden');
+        } finally { btn.textContent = "Iniciar Sesión"; btn.disabled = false; }
     });
 
     window.logoutApp = () => { localStorage.removeItem('operarioSession'); location.reload(); };
-
-    // --- INACTIVIDAD (10 MIN) ---
-    let inactivityTimer;
-    const INACTIVITY_LIMIT_MS = 10 * 60 * 1000; // 10 minutos
-
-    const resetInactivityTimer = () => {
-        // Solo reiniciar si hay una sesión activa (variable local o localStorage)
-        if (!currentUserSession && !localStorage.getItem('operarioSession')) return;
-
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            // Doble verificación antes de cerrar
-            if (localStorage.getItem('operarioSession')) {
-                alert("⚠️ Sesión cerrada por inactividad (10 minutos).");
-                window.logoutApp();
-            }
-        }, INACTIVITY_LIMIT_MS);
-    };
-
-    // Escuchar eventos de actividad
-    ['mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll', 'click'].forEach(evt => {
-        document.addEventListener(evt, resetInactivityTimer, true);
-    });
-
-    // --- NUEVA FUNCIÓN: GUARDAR COSTEO COMPLETO ---
-    window.guardarCosteo = async function() {
-        if (!currentUserSession) { alert("⚠️ Atención: No hay una sesión activa."); document.getElementById('loginOverlay').classList.remove('hidden'); return; }
+    
+    window.guardarCosteo = async () => {
+        if(!currentUserSession) return;
+        const conf = confirm("¿Guardar este costeo? El consecutivo se registrará permanentemente.");
+        if(!conf) return;
         try {
-            await ensureAuth();
-            
-            // Helper para extraer datos de tablas
-            const extractTableData = (tbodyId) => {
-                const rows = document.querySelectorAll(`#${tbodyId} tr`);
-                return Array.from(rows).map(row => {
-                    const inputs = row.querySelectorAll('input');
-                    if(inputs.length === 0) return null; // Ignorar filas vacías
-                    // Mapeo genérico basado en la estructura visual (ajustar según cada tabla)
-                    return Array.from(inputs).map(inp => inp.value);
-                }).filter(r => r !== null);
+            const extractTable = (id) => {
+                const rows = document.querySelectorAll(`#${id} tr`);
+                return Array.from(rows).map(r => Array.from(r.querySelectorAll('input')).map(i=>i.value));
             };
-
-            const costeoData = {
+            const data = {
                 userId: currentUserSession.uid, userEmail: currentUserSession.email, timestamp: Timestamp.now(),
                 general: {
-                    fecha: document.getElementById('fechaElaboracion').value, consecutivo: document.getElementById('consecutivo').value,
-                    cupsCode: document.getElementById('cupsCode').value || '', cupsDesc: document.getElementById('cupsDescription').value || '',
-                    centroCostos: document.getElementById('centroCostos').value || '', tarifario: document.getElementById('tarifario').value || '',
-                    homologo: document.getElementById('homologo').value || '', valorHomologo: document.getElementById('valorHomologo').value || '',
-                    tiempo: document.getElementById('tiempoEjecucion').value || '', lugar: document.getElementById('lugarRealizacion').value || '',
-                    uvr: document.getElementById('grupoUVR').value || '',
+                    fecha: document.getElementById('fechaElaboracion').value,
+                    consecutivo: document.getElementById('consecutivo').value,
+                    cupsCode: document.getElementById('cupsCode').value,
+                    cupsDesc: document.getElementById('cupsDescription').value,
+                    centroCostos: document.getElementById('centroCostos').value,
+                    tarifario: document.getElementById('tarifario').value,
+                    homologo: document.getElementById('homologo').value,
+                    valorHomologo: document.getElementById('valorHomologo').value,
+                    tiempo: document.getElementById('tiempoEjecucion').value,
+                    lugar: document.getElementById('lugarRealizacion').value,
+                    uvr: document.getElementById('grupoUVR').value,
                     total: document.getElementById('costoUnitarioFinal').textContent
                 },
-                // Guardamos porcentajes de indirectos
-                indirectos: {
-                    depreciacion: document.getElementById('porcentajeDepreciacion').value,
-                    consumos: document.getElementById('porcentajeConsumos').value,
-                    gastos: document.getElementById('porcentajeGastosGenerales').value,
-                    logisticos: document.getElementById('porcentajeLogisticos').value,
-                    admin: document.getElementById('porcentajeAdministrativos').value
-                },
-                // Guardamos precio venta
-                precioVenta: document.getElementById('precioVentaInput').value,
-                // Guardamos detalle de tablas
+                moType: document.getElementById('moTypeSelection').value || 'Horas',
                 tables: {
-                    manoObra: extractTableData('talentoHumanoContainer'),
-                    medicamentos: extractTableData('medicamentosFacturables'),
-                    insumos: extractTableData('insumosNoFacturables'),
-                    alquiler: extractTableData('alquilerEquipos')
-                }
+                    mo: JSON.stringify(extractTable('talentoHumanoContainer')),
+                    meds: JSON.stringify(extractTable('medicamentosFacturables')),
+                    ins: JSON.stringify(extractTable('insumosNoFacturables')),
+                    alq: JSON.stringify(extractTable('alquilerEquipos'))
+                },
+                indirectos: {
+                    dep: document.getElementById('porcentajeDepreciacion').value,
+                    con: document.getElementById('porcentajeConsumos').value,
+                    gas: document.getElementById('porcentajeGastosGenerales').value,
+                    log: document.getElementById('porcentajeLogisticos').value,
+                    adm: document.getElementById('porcentajeAdministrativos').value
+                },
+                precioVenta: document.getElementById('precioVentaInput').value
             };
-            
-            await addDoc(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), costeoData);
-            alert("¡Costeo guardado exitosamente!");
-            let consec = parseInt(localStorage.getItem('consecutivoCosteo') || '1');
-            localStorage.setItem('consecutivoCosteo', (consec + 1).toString());
-        } catch (e) { console.error(e); alert("Error al guardar: " + e.message); }
+            await addDoc(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), data);
+            alert("✅ Costeo guardado correctamente.");
+            location.reload(); 
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.restablecerFormulario = function() {
+        document.getElementById('costeoForm').reset();
+        document.getElementById('talentoHumanoContainer').innerHTML = "";
+        document.getElementById('medicamentosFacturables').innerHTML = "";
+        document.getElementById('insumosNoFacturables').innerHTML = "";
+        document.getElementById('alquilerEquipos').innerHTML = "";
+        document.getElementById('historyModeBanner').style.display = 'none';
+        enableInputs(true);
+        calculateTotal();
+        getNextConsecutive();
     };
 
     window.verHistorial = async function() {
@@ -666,7 +657,6 @@
             let html = '';
             snapshot.forEach(docSnap => {
                 const d = docSnap.data(); const date = d.timestamp?.toDate().toLocaleString() || 'Fecha desconocida';
-                const id = docSnap.id;
                 html += `
                 <div class="p-4 border rounded-lg hover:bg-gray-50 mb-3 transition shadow-sm bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex-grow">
@@ -677,129 +667,89 @@
                         <p class="text-sm text-gray-800 font-medium truncate w-full md:max-w-md">${d.general?.cupsDesc || 'Sin descripción'}</p>
                         <p class="text-sm font-bold text-green-700 mt-1">Total: ${d.general?.total || '$0'}</p>
                     </div>
-                    <button onclick="window.cargarCosteoHistorial('${id}')" class="bg-secondary text-white px-4 py-2 rounded font-bold text-sm shadow hover:bg-green-700 transition flex items-center gap-2">
-                        <span>👁️</span> Ver Detalle
-                    </button>
+                    <button onclick="window.cargarCosteo('${docSnap.id}')" class="bg-secondary text-white px-3 py-1 rounded text-sm font-bold shadow hover:bg-green-800">Ver</button>
                 </div>`;
             });
             lista.innerHTML = html;
         } catch(e) { console.error(e); lista.innerHTML = '<p class="text-red-500 text-center">Error cargando historial.</p>'; }
     };
 
-    // --- CARGAR COSTEO HISTÓRICO Y BLOQUEAR ---
-    window.cargarCosteoHistorial = async function(docId) {
+    window.cargarCosteo = async (id) => {
         try {
-            document.getElementById('historialLista').innerHTML = '<p class="text-center">Cargando detalle...</p>';
-            const docRef = doc(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos', docId);
-            const docSnap = await getDoc(docRef);
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos', id);
+            const snap = await getDoc(docRef);
+            if(!snap.exists()) return alert("No encontrado");
+            const data = snap.data();
             
-            if (!docSnap.exists()) { alert("El documento ya no existe."); return; }
-            const data = docSnap.data();
+            const safeParse = (str) => {
+                try { return typeof str === 'string' ? JSON.parse(str) : str; } catch(e) { return []; }
+            };
 
-            // 1. Llenar Generales
-            document.getElementById('fechaElaboracion').value = data.general.fecha || '';
-            document.getElementById('consecutivo').value = data.general.consecutivo || '';
-            document.getElementById('cupsCode').value = data.general.cupsCode || '';
-            document.getElementById('cupsDescription').value = data.general.cupsDesc || '';
-            document.getElementById('selectedCupsDisplay').textContent = (data.general.cupsCode || '') + ' - ' + (data.general.cupsDesc || '');
-            document.getElementById('centroCostos').value = data.general.centroCostos || '';
-            document.getElementById('tarifario').value = data.general.tarifario || '';
-            document.getElementById('homologo').value = data.general.homologo || '';
-            document.getElementById('valorHomologo').value = data.general.valorHomologo || '';
-            document.getElementById('tiempoEjecucion').value = data.general.tiempo || '';
-            document.getElementById('lugarRealizacion').value = data.general.lugar || '';
-            document.getElementById('grupoUVR').value = data.general.uvr || '';
-            document.getElementById('precioVentaInput').value = data.precioVenta || '';
-
-            // 2. Llenar Indirectos
-            if (data.indirectos) {
-                document.getElementById('porcentajeDepreciacion').value = data.indirectos.depreciacion || 3;
-                document.getElementById('porcentajeConsumos').value = data.indirectos.consumos || 0;
-                document.getElementById('porcentajeGastosGenerales').value = data.indirectos.gastos || 6;
-                document.getElementById('porcentajeLogisticos').value = data.indirectos.logisticos || 8;
-                document.getElementById('porcentajeAdministrativos').value = data.indirectos.admin || 17;
+            const setVal = (id, v) => { if(document.getElementById(id)) document.getElementById(id).value = v || ''; };
+            setVal('fechaElaboracion', data.general.fecha);
+            setVal('consecutivo', data.general.consecutivo);
+            setVal('centroCostos', data.general.centroCostos);
+            setVal('cupsCode', data.general.cupsCode);
+            setVal('cupsDescription', data.general.cupsDesc);
+            setVal('tarifario', data.general.tarifario);
+            setVal('homologo', data.general.homologo);
+            setVal('valorHomologo', data.general.valorHomologo);
+            setVal('tiempoEjecucion', data.general.tiempo);
+            setVal('lugarRealizacion', data.general.lugar);
+            setVal('grupoUVR', data.general.uvr);
+            setVal('precioVentaInput', data.precioVenta);
+            
+            if(data.general.cupsCode) {
+                 document.getElementById('cupsSearch').value = data.general.cupsCode;
+                 document.getElementById('selectedCupsDisplay').textContent = `${data.general.cupsCode} - ${data.general.cupsDesc}`;
             }
 
-            // 3. Reconstruir Tablas
-            reconstruirTabla('talentoHumanoContainer', data.tables?.manoObra, window.addManoDeObra);
-            reconstruirTabla('medicamentosFacturables', data.tables?.medicamentos, window.addMedicamentoRow);
-            reconstruirTabla('insumosNoFacturables', data.tables?.insumos, window.addInsumoRow);
-            reconstruirTabla('alquilerEquipos', data.tables?.alquiler, window.addAlquilerRow);
+            if(data.indirectos) {
+                setVal('porcentajeDepreciacion', data.indirectos.dep);
+                setVal('porcentajeConsumos', data.indirectos.con);
+                setVal('porcentajeGastosGenerales', data.indirectos.gas);
+                setVal('porcentajeLogisticos', data.indirectos.log);
+                setVal('porcentajeAdministrativos', data.indirectos.adm);
+            }
 
-            // 4. Recalcular
-            window.calculateTotal();
-
-            // 5. Activar Modo Lectura
-            toggleReadOnlyMode(true);
+            document.getElementById('talentoHumanoContainer').innerHTML = "";
+            if(data.moType) {
+                const tabs = document.querySelectorAll('.tab-btn');
+                tabs.forEach(t => { if(t.textContent.includes(data.moType)) t.click(); });
+            } else { document.querySelectorAll('.tab-btn')[1].click(); }
             
-            // Cerrar modal
+            const restoreTable = (id, rawRows, adder) => {
+                const rows = safeParse(rawRows);
+                const container = document.getElementById(id);
+                container.innerHTML = "";
+                if(rows && rows.length) {
+                    rows.forEach(r => {
+                        adder();
+                        const lastRow = container.lastElementChild;
+                        const inputs = lastRow.querySelectorAll('input');
+                        r.forEach((val, idx) => { if(inputs[idx]) inputs[idx].value = val; });
+                    });
+                }
+            };
+
+            restoreTable('talentoHumanoContainer', data.tables?.mo, window.addManoDeObra);
+            restoreTable('medicamentosFacturables', data.tables?.meds, window.addMedicamentoRow);
+            restoreTable('insumosNoFacturables', data.tables?.ins, window.addInsumoRow);
+            restoreTable('alquilerEquipos', data.tables?.alq, window.addAlquilerRow);
+            
+            calculateTotal();
             document.getElementById('historialModal').style.display = 'none';
 
-        } catch (e) {
-            console.error(e);
-            alert("Error al cargar el costeo.");
-        }
+            enableInputs(false);
+            document.getElementById('historyModeBanner').style.display = 'flex';
+
+        } catch(e) { console.error(e); alert("Error al cargar"); }
     };
-
-    function reconstruirTabla(containerId, rowsData, addRowFunc) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = ""; // Limpiar
-        if (!rowsData || !Array.isArray(rowsData)) return;
-
-        rowsData.forEach(rowData => {
-            // Añadir fila vacía usando la función original
-            addRowFunc(); 
-            // Obtener la última fila añadida
-            const rows = container.querySelectorAll('tr');
-            const lastRow = rows[rows.length - 1];
-            const inputs = lastRow.querySelectorAll('input');
-            
-            // Llenar inputs
-            rowData.forEach((val, index) => {
-                if (inputs[index]) inputs[index].value = val;
-            });
-        });
-    }
-
-    function toggleReadOnlyMode(active) {
-        const form = document.getElementById('costeoForm');
-        const inputs = form.querySelectorAll('input, select');
-        const addButtons = document.querySelectorAll('#btnAddMO, #btnAddMeds, #btnAddInsumos, #btnAddAlquiler, #btnRestablecer, #btnGuardar, #btnCargarCups, #btnCargarInv, #btnCargarMercado');
-        const deleteButtons = document.querySelectorAll('button.text-red-500'); // Botones X de las tablas
-
-        // Banner
-        const banner = document.getElementById('historyModeBanner');
-        banner.style.display = active ? 'flex' : 'none';
-
-        // Inputs
-        inputs.forEach(inp => inp.disabled = active);
-        
-        // Botones de acción
-        addButtons.forEach(btn => {
-            btn.disabled = active;
-            btn.style.opacity = active ? '0.5' : '1';
-            btn.style.pointerEvents = active ? 'none' : 'auto';
-        });
-
-        // Botones eliminar filas
-        deleteButtons.forEach(btn => btn.style.display = active ? 'none' : 'inline-block');
-    }
-
-    window.exitHistoryMode = function() {
-        if(confirm("¿Desea salir del modo histórico y limpiar el formulario para uno nuevo?")) {
-            toggleReadOnlyMode(false);
-            window.restablecerFormulario(); // Limpia todo
-        }
-    };
-
-    window.onload = function() { if(typeof initCharts === 'function') initCharts(); checkSession(); };
+    
+    checkSession();
   </script>
 
   <script>
-        let CUPS_DB = [], INVENTORY_DB = [], CUPS_HOMOLOGOS_DB = []; // Agregado CUPS_HOMOLOGOS_DB
-        let pieChart = null, barChart = null, resultsChart = null;
-
-        // Base de Datos de Centros de Costos Completa y Detallada
         const CENTROS_COSTOS_DB = [
             { tipo: "ADMINISTRATIVOS", codigo: "108", nombre: "Gerencia" },
             { tipo: "ADMINISTRATIVOS", codigo: "118", nombre: "Revisoría Fiscal" },
@@ -881,292 +831,403 @@
             { tipo: "OPERATIVOS", codigo: "913", nombre: "Ingresos No Operativos" }
         ];
 
+        let CUPS_DB = [], INVENTORY_DB = [], HOMOLOGOS_DB = [];
+        let pieChart = null, barChart = null, resultsChart = null;
 
-        const formatCOP = (number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(number);
-        function normalizeText(text) { return text ? text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : ""; }
-        window.formatCurrency = function(input) { let value = input.value.replace(/\D/g, ""); if (value === "") { input.value = ""; return; } input.value = new Intl.NumberFormat('es-CO').format(parseInt(value)); }
-        window.parseCurrencyVal = function(valStr) { if(!valStr) return 0; return parseFloat(valStr.replace(/\./g, "").replace(/,/g, ".")) || 0; }
+        const normalizeText = t => t ? t.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
+        const formatCOP = n => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n);
+        const parseVal = s => parseFloat(s?.replace(/\D/g, "") || 0);
+
+        window.formatCurrency = (input) => { 
+            const val = input.value.replace(/\D/g, ""); 
+            input.value = val ? new Intl.NumberFormat('es-CO').format(val) : "";
+            calculateTotal();
+        };
 
         function handleFileSelect(input, type) {
-            const file = input.files[0]; if (!file) return;
+            const file = input.files[0]; if(!file) return;
             const statusId = type === 'cups' ? 'cupsStatus' : 'inventoryStatus';
             document.getElementById(statusId).textContent = "⌛ Procesando...";
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, {type: 'array'});
                 const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
-                if(json.length < 2) { alert("Archivo vacío."); document.getElementById(statusId).textContent = "❌ Error"; return; }
                 
                 if(type === 'cups') {
-                    // Cargar CUPS para el servicio principal (columnas A y B)
-                    CUPS_DB = json.slice(1).map(row => ({ 
-                        fullText: normalizeText((row[0]||"") + " " + (row[1]||"")), 
-                        display: `${row[0] || 'S/C'} - ${row[1] || 'S/D'}`, 
-                        code: row[0], 
-                        desc: row[1] 
-                    })).filter(i => i.code);
-
-                    // Cargar CUPS para la búsqueda de Homólogo (columnas F y G -> indices 5 y 6)
-                    CUPS_HOMOLOGOS_DB = json.slice(1).map(row => ({
-                        fullText: normalizeText((row[5]||"") + " " + (row[6]||"")),
-                        display: `${row[5] || 'S/C'} - ${row[6] || 'S/D'}`,
-                        code: row[5],
-                        desc: row[6]
-                    })).filter(i => i.code);
+                    CUPS_DB = json.slice(1).map(r => ({
+                        full: normalizeText(`${r[0]} ${r[1]}`),
+                        code: r[0], desc: r[1], display: `${r[0]} - ${r[1]}`
+                    })).filter(x => x.code);
+                    
+                    HOMOLOGOS_DB = json.slice(1).map(r => {
+                        const code = r[4] ? r[4].toString().trim() : "";
+                        const name1 = r[5] ? r[5].toString().trim() : "";
+                        const name2 = r[6] ? r[6].toString().trim() : "";
+                        const display = `${code} - ${name1} ${name2}`.trim();
+                        return { full: normalizeText(display), display: display };
+                    }).filter(x => x.display.length > 5);
                     
                     document.getElementById('cupsSearch').disabled = false;
-                    document.getElementById('homologo').disabled = false; // Habilitar la búsqueda de homólogo
+                    document.getElementById(statusId).textContent = "✅ Cargado";
+                    alert("✅ CUPS y Homólogos cargados correctamente");
                 } else {
-                    INVENTORY_DB = json.slice(1).map(row => ({ fullText: normalizeText((row[0]||"") + " " + (row[1]||"")), code: row[0], name: row[1], presentation: row[2]||"Unidad", price: parseFloat(row[3])||0 })).filter(i => i.code);
+                    INVENTORY_DB = json.slice(1).map(r => ({
+                        full: normalizeText(`${r[0]} ${r[1]}`),
+                        code: r[0] ? r[0].toString() : '',
+                        name: r[1] ? r[1].toString() : '',
+                        presentation: r[3] || '',
+                        price: r[12] || 0
+                    })).filter(x => x.code && x.name);
+                    
+                    document.getElementById(statusId).textContent = "✅ Cargado";
+                    alert("✅ Inventario cargado correctamente");
                 }
-                document.getElementById(statusId).textContent = `✅ Cargado`;
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function filterCentrosCostos(fieldId) {
-            const inputElement = document.getElementById(fieldId);
-            const val = normalizeText(inputElement.value);
-            const resultsDiv = fieldId === 'centroCostos' ? document.getElementById('centrosCostosResults') : document.getElementById('lugarRealizacionResults');
-            
-            if(val.length < 1) { resultsDiv.classList.add('hidden'); resultsDiv.innerHTML = ''; return; }
-            
-            const matches = CENTROS_COSTOS_DB.filter(i => 
-                normalizeText(i.nombre).includes(val) || normalizeText(i.codigo).includes(val)
-            ).slice(0, 20);
-
-            resultsDiv.innerHTML = matches.map(i => 
-                `<div class="cups-item" onclick="selectCC('${fieldId}', '${i.codigo}', '${i.nombre}', '${i.tipo}')">
-                    ${i.codigo} - ${i.nombre} <span class="text-gray-500">(${i.tipo})</span>
-                </div>`
-            ).join('');
-            resultsDiv.classList.remove('hidden');
-        }
-        
-        window.selectCC = (fieldId, codigo, nombre, tipo) => { 
-            const formattedValue = `${codigo} - ${nombre} (${tipo})`;
-            document.getElementById(fieldId).value = formattedValue; 
-            
-            // Cerrar el dropdown correcto
-            const resultsDiv = fieldId === 'centroCostos' ? document.getElementById('centrosCostosResults') : document.getElementById('lugarRealizacionResults');
-            resultsDiv.classList.add('hidden');
+        function checkApprox(fullText, searchTerms) {
+            return searchTerms.every(term => fullText.includes(term));
         }
 
-
-        window.filterCups = function() {
-            const inputVal = normalizeText(document.getElementById('cupsSearch').value);
-            const resultsDiv = document.getElementById('cupsResults'); resultsDiv.innerHTML = '';
-            if (inputVal.length < 3) { resultsDiv.classList.add('hidden'); return; }
-            const matches = CUPS_DB.filter(item => item.fullText.includes(inputVal)).slice(0, 20);
-            matches.forEach(item => {
-                const div = document.createElement('div'); div.className = 'cups-item'; div.textContent = item.display;
-                div.onclick = function() { document.getElementById('cupsSearch').value = item.code; document.getElementById('cupsCode').value = item.code; document.getElementById('cupsDescription').value = item.desc; document.getElementById('selectedCupsDisplay').textContent = `${item.code} - ${item.desc}`; resultsDiv.classList.add('hidden'); };
-                resultsDiv.appendChild(div);
-            });
-            resultsDiv.classList.remove('hidden');
-        }
-
-        // FUNCIÓN MODIFICADA PARA BUSCAR EN CUPS_HOMOLOGOS_DB (COL F & G)
-        window.filterHomologos = function() {
-            const inputVal = normalizeText(document.getElementById('homologo').value);
-            const resultsDiv = document.getElementById('homologoResults'); resultsDiv.innerHTML = '';
-            
-            // Solo buscar si hay DB cargada y al menos 3 caracteres
-            if (CUPS_HOMOLOGOS_DB.length === 0) return;
-            if (inputVal.length < 3) { resultsDiv.classList.add('hidden'); return; }
-            
-            const matches = CUPS_HOMOLOGOS_DB.filter(item => item.fullText.includes(inputVal)).slice(0, 20);
-            
-            matches.forEach(item => {
-                const div = document.createElement('div'); div.className = 'cups-item'; div.textContent = item.display;
-                div.onclick = function() { 
-                    document.getElementById('homologo').value = item.display; 
-                    resultsDiv.classList.add('hidden'); 
-                };
-                resultsDiv.appendChild(div);
-            });
-            resultsDiv.classList.remove('hidden');
-        }
-        
-        // FUNCIÓN AÑADIDA PARA SELECCIONAR HOMOLOGO (PARA COMPLETAR EL FLUJO)
-        window.selectHomologo = (code, desc) => {
-            document.getElementById('homologo').value = `${code} - ${desc}`;
-            document.getElementById('homologoResults').classList.add('hidden');
-        }
-
-
-        window.searchInventory = function(input, type) {
+        window.searchInventory = (input) => {
             const val = normalizeText(input.value);
             let dropdown = input.parentNode.querySelector('.table-search-dropdown');
-            if (!dropdown) { dropdown = document.createElement('div'); dropdown.className = 'table-search-dropdown hidden'; input.parentNode.appendChild(dropdown); }
-            if (val.length < 2) { dropdown.classList.add('hidden'); return; }
-            const matches = INVENTORY_DB.filter(i => i.fullText.includes(val)).slice(0, 15);
+            
+            if (getComputedStyle(input.parentNode).position === 'static') {
+                input.parentNode.style.position = 'relative';
+            }
+
+            if(!dropdown) {
+                dropdown = document.createElement('div');
+                dropdown.className = 'table-search-dropdown hidden';
+                input.parentNode.appendChild(dropdown);
+            }
+            
             dropdown.innerHTML = '';
-            matches.forEach(item => {
-                const div = document.createElement('div'); div.className = 'cups-item'; div.innerHTML = `<strong>${item.code}</strong> - ${item.name}`;
-                div.onclick = function() {
-                    const row = input.closest('tr'); const inputs = row.querySelectorAll('input');
-                    inputs[0].value = item.code; inputs[1].value = item.name; inputs[2].value = item.presentation; inputs[4].value = new Intl.NumberFormat('es-CO').format(item.price);
-                    calculateTotal(); dropdown.classList.add('hidden');
+            if(val.length < 2) { dropdown.classList.add('hidden'); return; }
+
+            const terms = val.split(' ').filter(t=>t.length>0);
+            const matches = INVENTORY_DB.filter(i => checkApprox(i.full, terms)).slice(0, 15);
+
+            if(matches.length === 0) { dropdown.classList.add('hidden'); return; }
+
+            matches.forEach(i => {
+                const div = document.createElement('div');
+                div.className = 'cups-item flex justify-between items-center p-2 hover:bg-blue-50 cursor-pointer border-b';
+                div.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="font-bold text-gray-800 text-sm">${i.code}</span>
+                        <span class="text-xs text-gray-600">${i.name}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-gray-500 block">${i.presentation}</span>
+                        <span class="font-bold text-green-700 text-xs">${formatCOP(i.price)}</span>
+                    </div>
+                `;
+                div.onclick = () => {
+                    const row = input.closest('tr');
+                    const inputs = row.querySelectorAll('input');
+                    inputs[0].value = i.code;
+                    inputs[1].value = i.name;
+                    inputs[2].value = i.presentation;
+                    if(inputs[3].value === '') inputs[3].value = 1; 
+                    inputs[4].value = formatCOP(i.price);
+                    dropdown.classList.add('hidden');
+                    calculateTotal();
                 };
                 dropdown.appendChild(div);
             });
             dropdown.classList.remove('hidden');
-        }
+        };
 
-        let thCount = 0;
-        window.addManoDeObra = () => {
-            thCount++;
-            const html = `<tr id="th-${thCount}"><td><input class="input-field text-xs" placeholder="Cargo"></td><td><input type="number" class="input-field text-xs text-right" value="1" data-cost-field="cantidad" oninput="calculateTotal()"></td><td><input type="number" class="input-field text-xs text-right" value="1" data-cost-field="horas" oninput="calculateTotal()"></td><td><input type="text" class="input-field text-xs text-right" value="50.000" data-cost-field="valorHora" oninput="formatCurrency(this); calculateTotal()"></td><td class="text-right text-xs font-bold subtotal-mo text-primary">$ 0.00</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold hover:text-red-700">✕</button></td></tr>`;
-            document.getElementById('talentoHumanoContainer').insertAdjacentHTML('beforeend', html); calculateTotal();
-        }
+        document.addEventListener('click', e => {
+            if(!e.target.closest('.relative')) {
+                document.querySelectorAll('.table-search-dropdown').forEach(e => e.classList.add('hidden'));
+            }
+        });
 
-        function addRow(tableId, type) {
-            const html = `<tr><td class="relative"><input class="input-field text-xs" placeholder="Código" onkeyup="searchInventory(this, '${type}')"></td><td class="relative"><input class="input-field text-xs" placeholder="Nombre" onkeyup="searchInventory(this, '${type}')"></td><td><input class="input-field text-xs" placeholder="Unidad"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><td><input type="text" class="input-field text-xs text-right" value="0" oninput="formatCurrency(this); calculateTotal()"></td><td class="text-right text-xs font-bold row-total">$ 0.00</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold hover:text-red-700">✕</button></td></tr>`;
-            document.getElementById(tableId).insertAdjacentHTML('beforeend', html);
-        }
-        window.addInsumoRow = () => addRow('insumosNoFacturables', 'insumo');
-        window.addMedicamentoRow = () => addRow('medicamentosFacturables', 'medicamento');
-        window.addAlquilerRow = () => addRow('alquilerEquipos', 'alquiler');
-
-        window.restablecerFormulario = function() { if(!confirm("¿Borrar todo?")) return; document.getElementById('costeoForm').reset(); document.getElementById('talentoHumanoContainer').innerHTML = ""; document.getElementById('medicamentosFacturables').innerHTML = ""; document.getElementById('insumosNoFacturables').innerHTML = ""; document.getElementById('alquilerEquipos').innerHTML = ""; calculateTotal(); }
-
-        // --- CÁLCULO DE TOTALES ---
-        window.calculateTotal = function() {
-            let totalMO = 0;
-            document.querySelectorAll('#talentoHumanoContainer tr').forEach(row => {
-                const q = parseFloat(row.querySelector('[data-cost-field="cantidad"]')?.value || 0);
-                const h = parseFloat(row.querySelector('[data-cost-field="horas"]')?.value || 0);
-                const v = parseCurrencyVal(row.querySelector('[data-cost-field="valorHora"]')?.value);
-                const sub = q * h * v;
-                row.querySelector('.subtotal-mo').textContent = formatCOP(sub); totalMO += sub;
+        window.filterCups = () => {
+            const val = normalizeText(document.getElementById('cupsSearch').value);
+            const res = document.getElementById('cupsResults');
+            res.innerHTML = '';
+            if(val.length < 2) { res.classList.add('hidden'); return; }
+            
+            const terms = val.split(' ').filter(t=>t.length>0);
+            const matches = CUPS_DB.filter(i => checkApprox(i.full, terms)).slice(0, 15);
+            
+            matches.forEach(i => {
+                const div = document.createElement('div');
+                div.className = 'cups-item';
+                div.textContent = i.display;
+                div.onclick = () => { 
+                    document.getElementById('cupsSearch').value = i.code;
+                    document.getElementById('selectedCupsDisplay').textContent = i.display;
+                    document.getElementById('cupsCode').value = i.code;
+                    document.getElementById('cupsDescription').value = i.desc;
+                    res.classList.add('hidden'); 
+                };
+                res.appendChild(div);
             });
-            document.getElementById('subtotalManoObra').textContent = formatCOP(totalMO);
+            res.classList.remove('hidden');
+        };
 
-            const sumTable = (id) => {
+        window.filterHomologos = () => {
+             const val = normalizeText(document.getElementById('homologo').value);
+             const res = document.getElementById('homologoResults');
+             res.innerHTML = '';
+             if(val.length < 2) { res.classList.add('hidden'); return; }
+
+             const terms = val.split(' ').filter(t=>t.length>0);
+             const matches = HOMOLOGOS_DB.filter(i => checkApprox(i.full, terms)).slice(0, 15);
+
+             matches.forEach(i => {
+                const div = document.createElement('div');
+                div.className = 'cups-item';
+                div.textContent = i.display;
+                div.onclick = () => { document.getElementById('homologo').value = i.display; res.classList.add('hidden'); };
+                res.appendChild(div);
+            });
+            res.classList.remove('hidden');
+        };
+
+        window.filterCentrosCostos = (id) => {
+            const val = normalizeText(document.getElementById(id).value);
+            const res = document.getElementById(id === 'centroCostos' ? 'centrosCostosResults' : 'lugarRealizacionResults');
+            res.innerHTML = '';
+            if(val.length < 1) { res.classList.add('hidden'); return; }
+            
+            const matches = CENTROS_COSTOS_DB.filter(i => 
+                normalizeText(i.nombre).includes(val) || normalizeText(i.codigo).includes(val)
+            ).slice(0, 15);
+
+            matches.forEach(i => {
+                const div = document.createElement('div');
+                div.className = 'cups-item flex flex-col items-start';
+                div.innerHTML = `<span class="font-bold">${i.codigo} - ${i.nombre}</span><span class="text-xs text-gray-500">${i.tipo}</span>`;
+                div.onclick = () => { 
+                    document.getElementById(id).value = `${i.codigo} - ${i.nombre}`; 
+                    res.classList.add('hidden'); 
+                };
+                res.appendChild(div);
+            });
+            res.classList.remove('hidden');
+        }
+
+        window.selectMOType = (type, btn) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.getElementById('moTypeSelection').value = type;
+            document.getElementById('moTypeDisplay').textContent = type;
+            document.getElementById('moPlaceholder').classList.add('hidden');
+            const content = document.getElementById('moContentBlock');
+            content.classList.remove('hidden');
+            setTimeout(() => content.classList.remove('opacity-0'), 50);
+
+            document.getElementById('talentoHumanoContainer').innerHTML = '';
+            calculateTotal();
+
+            const thead = document.getElementById('moTableHead');
+            if (type === 'Horas') {
+                thead.innerHTML = `<tr><th class="px-4 py-3">Cargo / Perfil</th><th class="px-2 py-3 text-right w-20">Cant.</th><th class="px-2 py-3 text-right w-20">Horas</th><th class="px-4 py-3 text-right">Valor Hora</th><th class="px-4 py-3 text-right">Subtotal</th><th class="px-2 py-3 text-center">x</th></tr>`;
+            } else {
+                thead.innerHTML = `<tr><th class="px-4 py-3">Cargo / Perfil</th><th class="px-2 py-3 text-right w-20">Cant.</th><th class="px-4 py-3 text-right">Valor Honorario</th><th class="px-4 py-3 text-right">Subtotal</th><th class="px-2 py-3 text-center">x</th></tr>`;
+            }
+        };
+        
+        window.resetMOTabs = () => {
+             document.getElementById('moContentBlock').classList.add('hidden', 'opacity-0');
+             document.getElementById('moPlaceholder').classList.remove('hidden');
+             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+             document.getElementById('talentoHumanoContainer').innerHTML = '';
+             calculateTotal();
+        }
+
+        window.addManoDeObra = () => {
+            const type = document.getElementById('moTypeSelection').value;
+            const row = document.createElement('tr');
+            if (type === 'Horas') {
+                row.innerHTML = `<td><input class="input-field text-xs" placeholder="Cargo"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><td><input type="text" class="input-field text-xs text-right" value="0" oninput="formatCurrency(this)"></td><td class="text-right font-bold text-xs row-total">$ 0</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold">×</button></td>`;
+            } else {
+                row.innerHTML = `<td><input class="input-field text-xs" placeholder="Cargo"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><input type="hidden" value="1"><td><input type="text" class="input-field text-xs text-right" value="0" oninput="formatCurrency(this)"></td><td class="text-right font-bold text-xs row-total">$ 0</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold">×</button></td>`;
+            }
+            document.getElementById('talentoHumanoContainer').appendChild(row);
+        };
+
+        const addRow = (id) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td><input class="input-field text-xs" placeholder="Cód" onkeyup="searchInventory(this)"></td><td><input class="input-field text-xs" placeholder="Nombre" onkeyup="searchInventory(this)"></td><td><input class="input-field text-xs" placeholder="Und"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><td><input type="text" class="input-field text-xs text-right" value="0" oninput="formatCurrency(this)"></td><td class="text-right font-bold text-xs row-total">$ 0</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold">×</button></td>`;
+            document.getElementById(id).appendChild(row);
+        };
+        window.addMedicamentoRow = () => addRow('medicamentosFacturables');
+        window.addInsumoRow = () => addRow('insumosNoFacturables');
+        window.addAlquilerRow = () => {
+             const row = document.createElement('tr');
+             row.innerHTML = `<td><input class="input-field text-xs" placeholder="Cód"></td><td><input class="input-field text-xs" placeholder="Equipo"></td><td><input class="input-field text-xs" placeholder="Unidad"></td><td><input type="number" class="input-field text-xs text-right" value="1" oninput="calculateTotal()"></td><td><input type="text" class="input-field text-xs text-right" value="0" oninput="formatCurrency(this)"></td><td class="text-right font-bold text-xs row-total">$ 0</td><td class="text-center"><button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-500 font-bold">×</button></td>`;
+             document.getElementById('alquilerEquipos').appendChild(row);
+        };
+
+        window.enableHistoryEditing = function() {
+            enableInputs(true);
+            document.getElementById('historyModeBanner').style.display = 'none';
+            alert("✏️ Modo edición activado.");
+        };
+
+        window.confirmHistoryClose = function() {
+            if(confirm("¿Confirmar y cerrar edición? El formulario quedará en modo lectura.")) {
+                enableInputs(false);
+                alert("🔒 Costeo finalizado/bloqueado.");
+            }
+        };
+
+        function enableInputs(enabled) {
+            const form = document.getElementById('costeoForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            const buttons = form.querySelectorAll('button:not(.tab-btn)');
+            
+            inputs.forEach(i => i.disabled = !enabled);
+            buttons.forEach(b => b.disabled = !enabled);
+            
+            const switchBtn = document.querySelector('#moContentBlock button.underline');
+            if(switchBtn) switchBtn.disabled = !enabled;
+        }
+
+        window.calculateTotal = () => {
+            const typeMO = document.getElementById('moTypeSelection').value;
+            const sumRows = (id) => {
                 let sum = 0;
-                document.querySelectorAll(`#${id} tr`).forEach(row => {
-                    const inputs = row.querySelectorAll('input');
-                    if(inputs.length >= 5) {
-                        const q = parseFloat(inputs[3].value || 0); const v = parseCurrencyVal(inputs[4].value);
-                        const s = q * v; row.querySelector('.row-total').textContent = formatCOP(s); sum += s;
+                document.querySelectorAll(`#${id} tr`).forEach(tr => {
+                    const inputs = tr.querySelectorAll('input');
+                    if(inputs.length > 0) {
+                        let sub = 0;
+                        if(id === 'talentoHumanoContainer') {
+                            if (typeMO === 'Horas') {
+                                const q = parseFloat(inputs[1].value)||0; const h = parseFloat(inputs[2].value)||0; const v = parseVal(inputs[3].value);
+                                sub = q*h*v;
+                            } else {
+                                const q = parseFloat(inputs[1].value)||0; const v = parseVal(inputs[3].value);
+                                sub = q*v; 
+                            }
+                        } else {
+                            const q = parseFloat(inputs[3].value)||0; const v = parseVal(inputs[4].value);
+                            sub = q*v;
+                        }
+                        const totalCell = tr.querySelector('.row-total');
+                        if(totalCell) totalCell.textContent = formatCOP(sub);
+                        sum += sub;
                     }
                 });
                 return sum;
             };
 
-            const totalInsumos = sumTable('insumosNoFacturables');
-            const totalMeds = sumTable('medicamentosFacturables');
-            const totalAlquiler = sumTable('alquilerEquipos');
+            const mo = sumRows('talentoHumanoContainer');
+            const meds = sumRows('medicamentosFacturables');
+            const ins = sumRows('insumosNoFacturables');
+            const alq = sumRows('alquilerEquipos');
 
-            document.getElementById('totalAdicionales').textContent = formatCOP(totalMeds);
-            document.getElementById('subtotalAlquiler').textContent = formatCOP(totalAlquiler);
+            document.getElementById('subtotalManoObra').textContent = formatCOP(mo);
+            document.getElementById('subtotalAlquiler').textContent = formatCOP(alq);
+            document.getElementById('totalAdicionales').textContent = formatCOP(meds);
             
-            const directosBase = totalMO + totalInsumos + totalAlquiler; 
-            document.getElementById('totalCostosDirectos').textContent = formatCOP(totalMO + totalInsumos);
+            const directosBase = mo + ins;
+            document.getElementById('totalCostosDirectos').textContent = formatCOP(directosBase);
 
-            const getPct = (id) => parseFloat(document.getElementById(id)?.value || 0) / 100;
-            const valDepreciacion = directosBase * getPct('porcentajeDepreciacion');
-            const valConsumos = directosBase * getPct('porcentajeConsumos');
-            const valGastosGen = directosBase * getPct('porcentajeGastosGenerales');
-            const valLogisticos = directosBase * getPct('porcentajeLogisticos');
-            const valAdmin = directosBase * getPct('porcentajeAdministrativos');
+            const getP = id => parseFloat(document.getElementById(id).value)||0;
+            const indVals = [getP('porcentajeDepreciacion'), getP('porcentajeConsumos'), getP('porcentajeGastosGenerales'), getP('porcentajeLogisticos'), getP('porcentajeAdministrativos')];
+            const indTotal = indVals.reduce((a,b) => a + (directosBase * b/100), 0);
             
-            document.getElementById('costoDepreciacion').textContent = formatCOP(valDepreciacion);
-            document.getElementById('costoConsumos').textContent = formatCOP(valConsumos);
-            document.getElementById('costoGastosGenerales').textContent = formatCOP(valGastosGen);
-            document.getElementById('costoLogisticos').textContent = formatCOP(valLogisticos);
-            document.getElementById('costoAdministrativos').textContent = formatCOP(valAdmin);
+            document.getElementById('costoDepreciacion').textContent = formatCOP(directosBase * indVals[0]/100);
+            document.getElementById('costoConsumos').textContent = formatCOP(directosBase * indVals[1]/100);
+            document.getElementById('costoGastosGenerales').textContent = formatCOP(directosBase * indVals[2]/100);
+            document.getElementById('costoLogisticos').textContent = formatCOP(directosBase * indVals[3]/100);
+            document.getElementById('costoAdministrativos').textContent = formatCOP(directosBase * indVals[4]/100);
+            document.getElementById('subtotalCostosIndirectos').textContent = formatCOP(indTotal);
+            document.getElementById('totalCostosIndirectosResumen').textContent = formatCOP(indTotal);
 
-            const totalIndirectos = valDepreciacion + valConsumos + valGastosGen + valLogisticos + valAdmin;
-            document.getElementById('subtotalCostosIndirectos').textContent = formatCOP(totalIndirectos);
-            document.getElementById('totalCostosIndirectosResumen').textContent = formatCOP(totalIndirectos);
+            const total = directosBase + alq + indTotal + meds;
+            document.getElementById('costoProcedimientoSinAdicionales').textContent = formatCOP(directosBase + alq + indTotal);
+            document.getElementById('costoUnitarioFinal').textContent = formatCOP(total);
+            document.getElementById('resCostoTotal').textContent = formatCOP(total);
 
-            const costoTotal = directosBase + totalIndirectos + totalMeds;
-            document.getElementById('costoUnitarioFinal').textContent = formatCOP(costoTotal);
-            document.getElementById('resCostoTotal').textContent = formatCOP(costoTotal);
-
-            const precioVenta = parseCurrencyVal(document.getElementById('precioVentaInput')?.value);
-            const excedente = precioVenta - costoTotal;
-            const sostenibilidad = precioVenta > 0 ? (excedente / precioVenta) * 100 : 0;
-            const margen = costoTotal > 0 ? (excedente / costoTotal) * 100 : 0;
-
-            document.getElementById('resPrecioVenta').textContent = formatCOP(precioVenta);
-            const elExc = document.getElementById('resExcedente');
-            elExc.textContent = formatCOP(excedente);
-            elExc.className = `text-2xl font-bold ${excedente >= 0 ? 'text-green-700' : 'text-red-600'}`; // VERDE EN UI
-
+            const precio = parseVal(document.getElementById('precioVentaInput').value);
+            const excedente = precio - total;
+            document.getElementById('resPrecioVenta').textContent = formatCOP(precio);
+            
+            const excEl = document.getElementById('resExcedente');
+            excEl.textContent = formatCOP(excedente);
+            excEl.className = `text-4xl font-extrabold mt-2 ${excedente >= 0 ? 'text-green-600' : 'text-red-600'}`;
+            
+            const margen = total > 0 ? (excedente/total)*100 : 0;
+            const sosten = precio > 0 ? (excedente/precio)*100 : 0;
             document.getElementById('resMargen').textContent = margen.toFixed(1) + '%';
-            document.getElementById('resSostenibilidad').textContent = sostenibilidad.toFixed(1) + '%';
-            
-            updateCharts(totalMO, totalMeds, totalInsumos, totalAlquiler, totalIndirectos, costoTotal, precioVenta, excedente);
-        }
-        window.calculateResults = window.calculateTotal;
+            document.getElementById('resSostenibilidad').textContent = sosten.toFixed(1) + '%';
 
-        // --- GRÁFICOS (COLORES ORIGINALES UI) ---
+            updateCharts(mo, meds, ins, alq, indTotal, total, precio, excedente);
+        };
+
         function initCharts() {
             if(typeof Chart === 'undefined') return;
             Chart.register(ChartDataLabels);
-            pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), { type: 'pie', data: { labels: ['MO', 'Meds', 'Insumos', 'Alquiler', 'Indirectos'], datasets: [{ data: [0,0,0,0,0], backgroundColor: ['#312782', '#ec268f', '#7084c1', '#f59e0b', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-            barChart = new Chart(document.getElementById('barChart').getContext('2d'), { type: 'bar', data: { labels: ['Mano de Obra', 'Total'], datasets: [{ label: 'COP', data: [0,0], backgroundColor: ['#312782', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-            resultsChart = new Chart(document.getElementById('resultsChart').getContext('2d'), { type: 'bar', data: { labels: ['Precio', 'Costo', 'Excedente'], datasets: [{ label: 'COP', data: [0,0,0], backgroundColor: ['#312782', '#ec268f', '#008041'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            pieChart = new Chart(ctxPie, {
+                type: 'pie',
+                data: { labels: ['MO', 'Materiales', 'Insumos', 'Alquiler', 'Indirectos'], datasets: [{ data: [1,1,1,1,1], backgroundColor: ['#312782', '#ec268f', '#7084c1', '#f59e0b', '#008041'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: { color: '#ffffff', font: { weight: 'bold' }, formatter: (val, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); let pct = (val*100 / sum).toFixed(1) + "%"; return pct === "0.0%" ? "" : pct; } }, legend: { position: 'right', labels: { boxWidth: 10 } } } }
+            });
+
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: { labels: ['Mano Obra', 'Costo Total'], datasets: [{ data: [0,0], backgroundColor: ['#312782', '#008041'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels: { color: 'white' } } }
+            });
+
+            const ctxRes = document.getElementById('resultsChart').getContext('2d');
+            resultsChart = new Chart(ctxRes, {
+                type: 'bar',
+                data: { labels: ['Precio Venta', 'Costo Total', 'Excedente'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#3b82f6', '#312782', '#22c55e'], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 30 } }, scales: { y: { beginAtZero: true, grid: { borderDash: [2, 2] } }, x: { grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { enabled: true }, datalabels: { anchor: 'end', align: 'end', color: '#374151', font: { weight: 'bold', size: 11 }, formatter: (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumSignificantDigits: 3 }).format(value) } } }
+            });
         }
 
         function updateCharts(mo, meds, ins, alq, ind, total, precio, exc) {
             if(pieChart) { pieChart.data.datasets[0].data = [mo, meds, ins, alq, ind]; pieChart.update(); }
-            if(barChart) { barChart.data.datasets[0].data = [mo, total]; barChart.update(); 
-                document.getElementById('tablaBarManoObra').textContent = formatCOP(mo);
-                document.getElementById('tablaBarTotal').textContent = formatCOP(total);
-                document.getElementById('tablaBarManoObraPorcentaje').textContent = (total > 0 ? ((mo/total)*100).toFixed(1) : '0') + '%';
-            }
-            if(resultsChart) { resultsChart.data.datasets[0].data = [precio, total, exc]; resultsChart.data.datasets[0].backgroundColor[2] = exc < 0 ? '#dc2626' : '#008041'; resultsChart.update(); }
+            if(barChart) { barChart.data.datasets[0].data = [mo, total]; barChart.update(); const pctMo = total > 0 ? (mo/total)*100 : 0; document.getElementById('tablaBarManoObraPorcentaje').textContent = pctMo.toFixed(1) + '%'; }
+            if(resultsChart) { resultsChart.data.datasets[0].data = [precio, total, exc]; resultsChart.data.datasets[0].backgroundColor[2] = exc >= 0 ? '#22c55e' : '#ef4444'; resultsChart.update(); }
         }
-
-        document.addEventListener('click', e => { if(!e.target.closest('.relative')) { document.querySelectorAll('.cups-dropdown').forEach(el => el.classList.add('hidden')); document.querySelectorAll('.table-search-dropdown').forEach(el => el.classList.add('hidden')); } });
-        function toggleSugerencias() { document.getElementById('panelSugerencias').classList.toggle('hidden'); }
-        function enviarSugerencia(e) { e.preventDefault(); alert("Enviado"); toggleSugerencias(); }
-
-        // --- PDF GENERATOR (LÓGICA ESTRICTA 3 COLORES) ---
+        
         window.descargarPDF = async function() {
             if (!window.jspdf) return alert("Librería PDF no cargada");
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-
-            // --- PALETA PDF ESTRICTA ---
-            const pdfCol = {
-                azulOscuro: [49, 39, 130],  // #312782 (Títulos y Headers)
-                azulClaro: [112, 132, 193], // #7084C1 (Totales y destacados)
-                blanco: [255, 255, 255]
-            };
+            const pdfCol = { azulOscuro: [49, 39, 130], azulClaro: [112, 132, 193], blanco: [255, 255, 255] };
 
             const getTableData = (tbodyId) => {
                 const rows = document.querySelectorAll(`#${tbodyId} tr`);
-                return Array.from(rows).map(row => Array.from(row.querySelectorAll('td')).map(td => {
-                    const input = td.querySelector('input'); return input ? input.value : td.innerText;
-                }).filter(txt => txt !== 'X' && txt !== '✕'));
+                return Array.from(rows).map(row => {
+                    const inputs = Array.from(row.querySelectorAll('input'));
+                    if (inputs.length === 0) return [];
+                    if (tbodyId === 'talentoHumanoContainer') {
+                        const type = document.getElementById('moTypeSelection').value || 'Horas';
+                        if (type === 'Horas') { return [inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, row.querySelector('.row-total').innerText]; } 
+                        else { return [inputs[0].value, inputs[1].value, inputs[3].value, row.querySelector('.row-total').innerText]; }
+                    }
+                    return inputs.map(i => i.value).concat([row.querySelector('.row-total')?.innerText || '']);
+                }).filter(r => r.length > 0);
             };
 
             const drawHeader = (doc) => {
-                doc.setFillColor(...pdfCol.azulOscuro); // AZUL INSTITUCIONAL
-                doc.rect(0, 0, 210, 30, 'F');
-                
-                // Intento robusto de cargar el logo desde el DOM
-                const imgEl = document.getElementById('logoInstitucional');
-                const imgHeader = document.getElementById('logoInstitucionalHeader');
-                const finalImg = (imgEl && imgEl.complete && imgEl.naturalHeight > 0) ? imgEl : imgHeader;
-
-                if (finalImg && finalImg.complete && finalImg.naturalHeight > 0) {
+                doc.setFillColor(...pdfCol.azulOscuro); doc.rect(0, 0, 210, 30, 'F');
+                const imgEl = document.getElementById('logoHeader');
+                if (imgEl && imgEl.complete && imgEl.naturalHeight > 0) {
                     try {
-                        const canvas = document.createElement('canvas'); 
-                        canvas.width = finalImg.naturalWidth; 
-                        canvas.height = finalImg.naturalHeight;
-                        const ctx = canvas.getContext('2d'); 
-                        ctx.drawImage(finalImg, 0, 0);
+                        const canvas = document.createElement('canvas'); canvas.width = imgEl.naturalWidth; canvas.height = imgEl.naturalHeight;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(imgEl, 0, 0);
                         doc.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 5, 45, 20);
-                    } catch(e) { console.warn("No se pudo cargar logo al PDF", e); }
+                    } catch(e) {}
                 }
-                
                 doc.setFont("helvetica", "bold"); doc.setTextColor(255, 255, 255);
                 doc.setFontSize(16); doc.text("FORMULARIO DE COSTEO UNITARIO", 65, 12);
                 doc.setFontSize(11); doc.setFont("helvetica", "normal"); doc.text("ESE Hospital Universitario Hernando Moncaleano Perdomo", 65, 19);
@@ -1182,102 +1243,71 @@
                 doc.text(`Consecutivo: ${consecutivo}`, 200, pageHeight - 10, { align: 'right' });
             };
 
-            const stylesDef = {
-                headStyles: { fillColor: pdfCol.azulOscuro, textColor: pdfCol.blanco, fontStyle: 'bold', halign: 'center' }, // HEADER AZUL OSCURO
-                theme: 'grid', styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }, margin: { top: 35, bottom: 15 }
-            };
-
+            const stylesDef = { headStyles: { fillColor: pdfCol.azulOscuro, textColor: pdfCol.blanco, fontStyle: 'bold', halign: 'center' }, theme: 'grid', styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }, margin: { top: 35, bottom: 15 } };
             let finalY = 35;
-            const infoData = [
-                ['Fecha de Elaboración', document.getElementById('fechaElaboracion').value],
-                ['Consecutivo', document.getElementById('consecutivo').value],
-                ['Centro de Costos', document.getElementById('centroCostos').value],
-                ['CUPS', document.getElementById('cupsCode').value + ' - ' + document.getElementById('cupsDescription').value],
-                ['Tarifario', document.getElementById('tarifario').value],
-                ['Homólogo', `${document.getElementById('homologo').value} ($ ${document.getElementById('valorHomologo').value})`],
-                ['Tiempo Ejecución', `${document.getElementById('tiempoEjecucion').value} Horas`],
-                ['Lugar', document.getElementById('lugarRealizacion').value],
-                ['UVR / Grupo', document.getElementById('grupoUVR').value]
-            ];
+            const infoData = [['Fecha de Elaboración', document.getElementById('fechaElaboracion').value], ['Consecutivo', document.getElementById('consecutivo').value], ['Centro de Costos', document.getElementById('centroCostos').value], ['CUPS', document.getElementById('cupsCode').value + ' - ' + document.getElementById('cupsDescription').value], ['Tarifario', document.getElementById('tarifario').value], ['Homólogo', `${document.getElementById('homologo').value} ($ ${document.getElementById('valorHomologo').value})`], ['Tiempo Ejecución', `${document.getElementById('tiempoEjecucion').value} Horas`], ['Lugar', document.getElementById('lugarRealizacion').value], ['UVR / Grupo', document.getElementById('grupoUVR').value]];
 
-            // Tabla Información General (Sin didDrawPage aquí para evitar duplicados, lo haremos al final)
             doc.autoTable({ startY: finalY, head: [['CONCEPTO', 'DETALLE']], body: infoData, ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
-
-            const addSectionTitle = (text, y) => {
-                // Verificar si necesitamos nueva página para el título
-                if (y > 270) { doc.addPage(); y = 35; }
-                doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...pdfCol.azulOscuro); // TITULO AZUL OSCURO
-                doc.text(text, 14, y); return y + 4;
-            };
+            const addSectionTitle = (text, y) => { if (y > 270) { doc.addPage(); y = 35; } doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...pdfCol.azulOscuro); doc.text(text, 14, y); return y + 4; };
 
             finalY = addSectionTitle("II. TALENTO HUMANO (MANO DE OBRA)", finalY);
-            doc.autoTable({
-                startY: finalY, head: [['Cargo', 'Cant.', 'Horas', 'Valor Hora', 'Subtotal']], body: getTableData('talentoHumanoContainer').map(r => r.slice(0, 5)),
-                // TOTALES EN AZUL CLARO (#7084C1) en lugar de verde
-                foot: [['', '', '', 'SUBTOTAL', document.getElementById('subtotalManoObra').innerText]], 
-                footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco },
-                ...stylesDef
-            });
+            const moType = document.getElementById('moTypeSelection').value || 'Horas';
+            let moHead = [['Cargo', 'Cant.', 'Horas', 'Valor Hora', 'Subtotal']];
+            if (moType !== 'Horas') { moHead = [['Cargo', 'Cant.', 'Valor Honorario', 'Subtotal']]; }
+            doc.autoTable({ startY: finalY, head: moHead, body: getTableData('talentoHumanoContainer'), foot: [['', '', '', 'SUBTOTAL', document.getElementById('subtotalManoObra').innerText]], footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco }, ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
 
             finalY = addSectionTitle("III. MATERIALES Y MEDICAMENTOS (FACTURABLES)", finalY);
-            doc.autoTable({
-                startY: finalY, head: [['Código', 'Nombre', 'Pres.', 'Cant.', 'V. Unit', 'Total']], body: getTableData('medicamentosFacturables').map(r => r.slice(0, 6)),
-                foot: [['', '', '', '', 'TOTAL', document.getElementById('totalAdicionales').innerText]],
-                footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco },
-                ...stylesDef
-            });
+            const getStdData = (id) => { const rows = document.querySelectorAll(`#${id} tr`); return Array.from(rows).map(r => { const inps = r.querySelectorAll('input'); if(inps.length<5) return []; return [inps[0].value, inps[1].value, inps[2].value, inps[3].value, inps[4].value, r.querySelector('.row-total').innerText]; }); };
+            doc.autoTable({ startY: finalY, head: [['Código', 'Nombre', 'Pres.', 'Cant.', 'V. Unit', 'Total']], body: getStdData('medicamentosFacturables'), foot: [['', '', '', '', 'TOTAL', document.getElementById('totalAdicionales').innerText]], footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco }, ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
 
             finalY = addSectionTitle("IV. INSUMOS (NO FACTURABLES)", finalY);
-            doc.autoTable({
-                startY: finalY, head: [['Código', 'Nombre', 'Pres.', 'Cant.', 'V. Unit', 'Total']], body: getTableData('insumosNoFacturables').map(r => r.slice(0, 6)), ...stylesDef
-            });
+            doc.autoTable({ startY: finalY, head: [['Código', 'Nombre', 'Pres.', 'Cant.', 'V. Unit', 'Total']], body: getStdData('insumosNoFacturables'), ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
 
             finalY = addSectionTitle("V. ALQUILER DE EQUIPOS", finalY);
-            doc.autoTable({
-                startY: finalY, head: [['Cód. Equipo', 'Nombre Equipo', 'Unidad', 'Cant.', 'V. Unit', 'Total']], body: getTableData('alquilerEquipos').map(r => r.slice(0, 6)),
-                foot: [['', '', '', '', 'TOTAL', document.getElementById('subtotalAlquiler').innerText]],
-                footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco },
-                ...stylesDef
-            });
+            doc.autoTable({ startY: finalY, head: [['Cód. Equipo', 'Nombre Equipo', 'Unidad', 'Cant.', 'V. Unit', 'Total']], body: getStdData('alquilerEquipos'), foot: [['', '', '', '', 'TOTAL', document.getElementById('subtotalAlquiler').innerText]], footStyles: { fillColor: pdfCol.azulClaro, textColor: pdfCol.blanco }, ...stylesDef });
             finalY = doc.lastAutoTable.finalY + 10;
 
             finalY = addSectionTitle("RESUMEN DE COSTOS Y ESTADO DE RESULTADOS", finalY);
-            const resumenData = [
-                ['Total Costos Directos', document.getElementById('totalCostosDirectos').innerText],
-                ['Total Alquiler Equipos', document.getElementById('subtotalAlquiler').innerText],
-                ['Subtotal Indirectos', document.getElementById('totalCostosIndirectosResumen').innerText],
-                ['Materiales Facturables', document.getElementById('totalAdicionales').innerText],
-                ['COSTO TOTAL UNITARIO', document.getElementById('costoUnitarioFinal').innerText],
-                ['Precio de Venta Propuesto', document.getElementById('resPrecioVenta').innerText],
-                ['Excedente / Déficit', document.getElementById('resExcedente').innerText],
-                ['Margen %', document.getElementById('resMargen').innerText]
+            const resumenData = [['Total Costos Directos', document.getElementById('totalCostosDirectos').innerText], ['Total Alquiler Equipos', document.getElementById('subtotalAlquiler').innerText], ['Subtotal Indirectos', document.getElementById('totalCostosIndirectosResumen').innerText], ['Materiales Facturables', document.getElementById('totalAdicionales').innerText], ['COSTO TOTAL UNITARIO', document.getElementById('costoUnitarioFinal').innerText], ['Precio de Venta Propuesto', document.getElementById('resPrecioVenta').innerText], ['Excedente / Déficit', document.getElementById('resExcedente').innerText], ['Margen %', document.getElementById('resMargen').innerText]];
+
+            doc.autoTable({ startY: finalY, head: [['INDICADOR', 'VALOR']], body: resumenData, ...stylesDef, didParseCell: function (data) { if (data.row.index === 4 || data.row.index === 6) { data.cell.styles.fontStyle = 'bold'; data.cell.styles.fillColor = pdfCol.azulClaro; data.cell.styles.textColor = pdfCol.blanco; } } });
+            
+            finalY = doc.lastAutoTable.finalY + 15;
+            
+            // --- NUEVA SECCIÓN DE FIRMAS ---
+            if (finalY > 250) { doc.addPage(); finalY = 35; }
+            
+            const signatures = [
+                ['PROYECTO Y REVISO', 'MILLER MONTENEGRO LIZCANO', 'PROFESIONAL UNIVERSITARIO', 'COSTOS', ''],
+                ['REVISO', 'OLGA MILENA CARRILLO CRUZ', 'PROFESIONAL UNIVERSITARIO', 'COSTOS', ''],
+                ['APROBO', 'NELSON LEONARDO FIERRO GONZALEZ', 'SUBGERENTE TECNICO CIENTIFICO', 'SUBGERENCIA TECNICO CIENTIFICA', ''],
+                ['APROBO', 'MARIBEL RICO TOVAR', 'SUBGERENTE FINANCIERO', 'SUBGERENCIA FINANCIERA', '']
             ];
 
             doc.autoTable({
-                startY: finalY, head: [['INDICADOR', 'VALOR']], body: resumenData, ...stylesDef,
-                didParseCell: function (data) {
-                    if (data.row.index === 4 || data.row.index === 6) {
-                        data.cell.styles.fontStyle = 'bold';
-                        // IMPORTANTE: Aquí forzamos el Azul Claro (#7084C1) para filas destacadas en el PDF
-                        data.cell.styles.fillColor = pdfCol.azulClaro; 
-                        data.cell.styles.textColor = pdfCol.blanco;
-                    }
+                startY: finalY,
+                head: [['', 'NOMBRE Y APELLIDOS', 'CARGO', 'AREA', 'FIRMA']],
+                body: signatures,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 3, valign: 'middle' },
+                headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+                columnStyles: {
+                    0: { fontStyle: 'bold', cellWidth: 30 }, // Etiqueta
+                    4: { cellWidth: 40 } // Espacio firma
                 }
             });
 
-            // --- APLICAR HEADER Y FOOTER EN TODAS LAS PÁGINAS ---
             const pageCount = doc.internal.getNumberOfPages();
-            for(let i = 1; i <= pageCount; i++) { 
-                doc.setPage(i); 
-                drawHeader(doc); // Dibuja el encabezado en cada página
-                drawFooter(doc, i, pageCount); 
-            }
+            for(let i = 1; i <= pageCount; i++) { doc.setPage(i); drawHeader(doc); drawFooter(doc, i, pageCount); }
             doc.save(`Costeo_${document.getElementById('consecutivo').value || 'S_C'}.pdf`);
         };
+
+        document.addEventListener('click', e => { if(!e.target.closest('.relative')) document.querySelectorAll('.cups-dropdown').forEach(e=>e.classList.add('hidden')); });
+        window.onload = () => { setTimeout(initCharts, 500); document.getElementById('fechaElaboracion').valueAsDate = new Date(); };
   </script>
  </body>
 </html>
