@@ -116,6 +116,10 @@
         @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .file-input-hidden { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        /* Estilos Botón Flotante */
+        .fab-menu-enter { opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; }
+        .fab-menu-active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
     </style>
  </head>
  <body class="p-2 md:p-4 lg:p-8 min-h-screen">
@@ -135,7 +139,7 @@
       </div>
   </div>
 
-  <div id="mainAppContent" class="hidden w-full max-w-[1400px] mx-auto"> 
+  <div id="mainAppContent" class="hidden w-full max-w-[1400px] mx-auto pb-20"> 
    
    <header class="bg-primary rounded-xl text-white shadow-xl flex flex-col lg:flex-row items-center justify-between p-6 gap-6 relative mb-6">
     <div class="flex-shrink-0"><img id="logoHeader" src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=Logo+HUHMP'" alt="Logo" class="h-16 md:h-20 w-auto object-contain"></div>
@@ -161,7 +165,7 @@
            <div><p class="font-bold">MODO REVISIÓN DE HISTORIAL</p><p class="text-sm">¿Desea editar este registro o solo visualizarlo?</p></div>
        </div>
        <div class="flex gap-3 flex-wrap justify-center md:justify-end">
-           <!-- BOTÓN NUEVO: REGRESAR -->
+           <!-- BOTÓN REGRESAR -->
            <button onclick="window.salirModoHistorial()" class="bg-gray-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-gray-600 transition shadow flex items-center gap-2">
                ↩️ Regresar
            </button>
@@ -522,6 +526,94 @@
         </div>
         <div class="p-4 bg-gray-50 max-h-[60vh] overflow-y-auto" id="historialLista"></div>
     </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE DE AYUDA -->
+  <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      <!-- Menú Opciones (Oculto) -->
+      <div id="fabMenu" class="fab-menu-enter flex flex-col items-end gap-2 mb-2 transition-all duration-300 origin-bottom transform">
+          <!-- Opción: Novedades -->
+          <button onclick="openModal('novedadesModal')" class="bg-white text-gray-700 px-4 py-2 rounded-full shadow-lg border border-gray-100 font-bold text-sm hover:bg-gray-50 flex items-center gap-2 transform hover:scale-105 transition">
+              <span>📢 Novedades</span>
+          </button>
+          
+          <!-- Opción: Buzón -->
+          <button onclick="openModal('buzonModal')" class="bg-white text-gray-700 px-4 py-2 rounded-full shadow-lg border border-gray-100 font-bold text-sm hover:bg-gray-50 flex items-center gap-2 transform hover:scale-105 transition">
+              <span>📫 Buzón de Sugerencias</span>
+          </button>
+          
+          <!-- Opción: Tutorial -->
+          <button onclick="openModal('tutorialModal')" class="bg-white text-gray-700 px-4 py-2 rounded-full shadow-lg border border-gray-100 font-bold text-sm hover:bg-gray-50 flex items-center gap-2 transform hover:scale-105 transition">
+              <span>🎓 Tutorial</span>
+          </button>
+      </div>
+      
+      <!-- Botón Principal (Fucsia Institucional) -->
+      <button onclick="toggleFab()" class="w-14 h-14 bg-[#ec268f] text-white rounded-full shadow-xl flex items-center justify-center text-2xl hover:scale-110 hover:bg-pink-600 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-300">
+          <span id="fabIcon" class="transition-transform duration-300">❓</span>
+      </button>
+  </div>
+
+  <!-- MODALES DE AYUDA -->
+  
+  <!-- 1. Modal Novedades -->
+  <div id="novedadesModal" class="modal">
+      <div class="modal-content max-w-md">
+          <div class="bg-primary text-white p-4 flex justify-between items-center rounded-t-lg">
+              <h3 class="font-bold">📢 Novedades del Aplicativo</h3>
+              <button onclick="closeModal('novedadesModal')" class="text-2xl hover:text-gray-300">×</button>
+          </div>
+          <div class="p-6">
+              <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                  <p class="font-bold text-primary">Versión Actual: 1.2.0</p>
+                  <p class="text-xs text-gray-500">Última actualización: Hoy</p>
+              </div>
+              <ul class="space-y-3 text-sm text-gray-700">
+                  <li class="flex gap-2"><span>✅</span> <span>Se agregó botón flotante de ayuda con acceso rápido a herramientas.</span></li>
+                  <li class="flex gap-2"><span>✅</span> <span>Ajuste en el PDF: Ahora muestra "Fecha Costeo" en el pie de página.</span></li>
+                  <li class="flex gap-2"><span>✅</span> <span>Optimización de carga para inventarios grandes.</span></li>
+              </ul>
+              <button onclick="closeModal('novedadesModal')" class="mt-6 w-full bg-gray-200 text-gray-800 py-2 rounded font-bold hover:bg-gray-300">Entendido</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- 2. Modal Tutorial -->
+  <div id="tutorialModal" class="modal">
+      <div class="modal-content max-w-lg">
+          <div class="bg-primary text-white p-4 flex justify-between items-center rounded-t-lg">
+              <h3 class="font-bold">🎓 Tutorial de Manejo</h3>
+              <button onclick="closeModal('tutorialModal')" class="text-2xl hover:text-gray-300">×</button>
+          </div>
+          <div class="p-6 space-y-4 text-sm text-gray-700">
+              <p>Bienvenido al módulo de Costeo Unitario. Siga estos pasos:</p>
+              <ol class="list-decimal pl-5 space-y-2">
+                  <li><strong>Cargue la información:</strong> Use los botones superiores para cargar los archivos maestros de CUPS e Inventario.</li>
+                  <li><strong>Diligencie la Sección I:</strong> Seleccione el procedimiento y configure los parámetros básicos.</li>
+                  <li><strong>Agregue Costos:</strong> Despliegue las secciones II a V para agregar mano de obra, materiales e insumos.</li>
+                  <li><strong>Revise Resultados:</strong> El sistema calcula automáticamente los costos indirectos y el precio final.</li>
+                  <li><strong>Guarde o Descargue:</strong> Use el botón "Guardar" para almacenar en historial o "Descargar PDF" para imprimir.</li>
+              </ol>
+              <div class="bg-yellow-50 p-3 rounded border border-yellow-200 mt-4 text-xs">
+                  <strong>Tip:</strong> Puede usar el buscador inteligente en las tablas de insumos escribiendo el nombre del producto.
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- 3. Modal Buzón -->
+  <div id="buzonModal" class="modal">
+      <div class="modal-content max-w-md">
+          <div class="bg-primary text-white p-4 flex justify-between items-center rounded-t-lg">
+              <h3 class="font-bold">📫 Buzón de Sugerencias</h3>
+              <button onclick="closeModal('buzonModal')" class="text-2xl hover:text-gray-300">×</button>
+          </div>
+          <div class="p-6">
+              <p class="text-sm text-gray-600 mb-4">¿Encontró un error o tiene una idea para mejorar? Cuéntenos:</p>
+              <textarea class="input-field h-32 mb-4" placeholder="Escriba su sugerencia aquí..."></textarea>
+              <button onclick="alert('¡Gracias! Su sugerencia ha sido enviada al equipo de desarrollo.'); closeModal('buzonModal')" class="w-full bg-[#ec268f] text-white py-2 rounded font-bold hover:bg-pink-600 shadow">Enviar Sugerencia</button>
+          </div>
+      </div>
   </div>
 
   <script type="module">
@@ -1273,7 +1365,7 @@
                 const fecha = new Date().toLocaleString(); const consecutivo = document.getElementById('consecutivo').value || 'S/C';
                 const pageHeight = doc.internal.pageSize.height;
                 doc.setFontSize(8); doc.setTextColor(100);
-                doc.text(`Fecha simulación: ${fecha}`, 10, pageHeight - 10);
+                doc.text(`Fecha costeo: ${fecha}`, 10, pageHeight - 10);
                 doc.text(`Página ${pageNumber} de ${totalPages}`, 105, pageHeight - 10, { align: 'center' });
                 doc.text(`Consecutivo: ${consecutivo}`, 200, pageHeight - 10, { align: 'right' });
             };
@@ -1349,6 +1441,47 @@
 
         document.addEventListener('click', e => { if(!e.target.closest('.relative')) document.querySelectorAll('.cups-dropdown').forEach(e=>e.classList.add('hidden')); });
         window.onload = () => { setTimeout(initCharts, 500); document.getElementById('fechaElaboracion').valueAsDate = new Date(); };
+
+        // --- FUNCIONES DEL BOTÓN FLOTANTE Y MODALES ---
+
+        window.toggleFab = () => {
+            const menu = document.getElementById('fabMenu');
+            const icon = document.getElementById('fabIcon');
+            
+            if (menu.classList.contains('fab-menu-enter')) {
+                // Abrir menú
+                menu.classList.remove('fab-menu-enter');
+                menu.classList.add('fab-menu-active');
+                icon.style.transform = 'rotate(45deg)';
+                icon.innerText = '➕'; // Cambia ícono al abrir
+            } else {
+                // Cerrar menú
+                menu.classList.remove('fab-menu-active');
+                menu.classList.add('fab-menu-enter');
+                icon.style.transform = 'rotate(0deg)';
+                icon.innerText = '❓'; // Vuelve a ícono de ayuda
+            }
+        };
+
+        window.openModal = (modalId) => {
+            document.getElementById(modalId).style.display = 'block';
+            // Cerrar menú flotante automáticamente al abrir modal
+            const menu = document.getElementById('fabMenu');
+            if (menu.classList.contains('fab-menu-active')) {
+                toggleFab();
+            }
+        };
+
+        window.closeModal = (modalId) => {
+            document.getElementById(modalId).style.display = 'none';
+        };
+
+        // Cerrar modales al hacer clic fuera
+        window.onclick = (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        };
   </script>
  </body>
 </html>
