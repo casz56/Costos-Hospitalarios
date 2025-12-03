@@ -198,7 +198,8 @@
     <!-- MODAL: RECUPERAR / CAMBIAR CONTRASEÑA -->
     <div id="forgotPasswordModal" class="modal flex items-center justify-center p-4">
         <div class="modal-content bg-white p-0 rounded-xl w-full max-w-md shadow-2xl relative overflow-hidden">
-            <div class="bg-gray-800 p-4 flex justify-between items-center">
+            <!-- HEADER AZUL INSTITUCIONAL -->
+            <div class="bg-primary p-4 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
                     🔒 Autogestión de Clave
                 </h3>
@@ -212,7 +213,7 @@
                 
                 <div id="forgotStep1">
                     <label class="block text-sm font-bold text-gray-700 mb-1">Correo Registrado</label>
-                    <input type="email" id="forgotEmail" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-gray-800 outline-none" placeholder="correo@ejemplo.com" required>
+                    <input type="email" id="forgotEmail" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-[#312782] outline-none" placeholder="correo@ejemplo.com" required>
                 </div>
 
                 <div id="forgotStep2" class="hidden">
@@ -220,12 +221,12 @@
                         <p class="text-xs text-green-800">✅ Usuario verificado correctamente.</p>
                     </div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">Nueva Contraseña</label>
-                    <input type="text" id="newRecoverPass" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-gray-800 outline-none" placeholder="Nueva clave" minlength="4">
+                    <input type="text" id="newRecoverPass" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-[#312782] outline-none" placeholder="Nueva clave" minlength="4">
                     <input type="hidden" id="recoverUid">
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit" id="forgotBtn" class="w-full bg-gray-800 text-white py-2.5 rounded-lg font-bold hover:bg-gray-700 transition shadow-md">Verificar Correo</button>
+                    <button type="submit" id="forgotBtn" class="w-full btn-primary py-2.5 rounded-lg font-bold shadow-md transition">Verificar Correo</button>
                 </div>
             </form>
         </div>
