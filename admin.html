@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="text-center mt-8 mb-6">
-                <!-- LOGO INSTITUCIONAL AGREGADO (MODIFICADO) -->
+                <!-- LOGO INSTITUCIONAL -->
                 <div class="flex justify-center mb-4">
                     <img src="Logo_HUHMP.png" onerror="this.onerror=null; this.src='Logo_HUHMP.png'" alt="Logo ESE HUHMP" class="w-32 h-auto object-contain">
                 </div>
@@ -52,6 +52,13 @@
                     <input type="password" id="adminPass" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-900 outline-none transition" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="w-full btn-primary py-3 rounded-lg font-bold shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">INGRESAR</button>
+                
+                <!-- Botón Recuperar Contraseña -->
+                <div class="text-center mt-4">
+                    <button type="button" onclick="openModal('forgotPasswordModal')" class="text-sm text-blue-600 hover:text-blue-800 underline">
+                        ¿Olvidaste tu contraseña? / Autogestión
+                    </button>
+                </div>
             </form>
             <p id="loginError" class="text-red-500 text-center text-sm mt-4 hidden bg-red-50 p-2 rounded border border-red-100"></p>
         </div>
@@ -68,6 +75,9 @@
             <div class="p-6 border-b border-blue-800 bg-blue-900 bg-opacity-30">
                 <p class="text-xs text-blue-300 uppercase tracking-wider mb-1">Usuario Actual</p>
                 <p id="currentUserDisplay" class="font-semibold text-sm truncate">Cargando...</p>
+                <button onclick="openChangePasswordModal()" class="text-xs text-yellow-300 hover:text-yellow-100 mt-2 underline">
+                    Cambiar mi clave
+                </button>
             </div>
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                 <a href="#" class="flex items-center gap-3 py-3 px-4 rounded bg-white bg-opacity-10 text-white font-medium border-l-4 border-accent">
@@ -93,10 +103,10 @@
                     <img src="Logo_HUHMP_Blanco.png" onerror="this.onerror=null; this.src='/api/file/Logo_HUHMP_Blanco.png-850dd940-efcd-447e-83dc-b0898ffee8c1'" alt="Logo ESE HUHMP" class="h-12 w-auto object-contain">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800">Directorio de Usuarios</h2>
-                        <p class="text-sm text-gray-500">Administre los accesos al sistema de costeo (Base de Datos Local).</p>
+                        <p class="text-sm text-gray-500">Administre los accesos al sistema (Admin, Operativo, Consulta).</p>
                     </div>
                 </div>
-                <!-- BOTÓN DE CREAR USUARIO (VERDE Y VISIBLE) -->
+                <!-- BOTÓN DE CREAR USUARIO -->
                 <button onclick="openModal('createUserModal')" class="bg-secondary hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 font-bold whitespace-nowrap">
                     <span class="text-xl leading-none">+</span> Crear Nuevo Usuario
                 </button>
@@ -170,8 +180,9 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">Rol de Acceso</label>
                         <select id="newUserRole" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
-                            <option value="user">Operario (Solo Formulario)</option>
-                            <option value="admin">Administrador (Total)</option>
+                            <option value="admin">Administrador (Control Total)</option>
+                            <option value="user">Operativo (Editar Costeos)</option>
+                            <option value="viewer">Consulta (Solo Ver - No Editar)</option>
                         </select>
                     </div>
                 </div>
@@ -184,13 +195,48 @@
         </div>
     </div>
 
+    <!-- MODAL: RECUPERAR / CAMBIAR CONTRASEÑA -->
+    <div id="forgotPasswordModal" class="modal flex items-center justify-center p-4">
+        <div class="modal-content bg-white p-0 rounded-xl w-full max-w-md shadow-2xl relative overflow-hidden">
+            <div class="bg-gray-800 p-4 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    🔒 Autogestión de Clave
+                </h3>
+                <button onclick="closeModal('forgotPasswordModal')" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <form id="forgotPasswordForm" class="p-6 space-y-4">
+                <p class="text-sm text-gray-600 mb-4">Ingresa tu correo electrónico registrado. Si el correo existe en nuestra base de datos, podrás establecer una nueva contraseña inmediatamente.</p>
+                
+                <div id="forgotStep1">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Correo Registrado</label>
+                    <input type="email" id="forgotEmail" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-gray-800 outline-none" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div id="forgotStep2" class="hidden">
+                     <div class="bg-green-50 border-l-4 border-green-500 p-3 mb-4">
+                        <p class="text-xs text-green-800">✅ Usuario verificado correctamente.</p>
+                    </div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Nueva Contraseña</label>
+                    <input type="text" id="newRecoverPass" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-gray-800 outline-none" placeholder="Nueva clave" minlength="4">
+                    <input type="hidden" id="recoverUid">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="forgotBtn" class="w-full bg-gray-800 text-white py-2.5 rounded-lg font-bold hover:bg-gray-700 transition shadow-md">Verificar Correo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, getDoc, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIGURACIÓN MANUAL (GitHub / Localhost) ---
-        // Esta configuración se usará automáticamente si estás fuera del chat de IA.
         const manualConfig = { 
             apiKey: "AIzaSyBIWA19Aw7jAFTAyB0bBaZygZytuM9x1aA",
             authDomain: "costos-hospitalarios.firebaseapp.com",
@@ -201,34 +247,27 @@
             measurementId: "G-446CF9TS9H"
         };
         
-        // Variables dinámicas
         let firebaseConfig;
-        let appId = "costos-hospitalarios-v1"; // ID por defecto para manual
+        let appId = "costos-hospitalarios-v1";
 
-        // --- DETECCIÓN DE ENTORNO INTELIGENTE ---
         try {
             if (typeof __firebase_config !== 'undefined') {
-                // Estamos en el Chat de IA: Usar credenciales inyectadas
-                console.log("✅ Entorno IA detectado: Usando credenciales seguras.");
+                console.log("✅ Entorno IA detectado.");
                 firebaseConfig = JSON.parse(__firebase_config);
-                // Si el entorno provee un app_id, usarlo. Si no, usar el manual.
                 if(typeof __app_id !== 'undefined') appId = __app_id;
             } else {
                 throw new Error("Local mode");
             }
         } catch (e) {
-            // Estamos en Local o GitHub: Usar configuración manual
-            console.log("⚠️ Entorno Local/GitHub detectado: Usando configuración manual.");
+            console.log("⚠️ Entorno Local/GitHub detectado.");
             firebaseConfig = manualConfig;
         }
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- SISTEMA DE AUTENTICACIÓN ROBUSTO (Patrón Rule #3) ---
-        // Garantiza conexión antes de leer DB
+        // --- AUTH SYSTEM ---
         let authPromise = null;
         const ensureAuth = () => {
             if (authPromise) return authPromise;
@@ -250,17 +289,8 @@
             return authPromise;
         };
 
-        // --- GESTIÓN DE SESIÓN LOCAL ---
-
         const checkSession = async () => {
-            try {
-                await ensureAuth(); // Conectarse primero
-            } catch (e) {
-                console.error("Critical Auth Error:", e);
-                alert("Error de conexión con el sistema de seguridad (Auth).\nVerifica la consola para más detalles.");
-                return;
-            }
-
+            try { await ensureAuth(); } catch (e) { console.error("Auth Error:", e); return; }
             const storedUser = localStorage.getItem('adminUserSession');
             if (storedUser) {
                 const user = JSON.parse(storedUser);
@@ -271,27 +301,21 @@
             }
         };
 
-        // --- LOGIN PERSONALIZADO (Consulta DB) ---
-        const loginForm = document.getElementById('loginForm');
-        const loginError = document.getElementById('loginError');
-
-        loginForm.addEventListener('submit', async (e) => {
+        // --- LOGIN ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminEmail').value.trim();
             const pass = document.getElementById('adminPass').value.trim();
+            const btn = e.target.querySelector('button[type="submit"]');
             
-            const btn = e.target.querySelector('button');
-            const originalText = btn.textContent;
             btn.textContent = "VERIFICANDO...";
             btn.disabled = true;
-            loginError.classList.add('hidden');
+            document.getElementById('loginError').classList.add('hidden');
 
             try {
                 await ensureAuth();
-
-                // RUTA PÚBLICA DE DATOS: artifacts/{appId}/public/data/registered_users
                 const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
-                const snapshot = await getDocs(usersRef); // Traer todo para filtrar en cliente (evita indices complejos)
+                const snapshot = await getDocs(usersRef);
 
                 let validUser = null;
                 let userCount = 0;
@@ -299,27 +323,15 @@
                 snapshot.forEach(doc => {
                     userCount++;
                     const data = doc.data();
-                    if (data.email.toLowerCase() === email.toLowerCase()) {
-                        if (data.password === pass) {
-                            validUser = data;
-                        }
+                    if (data.email.toLowerCase() === email.toLowerCase() && data.password === pass) {
+                        validUser = data;
                     }
                 });
 
-                // Si no hay usuarios en absoluto, permitir crear el primer Admin (Bootstrap)
                 if (userCount === 0) {
-                    if (confirm("⚠️ No hay usuarios registrados en el sistema.\n¿Desea crear este usuario como el Primer Administrador?")) {
-                        const newAdmin = {
-                            uid: 'admin_init_' + Date.now(),
-                            name: 'Admin Inicial',
-                            email: email,
-                            password: pass,
-                            role: 'admin',
-                            active: true,
-                            createdAt: new Date()
-                        };
+                    if (confirm("⚠️ No hay usuarios registrados. ¿Crear Admin Inicial?")) {
+                        const newAdmin = { uid: 'admin_init_' + Date.now(), name: 'Admin Inicial', email: email, password: pass, role: 'admin', active: true, createdAt: new Date() };
                         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', newAdmin.uid), newAdmin);
-                        validUser = newAdmin;
                         alert("✅ Administrador creado. Ingrese nuevamente.");
                         location.reload();
                         return;
@@ -327,54 +339,116 @@
                 }
 
                 if (validUser) {
-                    if (validUser.role !== 'admin') {
-                        throw new Error("Este usuario no tiene permisos de Administrador.");
-                    }
+                    if (validUser.role !== 'admin') throw new Error("Acceso denegado: Solo administradores pueden ver este panel.");
                     localStorage.setItem('adminUserSession', JSON.stringify(validUser));
                     checkSession();
                 } else {
-                    throw new Error("Usuario no encontrado o contraseña incorrecta.");
+                    throw new Error("Credenciales incorrectas.");
                 }
 
             } catch (error) {
-                console.error(error);
-                let msg = error.message;
-                if(msg.includes("Missing or insufficient permissions")) {
-                    msg = "Error de permisos: El sistema no pudo verificar su identidad segura.";
-                }
-                loginError.textContent = msg;
-                loginError.classList.remove('hidden');
+                const errDiv = document.getElementById('loginError');
+                errDiv.textContent = error.message;
+                errDiv.classList.remove('hidden');
             } finally {
-                btn.textContent = originalText;
+                btn.textContent = "INGRESAR";
                 btn.disabled = false;
             }
         });
 
-        window.logout = () => {
-            localStorage.removeItem('adminUserSession');
-            location.reload();
+        window.logout = () => { localStorage.removeItem('adminUserSession'); location.reload(); };
+        function showLogin() { document.getElementById('loginView').classList.remove('hidden'); document.getElementById('dashboardView').classList.add('hidden'); }
+        function showDashboard() { document.getElementById('loginView').classList.add('hidden'); document.getElementById('dashboardView').classList.remove('hidden'); document.getElementById('dashboardView').classList.add('flex'); loadUsers(); }
+        window.openModal = (id) => document.getElementById(id).style.display = 'flex';
+        window.closeModal = (id) => {
+            document.getElementById(id).style.display = 'none';
+            // Reset forms if needed
+            if(id === 'forgotPasswordModal') {
+                document.getElementById('forgotStep1').classList.remove('hidden');
+                document.getElementById('forgotStep2').classList.add('hidden');
+                document.getElementById('forgotBtn').textContent = "Verificar Correo";
+                document.getElementById('forgotBtn').onclick = null; // Reset handler override
+                document.getElementById('forgotPasswordForm').reset();
+            }
         };
 
-        // --- GESTIÓN DE UI ---
-        function showLogin() {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('dashboardView').classList.add('hidden');
-        }
+        // --- SISTEMA DE AUTOGESTIÓN DE CONTRASEÑA ---
+        const forgotForm = document.getElementById('forgotPasswordForm');
+        const forgotBtn = document.getElementById('forgotBtn');
 
-        function showDashboard() {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('dashboardView').classList.remove('hidden');
-            document.getElementById('dashboardView').classList.add('flex');
-            loadUsers();
-        }
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const step2Visible = !document.getElementById('forgotStep2').classList.contains('hidden');
+            
+            if (!step2Visible) {
+                // PASO 1: Verificar Correo
+                const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+                forgotBtn.textContent = "Buscando...";
+                forgotBtn.disabled = true;
 
-        window.openModal = (id) => document.getElementById(id).style.display = 'flex';
-        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+                try {
+                    await ensureAuth();
+                    const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
+                    const q = query(usersRef, where('email', '==', email));
+                    const snapshot = await getDocs(q);
 
-        // --- CRUD DE USUARIOS ---
+                    if (snapshot.empty) {
+                        throw new Error("No encontramos un usuario con ese correo.");
+                    }
+
+                    // Usuario encontrado
+                    const userDoc = snapshot.docs[0];
+                    document.getElementById('recoverUid').value = userDoc.id;
+                    
+                    document.getElementById('forgotStep1').classList.add('hidden');
+                    document.getElementById('forgotStep2').classList.remove('hidden');
+                    document.getElementById('newRecoverPass').required = true;
+                    forgotBtn.textContent = "Cambiar Contraseña";
+                    
+                } catch (error) {
+                    alert("❌ " + error.message);
+                } finally {
+                    forgotBtn.disabled = false;
+                }
+            } else {
+                // PASO 2: Actualizar Contraseña
+                const newPass = document.getElementById('newRecoverPass').value.trim();
+                const uid = document.getElementById('recoverUid').value;
+                
+                if(newPass.length < 4) { alert("La contraseña debe tener al menos 4 caracteres."); return; }
+
+                forgotBtn.textContent = "Actualizando...";
+                forgotBtn.disabled = true;
+
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', uid), {
+                        password: newPass
+                    });
+                    alert("✅ Contraseña actualizada exitosamente. Ya puedes iniciar sesión.");
+                    closeModal('forgotPasswordModal');
+                } catch(error) {
+                    alert("Error al actualizar: " + error.message);
+                } finally {
+                    forgotBtn.textContent = "Cambiar Contraseña";
+                    forgotBtn.disabled = false;
+                }
+            }
+        });
+
+        // Autogestión interna (Usuario logueado)
+        window.openChangePasswordModal = () => {
+            const user = JSON.parse(localStorage.getItem('adminUserSession'));
+            if(!user) return;
+            // Prellenar modal de recuperación
+            document.getElementById('forgotEmail').value = user.email;
+            openModal('forgotPasswordModal');
+            // Simular clic para ir directo al paso 2 si es posible, o dejar que verifique
+            document.getElementById('forgotBtn').click();
+        };
+
+        // --- CRUD USUARIOS ---
         async function loadUsers() {
             const tableBody = document.getElementById('usersTableBody');
-            
             try {
                 await ensureAuth();
                 const q = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
@@ -384,9 +458,16 @@
                 querySnapshot.forEach((docSnapshot) => {
                     const u = docSnapshot.data();
                     const initials = u.name ? u.name.substring(0,2).toUpperCase() : '??';
-                    const roleBadge = u.role === 'admin' 
-                        ? '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Administrador</span>' 
-                        : '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Operario</span>';
+                    
+                    // Lógica de Badges actualizada con "Consulta"
+                    let roleBadge = '';
+                    if(u.role === 'admin') {
+                        roleBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Administrador</span>';
+                    } else if (u.role === 'viewer') {
+                        roleBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Consulta</span>';
+                    } else {
+                        roleBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Operativo</span>';
+                    }
                     
                     html += `
                     <tr class="hover:bg-gray-50 transition">
@@ -413,13 +494,11 @@
                         </td>
                     </tr>`;
                 });
-
-                if (html === '') html = '<tr><td colspan="5" class="text-center py-8 text-gray-500 italic">No hay usuarios. Crea el primero.</td></tr>';
+                if (html === '') html = '<tr><td colspan="5" class="text-center py-8 text-gray-500 italic">No hay usuarios.</td></tr>';
                 tableBody.innerHTML = html;
-
             } catch (error) {
                 console.error(error);
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error cargando usuarios: ' + error.message + '</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500">Error cargando usuarios.</td></tr>';
             }
         }
 
@@ -437,18 +516,13 @@
 
             try {
                 await ensureAuth();
-
-                // ✅ Verificar duplicado SOLO por este correo (más eficiente)
                 const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'registered_users');
                 const q = query(usersRef, where('email', '==', email));
                 const duplicateSnapshot = await getDocs(q);
 
-                if (!duplicateSnapshot.empty) {
-                    throw new Error("El correo ya está registrado.");
-                }
+                if (!duplicateSnapshot.empty) throw new Error("El correo ya está registrado.");
 
                 const newUid = 'user_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
-
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registered_users', newUid), {
                     uid: newUid,
                     name: name,
@@ -465,7 +539,6 @@
                 loadUsers();
 
             } catch (error) {
-                console.error(error);
                 alert("❌ Error: " + error.message);
             } finally {
                 btn.textContent = "Crear Usuario";
@@ -483,7 +556,6 @@
         };
 
         window.onload = checkSession;
-
     </script>
 </body>
 </html>
