@@ -79,26 +79,10 @@
             z-index: 50; 
             border-radius: 0 0 0.5rem 0.5rem;
         }
-        
-        /* Dropdown específico para tablas dinámicas */
-        .table-search-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            min-width: 350px;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-        }
-
         .cups-item { padding: 0.75rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; font-size: 0.875rem; }
         .cups-item:hover { background-color: #e0f2fe; }
 
+        /* Estilos Tabs Sección II */
         .tab-btn {
             padding: 0.75rem 1.5rem;
             font-weight: 600;
@@ -117,6 +101,7 @@
         }
         .tab-btn:hover:not(.active) { background-color: #f9fafb; color: #374151; }
 
+        /* Estilos Tarjetas Resultados */
         .res-card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #6b7280; margin-bottom: 0.25rem; }
         .res-card-value { font-size: 1.5rem; font-weight: 800; }
         .dark-card { background-color: var(--color-primary); color: white; padding: 1rem; border-radius: 0.5rem; text-align: center; }
@@ -185,7 +170,7 @@
        </div>
    </div>
 
-   <!-- BARRA DE HERRAMIENTAS -->
+   <!-- HERRAMIENTAS -->
    <div class="bg-white p-6 rounded-lg shadow-md mb-8 border-l-4 border-secondary">
        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
            <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
@@ -199,7 +184,7 @@
        </div>
        
        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-           <!-- Botón 1: CUPS -->
+           <!-- Cargar CUPS -->
            <div class="relative w-full h-full group">
                <button class="w-full h-14 bg-blue-600 text-white rounded-lg font-bold shadow-md hover:bg-blue-700 transition flex items-center justify-center gap-2">
                    <span>📂</span> Cargar CUPS (.csv/.xlsx)
@@ -208,7 +193,7 @@
                <p id="cupsStatus" class="text-xs text-gray-500 mt-1 italic text-center">⚠️ Pendiente</p>
            </div>
 
-           <!-- Botón 2: Inventario -->
+           <!-- Cargar Inventario -->
            <div class="relative w-full h-full group">
                <button class="w-full h-14 bg-green-600 text-white rounded-lg font-bold shadow-md hover:bg-green-700 transition flex items-center justify-center gap-2">
                    <span>📦</span> Cargar Inventario (.csv)
@@ -217,7 +202,7 @@
                <p id="inventoryStatus" class="text-xs text-gray-500 mt-1 italic text-center">⚠️ Pendiente</p>
            </div>
 
-           <!-- Botón 3: PDF -->
+           <!-- PDF -->
            <div class="w-full h-full">
                <button onclick="descargarPDF()" class="w-full h-14 bg-[#ec268f] text-white rounded-lg font-bold shadow-md hover:bg-pink-600 transition flex items-center justify-center gap-2">
                    <span>📄</span> Descargar PDF
@@ -229,7 +214,7 @@
 
    <form id="costeoForm" class="form-card p-6 mb-8" onsubmit="return false;">
     
-    <!-- I. GENERAL -->
+    <!-- SECCIÓN I -->
     <div class="section-header rounded-t-lg">I. INFORMACIÓN GENERAL DEL SERVICIO</div>
     <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 border-x border-b rounded-b-lg mb-6">
         <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha</label><input type="date" id="fechaElaboracion" class="input-field"></div>
@@ -274,7 +259,7 @@
         <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Grupo Qx / UVR</label><input type="text" id="grupoUVR" class="input-field" placeholder="Ej: 200 UVR"></div>
     </div>
 
-    <!-- II. MANO DE OBRA -->
+    <!-- SECCIÓN II -->
     <div class="section-header rounded-t-lg flex justify-between items-center">
         <span>II. MANO DE OBRA DIRECTA</span>
     </div>
@@ -311,7 +296,7 @@
         </div>
     </div>
 
-    <!-- III. MATERIALES -->
+    <!-- SECCIÓN III -->
     <div class="section-header rounded-t-lg">III. MATERIALES (FACTURABLES)</div>
     <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
         <p class="text-xs text-gray-500 mb-2 italic">ℹ️ Escriba el Código o Nombre para buscar. El sistema autocompletará Presentación (Col D) y Precio (Col M).</p>
@@ -319,8 +304,8 @@
             <table class="w-full text-sm text-left">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-32">Pres. (Col D)</th>
-                        <th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit (Col M)</th>
+                        <th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-24">Pres.</th>
+                        <th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit</th>
                         <th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th>
                     </tr>
                 </thead>
@@ -330,14 +315,14 @@
         <button type="button" onclick="addMedicamentoRow()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Material</button>
     </div>
 
-    <!-- IV. INSUMOS -->
+    <!-- SECCIÓN IV -->
     <div class="section-header rounded-t-lg">IV. INSUMOS (NO FACTURABLES)</div>
     <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
         <p class="text-xs text-gray-500 mb-2 italic">ℹ️ Escriba el Código o Nombre para buscar. El sistema autocompletará Presentación (Col D) y Precio (Col M).</p>
         <div class="overflow-x-visible mb-3 border rounded-lg">
             <table class="w-full text-sm text-left">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
-                    <tr><th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-32">Pres. (Col D)</th><th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit (Col M)</th><th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th></tr>
+                    <tr><th class="px-3 py-3 w-32">Código</th><th class="px-3 py-3">Nombre</th><th class="px-3 py-3 w-24">Pres.</th><th class="px-2 py-3 text-right w-16">Cant.</th><th class="px-3 py-3 text-right w-28">V. Unit</th><th class="px-3 py-3 text-right w-28">Total</th><th class="px-2 py-3 text-center">x</th></tr>
                 </thead>
                 <tbody id="insumosNoFacturables" class="divide-y divide-gray-100"></tbody>
             </table>
@@ -345,7 +330,7 @@
         <button type="button" onclick="addInsumoRow()" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition w-full md:w-auto">+ Agregar Insumo</button>
     </div>
 
-    <!-- V. ALQUILER -->
+    <!-- SECCIÓN V -->
     <div class="section-header rounded-t-lg">V. ALQUILER DE EQUIPOS</div>
     <div class="bg-white border-x border-b rounded-b-lg p-4 mb-6">
         <div class="overflow-x-auto mb-3 border rounded-lg">
@@ -360,7 +345,7 @@
         <div class="mt-4 flex justify-between items-center bg-gray-50 p-3 rounded border"><span class="font-bold text-gray-600 text-sm">SUBTOTAL ALQUILER:</span><span id="subtotalAlquiler" class="text-xl font-bold text-secondary">$ 0.00</span></div>
     </div>
 
-    <!-- VI. INDIRECTOS -->
+    <!-- SECCIÓN VI -->
     <div class="section-header rounded-t-lg">VI. COSTOS INDIRECTOS</div>
     <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -383,7 +368,7 @@
         </div>
     </div>
 
-    <!-- VII. GRÁFICAS -->
+    <!-- SECCIÓN VII -->
     <div class="section-header rounded-t-lg">VII. ANÁLISIS GRÁFICO</div>
     <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="h-80 relative">
@@ -399,7 +384,7 @@
         </div>
     </div>
 
-    <!-- VIII. RESUMEN -->
+    <!-- SECCIÓN VIII -->
     <div class="section-header rounded-t-lg">VIII. RESUMEN FINANCIERO</div>
     <div class="bg-blue-50 border border-blue-200 rounded-b-lg p-6 mb-6 space-y-2 text-sm">
         <div class="flex justify-between"><span class="text-gray-600">Costos Directos Base</span><span id="totalCostosDirectos" class="font-bold">$ 0</span></div>
@@ -413,7 +398,7 @@
         </div>
     </div>
 
-    <!-- IX. PRECIO -->
+    <!-- SECCIÓN IX -->
     <div class="section-header rounded-t-lg">IX. PRECIO DE VENTA</div>
     <div class="bg-white border-x border-b rounded-b-lg p-6 mb-6 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
@@ -432,7 +417,7 @@
         </div>
     </div>
 
-    <!-- X. ESTADO DE RESULTADOS -->
+    <!-- SECCIÓN X -->
     <div class="section-header rounded-t-lg">X. ESTADO DE RESULTADOS</div>
     <div class="bg-white border-x border-b rounded-b-lg p-6 mb-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -469,6 +454,52 @@
                 <h4 class="text-center font-bold text-gray-700 mb-2">Comparativo Financiero</h4>
                 <div class="flex-grow relative min-h-[300px]">
                     <canvas id="resultsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN XI -->
+    <div class="section-header rounded-t-lg">XI. LEGALIZACIÓN Y APROBACIÓN DEL COSTEO</div>
+    <div class="bg-white border-x border-b rounded-b-lg p-6 mb-8">
+        <div class="grid grid-cols-1 gap-6">
+            
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-bold text-primary mb-3 text-sm uppercase border-b pb-1">Proyectó y Revisó</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Nombre y Apellidos</label><input id="firma1_nombre" class="input-field text-sm" value="MILLER MONTENEGRO LIZCANO"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Cargo</label><input id="firma1_cargo" class="input-field text-sm" value="PROFESIONAL UNIVERSITARIO"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Área</label><input id="firma1_area" class="input-field text-sm" value="COSTOS"></div>
+                </div>
+            </div>
+
+            
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-bold text-primary mb-3 text-sm uppercase border-b pb-1">Revisó</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Nombre y Apellidos</label><input id="firma2_nombre" class="input-field text-sm" value="OLGA MILENA CARRILLO CRUZ"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Cargo</label><input id="firma2_cargo" class="input-field text-sm" value="PROFESIONAL UNIVERSITARIO"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Área</label><input id="firma2_area" class="input-field text-sm" value="COSTOS"></div>
+                </div>
+            </div>
+
+            
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-bold text-primary mb-3 text-sm uppercase border-b pb-1">Aprobó (Científico)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Nombre y Apellidos</label><input id="firma3_nombre" class="input-field text-sm" value="NELSON LEONARDO FIERRO GONZALEZ"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Cargo</label><input id="firma3_cargo" class="input-field text-sm" value="SUBGERENTE TECNICO CIENTIFICO"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Área</label><input id="firma3_area" class="input-field text-sm" value="SUBGERENCIA TECNICO CIENTIFICA"></div>
+                </div>
+            </div>
+
+            
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-bold text-primary mb-3 text-sm uppercase border-b pb-1">Aprobó (Financiero)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Nombre y Apellidos</label><input id="firma4_nombre" class="input-field text-sm" value="MARIBEL RICO TOVAR"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Cargo</label><input id="firma4_cargo" class="input-field text-sm" value="SUBGERENTE FINANCIERO"></div>
+                    <div><label class="text-xs text-gray-500 font-bold uppercase block mb-1">Área</label><input id="firma4_area" class="input-field text-sm" value="SUBGERENCIA FINANCIERA"></div>
                 </div>
             </div>
         </div>
@@ -624,7 +655,13 @@
                     log: document.getElementById('porcentajeLogisticos').value,
                     adm: document.getElementById('porcentajeAdministrativos').value
                 },
-                precioVenta: document.getElementById('precioVentaInput').value
+                precioVenta: document.getElementById('precioVentaInput').value,
+                signatures: {
+                    f1n: document.getElementById('firma1_nombre').value, f1c: document.getElementById('firma1_cargo').value, f1a: document.getElementById('firma1_area').value,
+                    f2n: document.getElementById('firma2_nombre').value, f2c: document.getElementById('firma2_cargo').value, f2a: document.getElementById('firma2_area').value,
+                    f3n: document.getElementById('firma3_nombre').value, f3c: document.getElementById('firma3_cargo').value, f3a: document.getElementById('firma3_area').value,
+                    f4n: document.getElementById('firma4_nombre').value, f4c: document.getElementById('firma4_cargo').value, f4a: document.getElementById('firma4_area').value
+                }
             };
             await addDoc(collection(db, 'artifacts', appId, 'users', currentUserSession.uid, 'costeos'), data);
             alert("✅ Costeo guardado correctamente.");
@@ -657,6 +694,7 @@
             let html = '';
             snapshot.forEach(docSnap => {
                 const d = docSnap.data(); const date = d.timestamp?.toDate().toLocaleString() || 'Fecha desconocida';
+                const id = docSnap.id;
                 html += `
                 <div class="p-4 border rounded-lg hover:bg-gray-50 mb-3 transition shadow-sm bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex-grow">
@@ -710,6 +748,13 @@
                 setVal('porcentajeGastosGenerales', data.indirectos.gas);
                 setVal('porcentajeLogisticos', data.indirectos.log);
                 setVal('porcentajeAdministrativos', data.indirectos.adm);
+            }
+
+            if(data.signatures) {
+                setVal('firma1_nombre', data.signatures.f1n); setVal('firma1_cargo', data.signatures.f1c); setVal('firma1_area', data.signatures.f1a);
+                setVal('firma2_nombre', data.signatures.f2n); setVal('firma2_cargo', data.signatures.f2c); setVal('firma2_area', data.signatures.f2a);
+                setVal('firma3_nombre', data.signatures.f3n); setVal('firma3_cargo', data.signatures.f3c); setVal('firma3_area', data.signatures.f3a);
+                setVal('firma4_nombre', data.signatures.f4n); setVal('firma4_cargo', data.signatures.f4c); setVal('firma4_area', data.signatures.f4a);
             }
 
             document.getElementById('talentoHumanoContainer').innerHTML = "";
@@ -879,7 +924,6 @@
                         presentation: r[3] || '',
                         price: r[12] || 0
                     })).filter(x => x.code && x.name);
-                    
                     document.getElementById(statusId).textContent = "✅ Cargado";
                     alert("✅ Inventario cargado correctamente");
                 }
@@ -894,48 +938,26 @@
         window.searchInventory = (input) => {
             const val = normalizeText(input.value);
             let dropdown = input.parentNode.querySelector('.table-search-dropdown');
-            
-            if (getComputedStyle(input.parentNode).position === 'static') {
-                input.parentNode.style.position = 'relative';
-            }
-
             if(!dropdown) {
                 dropdown = document.createElement('div');
                 dropdown.className = 'table-search-dropdown hidden';
+                if(getComputedStyle(input.parentNode).position === 'static') input.parentNode.style.position = 'relative';
                 input.parentNode.appendChild(dropdown);
             }
-            
             dropdown.innerHTML = '';
             if(val.length < 2) { dropdown.classList.add('hidden'); return; }
-
             const terms = val.split(' ').filter(t=>t.length>0);
             const matches = INVENTORY_DB.filter(i => checkApprox(i.full, terms)).slice(0, 15);
-
             if(matches.length === 0) { dropdown.classList.add('hidden'); return; }
-
             matches.forEach(i => {
                 const div = document.createElement('div');
                 div.className = 'cups-item flex justify-between items-center p-2 hover:bg-blue-50 cursor-pointer border-b';
-                div.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="font-bold text-gray-800 text-sm">${i.code}</span>
-                        <span class="text-xs text-gray-600">${i.name}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs text-gray-500 block">${i.presentation}</span>
-                        <span class="font-bold text-green-700 text-xs">${formatCOP(i.price)}</span>
-                    </div>
-                `;
+                div.innerHTML = `<div class="flex flex-col"><span class="font-bold text-gray-800 text-sm">${i.code}</span><span class="text-xs text-gray-600">${i.name}</span></div><div class="text-right"><span class="text-xs text-gray-500 block">${i.presentation}</span><span class="font-bold text-green-700 text-xs">${formatCOP(i.price)}</span></div>`;
                 div.onclick = () => {
-                    const row = input.closest('tr');
-                    const inputs = row.querySelectorAll('input');
-                    inputs[0].value = i.code;
-                    inputs[1].value = i.name;
-                    inputs[2].value = i.presentation;
-                    if(inputs[3].value === '') inputs[3].value = 1; 
-                    inputs[4].value = formatCOP(i.price);
-                    dropdown.classList.add('hidden');
-                    calculateTotal();
+                    const row = input.closest('tr'); const inputs = row.querySelectorAll('input');
+                    inputs[0].value = i.code; inputs[1].value = i.name; inputs[2].value = i.presentation;
+                    if(inputs[3].value === '') inputs[3].value = 1; inputs[4].value = formatCOP(i.price);
+                    dropdown.classList.add('hidden'); calculateTotal();
                 };
                 dropdown.appendChild(div);
             });
@@ -945,6 +967,7 @@
         document.addEventListener('click', e => {
             if(!e.target.closest('.relative')) {
                 document.querySelectorAll('.table-search-dropdown').forEach(e => e.classList.add('hidden'));
+                document.querySelectorAll('.cups-dropdown').forEach(e => e.classList.add('hidden'));
             }
         });
 
@@ -1204,7 +1227,7 @@
             const doc = new jsPDF('p', 'mm', 'a4');
             const pdfCol = { azulOscuro: [49, 39, 130], azulClaro: [112, 132, 193], blanco: [255, 255, 255] };
 
-            const getTableData = (tbodyId) => {
+            const getTableData = (tbodyId, columnsToTake = 6) => {
                 const rows = document.querySelectorAll(`#${tbodyId} tr`);
                 return Array.from(rows).map(row => {
                     const inputs = Array.from(row.querySelectorAll('input'));
@@ -1278,14 +1301,19 @@
             
             finalY = doc.lastAutoTable.finalY + 15;
             
-            // --- NUEVA SECCIÓN DE FIRMAS ---
-            if (finalY > 250) { doc.addPage(); finalY = 35; }
+            if (finalY > 230) { doc.addPage(); finalY = 35; }
+            
+            // TITULO AGREGADO PARA SECCIÓN XI
+            finalY = addSectionTitle("XI. LEGALIZACIÓN Y APROBACIÓN DEL COSTEO", finalY);
+
+            // TABLA DE FIRMAS DINÁMICA CONECTADA AL HTML
+            const get = (id) => document.getElementById(id)?.value || '';
             
             const signatures = [
-                ['PROYECTO Y REVISO', 'MILLER MONTENEGRO LIZCANO', 'PROFESIONAL UNIVERSITARIO', 'COSTOS', ''],
-                ['REVISO', 'OLGA MILENA CARRILLO CRUZ', 'PROFESIONAL UNIVERSITARIO', 'COSTOS', ''],
-                ['APROBO', 'NELSON LEONARDO FIERRO GONZALEZ', 'SUBGERENTE TECNICO CIENTIFICO', 'SUBGERENCIA TECNICO CIENTIFICA', ''],
-                ['APROBO', 'MARIBEL RICO TOVAR', 'SUBGERENTE FINANCIERO', 'SUBGERENCIA FINANCIERA', '']
+                ['PROYECTO Y REVISO', get('firma1_nombre'), get('firma1_cargo'), get('firma1_area'), ''],
+                ['REVISO', get('firma2_nombre'), get('firma2_cargo'), get('firma2_area'), ''],
+                ['APROBO', get('firma3_nombre'), get('firma3_cargo'), get('firma3_area'), ''],
+                ['APROBO', get('firma4_nombre'), get('firma4_cargo'), get('firma4_area'), '']
             ];
 
             doc.autoTable({
@@ -1294,10 +1322,11 @@
                 body: signatures,
                 theme: 'grid',
                 styles: { fontSize: 7, cellPadding: 3, valign: 'middle' },
-                headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+                // ESTILO ACTUALIZADO: COLOR INSTITUCIONAL AZUL OSCURO
+                headStyles: { fillColor: pdfCol.azulOscuro, textColor: pdfCol.blanco, fontStyle: 'bold', halign: 'center' },
                 columnStyles: {
-                    0: { fontStyle: 'bold', cellWidth: 30 }, // Etiqueta
-                    4: { cellWidth: 40 } // Espacio firma
+                    0: { fontStyle: 'bold', cellWidth: 30 },
+                    4: { cellWidth: 40 }
                 }
             });
 
