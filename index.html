@@ -160,10 +160,16 @@
            <span class="text-2xl">📁</span>
            <div><p class="font-bold">MODO REVISIÓN DE HISTORIAL</p><p class="text-sm">¿Desea editar este registro o solo visualizarlo?</p></div>
        </div>
-       <div class="flex gap-3">
+       <div class="flex gap-3 flex-wrap justify-center md:justify-end">
+           <!-- BOTÓN NUEVO: REGRESAR -->
+           <button onclick="window.salirModoHistorial()" class="bg-gray-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-gray-600 transition shadow flex items-center gap-2">
+               ↩️ Regresar
+           </button>
+           
            <button onclick="enableHistoryEditing()" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-800 transition shadow">
                ✏️ Continuar Editando
            </button>
+           
            <button onclick="confirmHistoryClose()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition shadow">
                🔒 Confirmar / Cerrar
            </button>
@@ -679,6 +685,12 @@
         enableInputs(true);
         calculateTotal();
         getNextConsecutive();
+    };
+
+    // FUNCION PARA SALIR DEL MODO HISTORIAL
+    window.salirModoHistorial = function() {
+        // Simplemente llamamos a restablecer, que limpia y desbloquea todo
+        window.restablecerFormulario();
     };
 
     window.verHistorial = async function() {
