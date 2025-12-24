@@ -56,7 +56,7 @@ const CC_CATALOG = {
   "413": { uf: "400 - HOSPITALIZACIÓN", centro: "413 - HOSPITALIZACION INFECTOLOGIA ADULTOS" },
   "702": { uf: "700 - APOYO TERAPÉUTICO", centro: "702 - REHABILITACION Y TERAPIAS" },
   "129": { uf: "LOGISTICOS", centro: "129 - EDUCACION MEDICA" },
-  "412": { uf: "400 -1 - UCI", centro: "412 - UNIDAD BASICA NEONATAL" },
+  "412": { uf: "400 -1 - UCI", centro: "412 - UNIDAD BASICA" },
   "214": { uf: "400 - HOSPITALIZACIÓN", centro: "214 - CLINICA DE HERIDAS" },
 
 };
@@ -393,6 +393,35 @@ async function vaultImportJSON(file){
 /* ---------- UI helpers ---------- */
 function formatCOP(value){ return Number(value||0).toLocaleString("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}); }
 function pct(value){ if(value===null||value===undefined||isNaN(Number(value))) return ""; return (Number(value)*100).toFixed(2)+"%"; }
+// === Tooltip con valor y % (Chart.js) ===
+function tooltipValorYPorcentaje(){
+  return {
+    callbacks:{
+      label: (ctx)=>{
+        const label = ctx.label ? String(ctx.label) : "";
+        const dataArr = (ctx.dataset && Array.isArray(ctx.dataset.data)) ? ctx.dataset.data : [];
+        const total = dataArr.reduce((a,b)=>a + Number(b||0), 0);
+        const val = Number(ctx.parsed ?? 0);
+        const pctVal = total ? (val/total*100) : 0;
+        return `${label}: ${formatCOP(val)} (${pctVal.toFixed(2)}%)`;
+      }
+    }
+  };
+}
+
+// === Etiqueta Centro de Costos sin código repetido ===
+function escapeRegExp(s){ return String(s||"").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function ccLabelSinDuplicar(cc, centro){
+  const code = String(cc ?? "").trim();
+  let name = String(centro ?? "").trim();
+  if(code && name){
+    const re = new RegExp("^" + escapeRegExp(code) + "\\s*-\\s*", "i");
+    if(re.test(name)) return name; // ya viene con el código una vez
+    return `${code} - ${name}`;
+  }
+  return name || code;
+}
+
 function escapeHtml(s){ return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
 
 function setRoute(route){
@@ -506,7 +535,7 @@ function renderResultados(){
   setChart("chartCostoVsUtilidad", new Chart($("#chartCostoVsUtilidad"),{
     type:"doughnut",
     data:{labels:["Costo total","Utilidad"],datasets:[{data:[costo,util]}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}}
   }));
 
   const directos=sum(rows,"directos"), indirectos=sum(rows,"indirectos");
@@ -514,7 +543,7 @@ function renderResultados(){
   setChart("chartDirInd", new Chart($("#chartDirInd"),{
     type:"doughnut",
     data:{labels:["Directos","Indirectos"],datasets:[{data:[directos,indirectos]}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}}
   }));
 
   const gg=sum(rows,"gastos_generales"), mo=sum(rows,"mano_obra"), af=sum(rows,"activos_fijos"), disp=sum(rows,"dispensacion"), cons=sum(rows,"consumo");
@@ -522,7 +551,7 @@ function renderResultados(){
   setChart("chartClases", new Chart($("#chartClases"),{
     type:"pie",
     data:{labels:["Gastos Generales","Mano de Obra","Activos Fijos","Dispensación","Consumo"],datasets:[{data:[gg,mo,af,disp,cons]}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}}
   }));
 
   const byCC=new Map();
@@ -593,9 +622,8 @@ if(table){
     const margen = costoTotal ? (utilidad / costoTotal) : 0;          // utilidad / costo total
 
     const tr=document.createElement("tr");
-    const ccLabel = (r.cc??"") ? `${r.cc} - ${r.centro||""}` : (r.centro||"");
-
-    const cells=[
+    const ccLabel = ccLabelSinDuplicar(r.cc, r.centro);
+const cells=[
       {v: escapeHtml(ccLabel), align:"left", bold:true},
       {v: formatCOP(gg), align:"right"},
       {v: formatCOP(cons), align:"right"},
@@ -755,7 +783,7 @@ function renderComparativo(){
       data:{labels:["Costo total","Utilidad"],datasets:[{data:[costo, utilForChart]}]},
       options:{
         responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{position:"right"}}
+        plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}
       }
     }));
 
@@ -766,14 +794,14 @@ function renderComparativo(){
         labels:["Gastos Generales","Mano de Obra","Activos Fijos","Dispensación","Consumo"],
         datasets:[{data:[gg,mo,af,disp,cons]}]
       },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}}
     }));
 
     destroyChart(idTipo);
     setChart(idTipo, new Chart($("#"+idTipo),{
       type:"doughnut",
       data:{labels:["Directos","Indirectos"],datasets:[{data:[directos,indirectos]}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right"},tooltip: tooltipValorYPorcentaje()}}
     }));
   }
 }
