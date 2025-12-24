@@ -53,6 +53,12 @@ const CC_CATALOG = {
   "903": { uf: "700 - APOYO TERAPÉUTICO", centro: "903 - UNIDAD CANCEROLOGIA" },
   "904": { uf: "SERVICIOS CONEXOS", centro: "904 - TRANSPORTE AMBULANCIA" },
   "913": { uf: "SERVICIOS CONEXOS", centro: "913 - INGRESOS NO OPERATIVOS" },
+  "413": { uf: "400 - HOSPITALIZACIÓN", centro: "413 - HOSPITALIZACION INFECTOLOGIA ADULTOS" },
+  "702": { uf: "700 - APOYO TERAPÉUTICO", centro: "702 - REHABILITACION Y TERAPIAS" },
+  "129": { uf: "LOGISTICOS", centro: "129 - EDUCACION MEDICA" },
+  "412": { uf: "400 -1 - UCI", centro: "412 - UNIDAD BASICA NEONATAL" },
+  "214": { uf: "400 - HOSPITALIZACIÓN", centro: "214 - CLINICA DE HERIDAS" },
+
 };
 
 function ccKeyFromAny(v){
